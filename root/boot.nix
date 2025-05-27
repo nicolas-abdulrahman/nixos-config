@@ -1,4 +1,4 @@
-{ ... }:
+{ config, lib, ... }:
 {
   security.pam.services.login.enableKwallet = true;
   security.pam.services.login.enableGnomeKeyring = true;
@@ -11,9 +11,13 @@
   boot.loader = {
     efi = {
       canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi"; # ← use the same mount point here.
+      efiSysMountPoint = "/boot"; # ← use the same mount point here.
+    };
+    systemd-boot = {
+      enable = false;
     };
     grub = {
+      # enable = !config.full;
       enable = true;
       efiSupport = true;
       #efiInstallAsRemovable = true; # in case canTouchEfiVariables doesn't work for your system

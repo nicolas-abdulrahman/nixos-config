@@ -1,0 +1,5 @@
+[preferred]
+default=gtk;kde
+org.freedesktop.impl.portal.FileChooser=dolphin
+org.freedesktop.impl.portal.WebBrowser=firefox
+org.freedesktop.impl.portal.Document=okular

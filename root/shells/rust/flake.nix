@@ -57,6 +57,7 @@
         # LLDB = pkgs.lldb;
 
         #LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath buildInputs}";
+        shellHool = "zsh";
       };
 
     };

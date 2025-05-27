@@ -32,6 +32,7 @@
       defaultEditor = true;
       viAlias = true;
       vimAlias = true;
+
       plugins = with pkgs.vimPlugins; [
         {
           plugin = myautocmds;
@@ -45,7 +46,6 @@
         nvim-comment
         headlines-nvim
         nvim-web-devicons
-        vim-crates
         crates-nvim
         plenary-nvim
         # {
@@ -136,6 +136,8 @@
 
       ];
       extraPackages = with pkgs; [
+        jdt-language-server
+        rust-analyzer
         nixpkgs-fmt
         nil
         cmake-language-server
@@ -154,6 +156,10 @@
         vscode-langservers-extracted
 
       ];
+      extraConfig = ''
+      
+        ${pkgs.lib.readFile ./lua/nick/rpy.vim  } 
+      '';
       extraLuaConfig = ''
         ${pkgs.lib.readFile ./lua/nick/autocmd.lua  } 
         ${pkgs.lib.readFile ./lua/nick/remap.lua  } 

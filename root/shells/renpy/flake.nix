@@ -11,19 +11,8 @@
     in
     {
       devShells."${system}".default = pkgs.mkShell {
-        packages = with pkgs; [ jdk21 ];
-        buildInputs = with pkgs; [
-          maven
-          jdk21
-          # customise the jdk which gradle uses by default
-          (callPackage gradle-packages.gradle_8 {
-            java = jdk21;
-
-          })
-        ];
-        #GOPLS_PATH = "${pkgs.gopls}/bin/gopls"; 
+        packages = with pkgs; [ renpy ];
       };
-
     };
 }
 

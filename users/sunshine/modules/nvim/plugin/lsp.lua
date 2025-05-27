@@ -136,6 +136,7 @@ require("lspconfig").pyright.setup({
 -- require("lspconfig").html.setup({})
 require("lspconfig").tsserver.setup({
 	cmd = { "typescript-language-server", "--stdio" },
+	-- cmd = { "nix", "run", "nixpkgs#typescript-language-server", "--", "--stdio" },
 	on_attach = on_attach,
 	capabilities = capabilities,
 	root_dir = require("lspconfig.util").root_pattern({ ".git" }),
@@ -235,5 +236,8 @@ require("lspconfig").superhtml.setup({
 })
 
 require("lspconfig").cmake.setup({})
+require("lspconfig").jdtls.setup({
+	cmd = { "jdtls" },
+})
 
 require("lspconfig").nil_ls.setup({})

@@ -62,7 +62,8 @@ local dap = require("dap")
 dap.adapters.gdb = {
 	type = "executable",
 	command = "gdb",
-	args = { "--interpreter=dap", "--eval-command", "set print pretty on" },
+	args = { "--interpreter=dap" },
+	-- args = { "-i=mi" },
 }
 
 local c = {
@@ -73,19 +74,20 @@ local c = {
 	program = "${workspaceFolder}/build/Main", -- Path to your executable
 }
 dap.configurations.c = {
-	c,
+	-- c,
 	{
 		name = "Select and attach to process",
 		type = "gdb",
-		request = "attach",
+		request = "launch",
 		program = function()
-			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "build/Main")
+			return vim.fn.input("Path to executableeeee: ", vim.fn.getcwd() .. "/", "file")
 		end,
-		pid = function()
-			local name = vim.fn.input("Executable name (filter): ")
-			return require("dap.utils").pick_process({ filter = name })
-		end,
+		-- pid = function()
+		-- local name = vim.fn.input("Executable name (filter): ")
+		-- return require("dap.utils").pick_process({ filter = name })
+		-- end,
 		cwd = "${workspaceFolder}",
+		-- args = {},
 	},
 }
-dap.configurations.cpp = { c }
+-- dap.configurations.cpp = { c }
