@@ -14,6 +14,13 @@
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;
+    settings = {
+      mysqld = {
+        datadir = "/var/lib/mysql";
+        bind-address = "127.0.0.1";
+        port = 3305;
+      };
+    };
   };
 
 
@@ -57,6 +64,9 @@
     };
 
   environment.systemPackages = with pkgs; [
+    iproute2
+    lsof
+    xorg.libX11
     inetutils
     unixtools.nettools
     docker

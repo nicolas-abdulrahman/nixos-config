@@ -31,8 +31,8 @@
   services.xserver = {
     videoDrivers = [ "modesetting" ];
 
-    enable = false;
-    autorun = false;
+    enable = true;
+    autorun = true;
     windowManager.i3.enable = false;
 
     resolutions = [
@@ -49,7 +49,8 @@
     # Disable desktop manager.
     displayManager = {
       startx.enable = true;
-      defaultSession = "none+i3";
+      gdm.enable = true;
+      defaultSession = "gnome";
       # autoLogin = {
       # enable = true;
       # user = "sunshine";
@@ -67,7 +68,9 @@
     };
   };
 
-  # systemd.services = {
+  systemd.services = {
+    "display-manager".wantedBy = lib.mkForce [ ];
+  };
   #   "autovt@tty1" = {
   #     enable = true;
   #     restartIfChanged = false;

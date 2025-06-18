@@ -18,14 +18,14 @@
         name = "myautocmds";
         src = ./myplugins/myautocmds;
       };
-
+      tabbys = pkgs.vimUtils.buildVimPlugin {
+        name = "tabbys";
+        src = ./myplugins/tabbys;
+      };
       # simple-fold = pkgs.vimUtils.buildVimPlugin {
       # name = "simple-fold";
       # src = ./myplugins/simple-fold-b;
       # };
-
-
-
     in
     {
       enable = true;
@@ -33,10 +33,19 @@
       viAlias = true;
       vimAlias = true;
 
+
       plugins = with pkgs.vimPlugins; [
         {
           plugin = myautocmds;
           config = luaFile ./plugin/myautocmds.lua;
+        }
+        {
+          plugin = diffview-nvim;
+          config = luaFile ./plugin/diffview.lua;
+        }
+        {
+          plugin = vim-flog;
+          config = luaFile ./plugin/flog.lua;
         }
         # nvim-treesitter-parsers.javascript
         nvim-treesitter.withAllGrammars
@@ -67,11 +76,11 @@
         # config = luaFile ./plugin/fold.lua;
 
         # }
-        {
-          plugin = barbar-nvim;
-          config = luaFile ./plugin/tab_bar.lua;
+        # {
+        # plugin = barbar-nvim;
+        # config = luaFile ./plugin/tab_bar.lua;
 
-        }
+        # }
         {
           plugin = headlines-nvim;
           config = toLua ''require("headlines").setup()'';
@@ -133,9 +142,21 @@
         #   friendly-snippets
         #    vim-nix
 
+        {
+          plugin = tabbys;
+          config = luaFile ./plugin/tabbys.lua;
+        }
 
       ];
       extraPackages = with pkgs; [
+
+        gopls
+        pyright
+        clang
+        zls
+        sqls
+        typescript-language-server
+        vscode-langservers-extracted
         jdt-language-server
         rust-analyzer
         nixpkgs-fmt

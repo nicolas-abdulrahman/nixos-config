@@ -144,10 +144,12 @@ require("lspconfig").tsserver.setup({
 -- lldb_exec = concat_if_exist(os.getenv("LLDB"), "/bin/lldb-vscode")
 require("lspconfig").lua_ls.setup({
 	cmd = { "/run/current-system/sw/bin/lua-lsp" },
+	on_attach = on_attach,
 })
 require("lspconfig").nixd.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
+	on_attach = on_attach,
 })
 -- require("lspconfig").tsserver.setup({
 -- cmd = { "typescript-language-server", "--stdio"},
@@ -230,14 +232,40 @@ rust_tools.setup({
 -- })
 require("lspconfig").cssls.setup({
 	capabilities = capabilities,
+	on_attach = on_attach,
 })
-require("lspconfig").superhtml.setup({
+require("lspconfig").html.setup({
 	capabilities = capabilities,
+	on_attach = on_attach,
 })
 
-require("lspconfig").cmake.setup({})
+require("lspconfig").css.setup({
+	capabilities = capabilities,
+})
+require("lspconfig").cmake.setup({
+
+	on_attach = on_attach,
+})
 require("lspconfig").jdtls.setup({
 	cmd = { "jdtls" },
+	on_attach = on_attach,
 })
 
 require("lspconfig").nil_ls.setup({})
+require("lspconfig").sqls.setup({
+	on_attach = function(client, bufnr)
+		-- Disable all formatting capability of sqls
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+	end,
+	settings = {
+		sqls = {
+			connections = {
+				{
+					driver = "mysql",
+					dataSourceName = "root:root@tcp(127.0.0.1:3306)/RuaSolidaria",
+				},
+			},
+		},
+	},
+})
