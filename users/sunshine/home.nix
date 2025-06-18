@@ -46,10 +46,18 @@ in
     };
     xdg.portal = {
       enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-kde # Provides KDE integration (Dolphin)
-        xdg-desktop-portal-gtk # Fallback for GTK apps
-      ];
+      extraPortals = lib.mkForce
+        (with pkgs; [
+          xdg-desktop-portal-kde # Provides KDE integration (Dolphin)
+          xdg-desktop-portal-gtk # Fallback for GTK apps
+          pkgs.xdg-desktop-portal-hyprland
+        ]);
+      xdgOpenUsePortal = true;
+      config = {
+        hyprland.default = [ "gtk" "hyprland" ];
+      };
+
+      # gtkUsePortal = true;
     };
     xdg.configFile."mimeapps.list".text = ''
       [Default Applications]
@@ -111,6 +119,10 @@ in
     };
 
     home.packages = with pkgs; [
+      wf-recorder
+      obs-studio
+      gh
+      flyctl
       gitkraken
       dbeaver-bin
       warp-terminal
@@ -154,6 +166,8 @@ in
       hypridle
     ] else [ ])
     ++ (if config.full then [
+      xremap
+      jetbrains.idea-community-src
       smartgithg
       opera
       libsForQt5.okular
@@ -204,7 +218,7 @@ in
         ''
           dev(){
               NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/root/shells/$1
-              zsh
+              # zsh
              }
            run(){
                nix run nixpkgs#$1 -- ${myString}
@@ -215,7 +229,7 @@ in
         \builtin alias zi=__zoxide_zi
          eval "$(zoxide init zsh)"
          clear
-          export WARP_PATH="${pkgs.warp-terminal}/bin/warp-terminal"
+         export WARP_PATH="${pkgs.warp-terminal}/bin/warp-terminal"
       ''; #.zshrc
       oh-my-zsh = {
         extraConfig = "AGNOSTER_PROMPT_SEGMENTS=prompt_git";
