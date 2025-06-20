@@ -47,6 +47,18 @@
           plugin = vim-flog;
           config = luaFile ./plugin/flog.lua;
         }
+        {
+          plugin = fugitive;
+          config = luaFile ./plugin/fugitive.lua;
+        }
+        {
+          plugin = gitsigns-nvim;
+          config = luaFile ./plugin/gitsigns.lua;
+        }
+        {
+          plugin = lazygit-nvim;
+          config = luaFile ./plugin/lazygit.lua;
+        }
         # nvim-treesitter-parsers.javascript
         nvim-treesitter.withAllGrammars
         nvim-cmp
@@ -149,6 +161,7 @@
 
       ];
       extraPackages = with pkgs; [
+
 
         gopls
         pyright

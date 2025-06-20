@@ -48,7 +48,7 @@ in
       enable = true;
       extraPortals = lib.mkForce
         (with pkgs; [
-          xdg-desktop-portal-kde # Provides KDE integration (Dolphin)
+          kdePackages.xdg-desktop-portal-kde
           xdg-desktop-portal-gtk # Fallback for GTK apps
           pkgs.xdg-desktop-portal-hyprland
         ]);
@@ -62,17 +62,17 @@ in
     xdg.configFile."mimeapps.list".text = ''
       [Default Applications]
       application/pdf=okular.desktop
-      text/html=opera.desktop
-      x-scheme-handler/http=opera.desktop
-      x-scheme-handler/https=opera.desktop
-      x-scheme-handler/about=opera.desktop
-      x-scheme-handler/unknown=opera.desktop
+      text/html=google.desktop
+      x-scheme-handler/http=google.desktop
+      x-scheme-handler/https=google.desktop
+      x-scheme-handler/about=google.desktop
+      x-scheme-handler/unknown=google.desktop
     '';
     xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
       [preferred]
       default=gtk;kde
-      org.freedesktop.impl.portal.FileChooser=dolphin
-      org.freedesktop.impl.portal.WebBrowser=opera
+      org.freedesktop.impl.portal.FileChooser=google
+      org.freedesktop.impl.portal.WebBrowser=google
       org.freedesktop.impl.portal.Document=okular
     '';
     home.sessionVariables = {
@@ -109,7 +109,8 @@ in
 
     programs.git = {
       extraConfig.credential.helper = "manager";
-      extraConfig.credential."https://github.com".username = "HappyySunshine";
+      # extraConfig.credential."https://github.com".username = "HappyySunshine";
+      extraConfig.credential."https://github.com".username = "nicolashugofg";
       extraConfig.credential.credentialStore = "cache";
       enable = true;
       # userName = "happyysunshine";
@@ -119,6 +120,7 @@ in
     };
 
     home.packages = with pkgs; [
+      lazygit
       wf-recorder
       obs-studio
       gh
@@ -166,10 +168,9 @@ in
       hypridle
     ] else [ ])
     ++ (if config.full then [
-      xremap
       jetbrains.idea-community-src
       smartgithg
-      opera
+      # opera
       libsForQt5.okular
       weston
       gamescope
