@@ -2,8 +2,10 @@
 
 {
 
-  security.pam.services.login.enableGnomeKeyring = true;
-  security.polkit.enable = true;
+  security.rtkit.enable = lib.mkForce false;
+  security.pam.services.login.enableGnomeKeyring = lib.mkForce false;
+  security.polkit.enable = lib.mkForce false;
+  security.pam.services.login.enableKwallet = lib.mkForce false;
 
   # services.xserver.desktopManager.plasma6.enable = config.full;
   # programs.ssh.askPassword = lib.mkForce "${pkgs.plasma6Packages.ksshaskpass.out}/bin/ksshaskpass";

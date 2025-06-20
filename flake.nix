@@ -2,7 +2,7 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/64e75cd44acf21c7933d61d7721e812eac1b5a0a";
+    nixpkgs.url = "github:nixos/nixpkgs/9e83b64f727c88a7711a2c463a7b16eedb69a84c";
     # hyprland.url = "github:hyprwm/hyprland/86be75dd97b5633b8c0aa6bdcb3346fa871a8480";
     hyprland.url = "github:hyprwm/hyprland/";
     home-manager.url = "github:nix-community/home-manager";

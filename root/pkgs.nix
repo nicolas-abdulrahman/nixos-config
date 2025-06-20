@@ -64,6 +64,8 @@
     };
 
   environment.systemPackages = with pkgs; [
+    xorg.xev
+    xremap
     iproute2
     lsof
     xorg.libX11

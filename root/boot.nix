@@ -1,7 +1,5 @@
 { config, lib, ... }:
 {
-  security.pam.services.login.enableKwallet = true;
-  security.pam.services.login.enableGnomeKeyring = true;
   boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
   # services.getty.autologinUser = "sunshine";
 
@@ -26,5 +24,6 @@
   };
   #  boot.loader.systemd-boot.enable = true;
   #boot.loader.grub.useOSProber = true;
+
   boot.supportedFilesystems = [ "ntfs" "exfat" ];
 }
