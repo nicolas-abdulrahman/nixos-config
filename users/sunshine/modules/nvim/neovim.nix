@@ -59,40 +59,10 @@
           plugin = lazygit-nvim;
           config = luaFile ./plugin/lazygit.lua;
         }
-        # nvim-treesitter-parsers.javascript
-        nvim-treesitter.withAllGrammars
-        nvim-cmp
-        cmp-nvim-lsp
-        rust-tools-nvim
-        nvim-comment
-        headlines-nvim
-        nvim-web-devicons
-        crates-nvim
-        plenary-nvim
-        # {
-        # plugin = simple-fold;
-        #config = toLua ''require("simple-fold").setup({})'';
-        # }
-
-        # {
-        # plugin = autocmdss;
-        # config = luaFile ./plugin/autocmds.lua;
-        # }
         {
           plugin = conform-nvim;
           config = luaFile ./plugin/conform.lua;
         }
-
-        # {
-        # plugin = pretty-fold-nvim;
-        # config = luaFile ./plugin/fold.lua;
-
-        # }
-        # {
-        # plugin = barbar-nvim;
-        # config = luaFile ./plugin/tab_bar.lua;
-
-        # }
         {
           plugin = headlines-nvim;
           config = toLua ''require("headlines").setup()'';
@@ -106,7 +76,6 @@
           plugin = nvim-lspconfig;
           config = luaFile ./plugin/lsp.lua;
         }
-        #  nvim-treesitter.withAllGrammars
         {
           plugin = (nvim-treesitter.withPlugins (p: [
 
@@ -136,10 +105,6 @@
           config = toLua ''require("lualine").setup()'';
         }
 
-        dracula-nvim
-        nvim-snippy
-        nvim-dap
-        nvim-dap-ui
         {
           plugin = nvim-dap-ui;
           config = luaFile ./plugin/dap.lua;
@@ -149,16 +114,27 @@
           plugin = harpoon;
           config = luaFile ./plugin/harpoon.lua;
         }
-        #  telescope-fzf-native-nvim
-        luasnip
-        #   friendly-snippets
-        #    vim-nix
-
         {
           plugin = tabbys;
           config = luaFile ./plugin/tabbys.lua;
         }
-
+        luasnip
+        nvim-treesitter.withAllGrammars
+        nvim-cmp
+        cmp-nvim-lsp
+        rust-tools-nvim
+        nvim-comment
+        headlines-nvim
+        nvim-web-devicons
+        crates-nvim
+        plenary-nvim
+        dracula-nvim
+        nvim-snippy
+        nvim-dap
+        nvim-dap-ui
+        catppuccin-vim
+        catppuccin-nvim
+        telescope-fzf-native-nvim
       ];
       extraPackages = with pkgs; [
 

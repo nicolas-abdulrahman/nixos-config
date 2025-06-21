@@ -3,11 +3,19 @@ vim.keymap.set("n", "<leader>pe", vim.cmd.Ex)
 vim.api.nvim_set_keymap("n", "<C-s>", ":wa!<CR>", { noremap = true })
 
 vim.keymap.set("n", "so", "<cmd>so<CR>", opts)
--- vim.keymap.set("n", ">", "> | gv")
---
 -- my setup
 vim.keymap.set("v", "<Tab>", "> | gv")
 vim.keymap.set("v", "<S-Tab>", "< | gv")
+vim.keymap.set("t", "<C-Space>", [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set("n", "<A-j>", ":cnext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-k>", ":cprev<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-d>", function()
+	local qflist = vim.fn.getqflist()
+	local idx = vim.fn.getqflist({ idx = 0 }).idx
+	table.remove(qflist, idx)
+	vim.fn.setqflist(qflist, "r")
+end, { noremap = true, silent = true })
+
 -- the Primagean setup
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
