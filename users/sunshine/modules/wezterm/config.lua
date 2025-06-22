@@ -18,7 +18,7 @@ config.color_scheme = "Dracula"
 -- saturation = 0.9,
 --}
 
-local wezterm_mod = "ALT"
+local wezterm_mod = "CTRL|SHIFT"
 config.keys = {
 	{ key = "V", mods = "CTRL", action = act.PasteFrom("Clipboard") },
 	{ key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },

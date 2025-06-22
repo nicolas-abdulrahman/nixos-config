@@ -1,6 +1,7 @@
 { config, pkgs, bobox, inputs, lib, username, ... }:
 let
   nixos_path = "/etc/nixos";
+  browser = "google-chrome";
 in
 {
 
@@ -40,10 +41,12 @@ in
         editorconfig.editorconfig
         dbaeumer.vscode-eslint
         stylelint.vscode-stylelint
+
         zainchen.json
 
       ];
     };
+
     xdg.portal = {
       enable = true;
       extraPortals = lib.mkForce
@@ -58,21 +61,22 @@ in
       };
 
       # gtkUsePortal = true;
+
     };
     xdg.configFile."mimeapps.list".text = ''
       [Default Applications]
       application/pdf=okular.desktop
-      text/html=google.desktop
-      x-scheme-handler/http=google.desktop
-      x-scheme-handler/https=google.desktop
-      x-scheme-handler/about=google.desktop
-      x-scheme-handler/unknown=google.desktop
+      text/html=${browser}.desktop
+      x-scheme-handler/http=${browser}.desktop
+      x-scheme-handler/https=${browser}.desktop
+      x-scheme-handler/about=${browser}.desktop
+      x-scheme-handler/unknown=${browser}.desktop
     '';
     xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
       [preferred]
       default=gtk;kde
-      org.freedesktop.impl.portal.FileChooser=google
-      org.freedesktop.impl.portal.WebBrowser=google
+      org.freedesktop.impl.portal.FileChooser=${browser}
+      org.freedesktop.impl.portal.WebBrowser=${browser}
       org.freedesktop.impl.portal.Document=okular
     '';
     home.sessionVariables = {
@@ -228,8 +232,7 @@ in
       initExtra = ''
         \builtin alias cd=__zoxide_z
         \builtin alias zi=__zoxide_zi
-         eval "$(zoxide init zsh)"
-         clear
+         eval "$(zoxide init zsh)"  >/dev/null 2>&1
          export WARP_PATH="${pkgs.warp-terminal}/bin/warp-terminal"
       ''; #.zshrc
       oh-my-zsh = {
@@ -260,29 +263,16 @@ in
     programs.bash = {
       enable = true;
       enableCompletion = true;
-      initExtra = ''
-        dev(){
-               nix develop /etc/nixos/root/shells/$1
-               echo "ready to code $1!"
-               }
-      '';
-
-      bashrcExtra = lib.mkDefault ''
-        export PATH="$PATH:$HOME/bin:$HOME/.local/bin:$HOME/go/bin"
-      '';
-      # loginShellInit = "source ./scripts/alias.sh";
-
-      # set some aliases, feel free to add more or remove some
       shellAliases = {
+        ".." = "cd ..";
         s = "sudo nixos-rebuild switch --flake /etc/nixos/";
-        k = "kubectl";
-        urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
-        urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
+        h = ''
+          home-manager switch --flake ${nixos_path}
+          # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
+          # ${nixos_path}/result/activate
+        '';
       };
     };
 
   };
-  # a regex pattern
-
-  # starship - an customizable prompt for any shell
 }

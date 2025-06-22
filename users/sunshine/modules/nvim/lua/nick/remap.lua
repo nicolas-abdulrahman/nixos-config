@@ -1,8 +1,14 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pe", vim.cmd.Ex)
 vim.api.nvim_set_keymap("n", "<C-s>", ":wa!<CR>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>s", ":wa!<CR>", { noremap = true })
 
-vim.keymap.set("n", "so", "<cmd>so<CR>", opts)
+vim.keymap.set("n", "so", function()
+	vim.cmd("wa!")
+	vim.cmd("so")
+	vim.notify("sourced")
+end, opts)
+
 -- my setup
 vim.keymap.set("v", "<Tab>", "> | gv")
 vim.keymap.set("v", "<S-Tab>", "< | gv")
