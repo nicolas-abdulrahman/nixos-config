@@ -70,13 +70,14 @@ local defaults = {
 	color = "blue",
 	keymaps = {
 		enable = true,
-		leader = "<leader>",
+		prefix = "<M-",
 		cmd = "t",
 		-- use_leader = true,
 		show = "s",
 		tabnew = "n",
 		tabprev = "h",
 		tabnext = "l",
+		tabclone = "c",
 		tabgo = "",
 	},
 }
@@ -118,27 +119,27 @@ function M.setup(user_opts)
 	M.setup_tab()
 	if opts.keymaps.enable then
 		k = opts.keymaps
-		p = k.leader .. k.cmd
+		p = k.prefix
 		-- vim.keymap.set("n", p .. opts.keymaps.show, _G.show_tab, {
 		-- desc = "Tabby: Toggle feature",
 		-- })
-		vim.keymap.set("n", p .. k.tabnew, M.new_tab, {
+		vim.keymap.set("n", p .. k.tabnew .. ">", M.new_tab, {
 			desc = "Tabby: new",
 		})
-		vim.keymap.set("n", p .. k.tabprev, M.tab_prev, {
+		vim.keymap.set("n", p .. k.tabprev .. ">", M.tab_prev, {
 			desc = "Tabby: Toggle feature",
 		})
-		vim.keymap.set("n", p .. k.tabnext, M.tab_next, {
+		vim.keymap.set("n", p .. k.tabnext .. ">", M.tab_next, {
 			desc = "Tabby: Toggle feature",
 		})
-		vim.keymap.set("n", p .. k.tabnext, M.tab_next, {
+		vim.keymap.set("n", p .. k.tabnext .. ">", M.tab_next, {
 			desc = "Tabby: Toggle feature",
 		})
-		vim.keymap.set("n", "ti", ":TabListen<CR>", {
+		vim.keymap.set("n", p .. k.tabclone .. ">", M.tab_clone, {
 			desc = "Tabby: Toggle feature",
 		})
 		for i = 0, 9 do
-			vim.keymap.set("n", p .. k.tabgo .. i, function()
+			vim.keymap.set("n", p .. i, function()
 				print("going to " .. i)
 				vim.cmd("tabnext " .. i)
 			end, {
@@ -153,18 +154,23 @@ function M.setup_tab()
 	vim.o.tabline = "%!v:lua.tabbyTabLine()"
 end
 
+function M.tab_clone()
+	vim.notify("aa")
+	local buf = vim.api.nvim_get_current_buf()
+	vim.cmd("tabnew")
+	vim.api.nvim_set_current_buf(buf)
+end
 function M.new_tab()
-	print("new")
 	vim.cmd("tabnew")
 end
 function M.tab_next()
 	vim.cmd("tabnext")
-	vim.cmd("TabListen")
+	-- vim.cmd("TabListen")
 end
 
 function M.tab_prev()
 	vim.cmd("tabprevious")
-	vim.cmd("TabListen")
+	-- vim.cmd("TabListen")
 end
 
 function _G.show_tab()

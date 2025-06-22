@@ -40,10 +40,13 @@ require("conform").setup({
 				useTabs = false,
 				singleQuote = true,
 
-				printWidth = 120,
+				printWidth = 9999,
 				functionCallArgumentNewlines = "none",
 				functionParenthesis = "min",
 			},
+		},
+		stylua = {
+			prepend_args = { "--column-width", "9999" },
 		},
 	},
 })
