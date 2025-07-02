@@ -1,3 +1,5 @@
+-- require("java").setup()
+
 local cmp = require("cmp")
 vim.g.mapleader = " "
 cmp.setup({
@@ -39,10 +41,12 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 --require("nvim-autopairs").setup()
 function on_attach(client, bufnr)
 	local opts = { buffer = bufnr, remap = false }
+	vim.api.nvim_set_keymap("n", "<leader>cjr", "JavaRunnerRunMain", { noremap = true })
+	vim.api.nvim_set_keymap("n", "<leader>cjb", "JavaBuildBuildWorkspace", { noremap = true })
 	vim.keymap.set("n", "K", function()
 		vim.lsp.buf.hover()
 	end, opts)
-	vim.keymap.set("n", "<leader>cs", function()
+	vim.keymap.set("n", "<leader>ls", function()
 		vim.lsp.buf.workspace_symbol()
 	end, opts)
 	vim.keymap.set("n", "<C-d>", function()
@@ -57,10 +61,10 @@ function on_attach(client, bufnr)
 	vim.keymap.set("n", "[d", function()
 		vim.diagnostic.goto_prev()
 	end, opts)
-	vim.keymap.set("n", "<leader>la", function()
+	vim.keymap.set("n", "<leader>lsa", function()
 		vim.lsp.buf.code_action()
 	end, opts)
-	vim.keymap.set("n", "<leader>lr", function()
+	vim.keymap.set("n", "<leader>lsr", function()
 		vim.lsp.buf.references()
 	end, opts)
 	vim.keymap.set("n", "<leader>li", function()

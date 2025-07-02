@@ -72,10 +72,7 @@
           plugin = neo-tree-nvim;
           config = toLua ''require("neo-tree").setup()'';
         }
-        {
-          plugin = nvim-lspconfig;
-          config = luaFile ./plugin/lsp.lua;
-        }
+        nvim-lspconfig
         {
           plugin = (nvim-treesitter.withPlugins (p: [
 
@@ -118,6 +115,8 @@
           plugin = tabbys;
           config = luaFile ./plugin/tabbys.lua;
         }
+        nvim-java
+
         luasnip
         nvim-treesitter.withAllGrammars
         nvim-cmp
@@ -175,6 +174,7 @@
         ${pkgs.lib.readFile ./lua/nick/remap.lua  } 
         ${pkgs.lib.readFile ./lua/nick/set.lua  } 
         ${pkgs.lib.readFile ./lua/nick/colors.lua  } 
+        ${pkgs.lib.readFile ./plugin/lsp.lua  } 
       '';
     };
 }

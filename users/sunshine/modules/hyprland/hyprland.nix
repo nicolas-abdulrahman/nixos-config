@@ -130,6 +130,7 @@
       "bordercolor rgb(FFFF00), class:^(Alacritty)$"
 
     ];
+    exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP";
   };
   wayland.windowManager.hyprland.extraConfig = ''
     submap = not_on_term
