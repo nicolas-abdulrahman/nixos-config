@@ -32,17 +32,17 @@ local make_entry = require("telescope.make_entry")
 local entry_display = require("telescope.pickers.entry_display")
 local conf = require("telescope.config").values
 
-vim.keymap.set("n", "<leader>tf", builtin.find_files, { desc = "find file" })
-vim.keymap.set("n", "<leader>tg", builtin.git_files, { desc = "git_files" })
-vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "diagnostics" })
-vim.keymap.set("n", "<leader>tb", builtin.buffers, { desc = "buffers" })
-vim.keymap.set("n", "<leader>tn", function()
+vim.keymap.set("n", "<leader>tfc", builtin.find_files, { desc = "find file" })
+vim.keymap.set("n", "<leader>tfn", function()
 	builtin.find_files({ cwd = "/etc/nixos/users/sunshine/modules/nvim/" })
 end, { desc = "Neovim" })
+vim.keymap.set("n", "<leader>tfg", builtin.git_files, { desc = "git_files" })
+vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "diagnostics" })
+vim.keymap.set("n", "<leader>tb", builtin.buffers, { desc = "buffers" })
 vim.keymap.set("n", "<leader>tl", function()
 	builtin.live_grep()
 end, { desc = "live grep" })
-vim.keymap.set("n", "<leader>ths", function()
+vim.keymap.set("n", "<leader>tsb", function()
 	local file = vim.fn.expand("%:p") -- full path of current file
 	local displayer = entry_display.create({
 		separator = " ",
@@ -89,15 +89,16 @@ vim.keymap.set("n", "<leader>ths", function()
 		})
 		:find()
 end, { desc = "grep string" })
-vim.keymap.set("n", "<leader>tas", function()
+
+vim.keymap.set("n", "<leader>tsc", function()
 	builtin.grep_string({})
 end, { desc = "grep string" })
-vim.keymap.set("n", "<leader>tcm", function()
+vim.keymap.set("n", "<leader>tmb", function()
 	require("telescope.builtin").lsp_document_symbols({
 		symbols = { "Function", "Method" },
 		cwd = vim.fn.expand("%:p:h"),
 	})
 end, {})
-vim.keymap.set("n", "<leader>tam", function()
+vim.keymap.set("n", "<leader>tmc", function()
 	require("telescope.builtin").lsp_document_symbols({ symbols = { "Function", "Method" } })
 end, {})

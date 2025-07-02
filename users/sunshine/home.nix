@@ -51,13 +51,13 @@ in
       enable = true;
       extraPortals = lib.mkForce
         (with pkgs; [
-          kdePackages.xdg-desktop-portal-kde
-          xdg-desktop-portal-gtk # Fallback for GTK apps
+          # kdePackages.xdg-desktop-portal-kde
+          # xdg-desktop-portal-gtk # Fallback for GTK apps
           pkgs.xdg-desktop-portal-hyprland
         ]);
       xdgOpenUsePortal = true;
       config = {
-        hyprland.default = [ "gtk" "hyprland" ];
+        hyprland.default = [ "hyprland" ];
       };
 
       # gtkUsePortal = true;
@@ -222,12 +222,15 @@ in
         in
         ''
           dev(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/root/shells/$1
-              # zsh
+              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/root/shells/#$1
              }
+           ru(){
+              NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/root/shells/#$1
+           }
            run(){
                nix run nixpkgs#$1 -- ${myString}
            }
+
         '';
       initExtra = ''
         \builtin alias cd=__zoxide_z

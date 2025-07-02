@@ -16,19 +16,32 @@
     #  nix-index-database.follows = "nixpkgs";
     #  nixgl.url = "github:guibou/nixGL";
 
-    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+
+    # nvf.url = "github:notashelf/nvf";
+    nvf.url = "path:./packages/nvf";
 
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }:
+  outputs = inputs@{ nixpkgs, home-manager, nvf, ... }:
     let
       system = "x86_64-linux";
       bobox = import inputs.robox { inherit system; };
       hyprland = inputs.hyprland.packages.${system}.hyprland;
       pkgs = nixpkgs;
       username = "sunshine";
+      nvim_path = ./modules/nvim;
     in
     {
+      packages.x86_64-linux = {
+        default =
+          (nvf.lib.neovimConfiguration {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            modules = [
+              ./modules/nvim/nvf.nix
+            ];
+          }).neovim;
+      };
+
       homeConfigurations =
         let
           pkgs = import nixpkgs {

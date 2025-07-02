@@ -1,3 +1,6 @@
 [submodule "users/sunshine/modules/nvim/myplugins/simple-fold"]
 	path = users/sunshine/modules/nvim/myplugins/simple-fold
 	url = https://github.com/HappyySunshine/simple-fold-nvim
+[submodule "package/nvf"]
+	path = package/nvf
+	url = https://github.com/NotAShelf/nvf
