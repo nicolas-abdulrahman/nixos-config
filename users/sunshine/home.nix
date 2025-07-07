@@ -1,4 +1,4 @@
-{ config, pkgs, bobox, inputs, lib, username, ... }:
+{ config, pkgs, inputs, lib, username, ... }:
 let
   nixos_path = "/etc/nixos";
   browser = "google-chrome";
@@ -41,9 +41,7 @@ in
         editorconfig.editorconfig
         dbaeumer.vscode-eslint
         stylelint.vscode-stylelint
-
         zainchen.json
-
       ];
     };
 
@@ -113,21 +111,14 @@ in
 
     programs.git = {
       extraConfig.credential.helper = "manager";
-      # extraConfig.credential."https://github.com".username = "HappyySunshine";
-      extraConfig.credential."https://github.com".username = "nicolashugofg";
+      extraConfig.credential."https://github.com".username = "outnicky";
       extraConfig.credential.credentialStore = "cache";
       enable = true;
-      # userName = "happyysunshine";
-      # userEmail = "happysunshine.pone@gmail.com";
-      userName = "Nicolas-Hugo Ferreira Ouellet";
-      userEmail = "13525119932@ulife.com.br";
     };
-
     home.packages = with pkgs; [
       lazygit
       wf-recorder
       obs-studio
-      gh
       flyctl
       gitkraken
       dbeaver-bin
@@ -221,6 +212,7 @@ in
           myString = "\${@:2}";
         in
         ''
+
           dev(){
               NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/root/shells/#$1
              }
@@ -251,6 +243,8 @@ in
         ];
       };
       shellAliases = {
+        b = "nix build /etc/nixos";
+        n = "/etc/nixos/result/bin/nvim";
         ".." = "cd ..";
         s = "sudo nixos-rebuild switch --flake /etc/nixos/";
         h = ''

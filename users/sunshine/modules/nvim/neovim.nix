@@ -163,7 +163,6 @@
         nixd
         ripgrep
         vscode-langservers-extracted
-
       ];
       extraConfig = ''
       

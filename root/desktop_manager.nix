@@ -3,9 +3,15 @@
 {
 
   security.rtkit.enable = lib.mkForce false;
-  security.pam.services.login.enableGnomeKeyring = lib.mkForce false;
   security.polkit.enable = lib.mkForce false;
   services.xserver.videoDrivers = [ "amdgpu" ];
+
+
+  services.gnome.gnome-keyring.enable = true;
+  # Required for proper PAM integration (so it unlocks on login)
+  security.pam.services.login.enableGnomeKeyring = true;
+  # Optional: Enable for display managers too
+  security.pam.services.gdm.enableGnomeKeyring = true;
 
 
   security.pam.services.login.enableKwallet = lib.mkForce false;
