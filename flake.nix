@@ -17,17 +17,22 @@
     #  nixgl.url = "github:guibou/nixGL";
 
 
-    # nvf.url = "github:notashelf/nvf";
-    nvf.url = "path:./packages/nvf";
+    nvf.url = "github:Outnicky/nvf-fork";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # nvf.url = "path:./nix_packages/nvf";
 
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, nvf, ... }:
+  outputs = inputs@{ nur, nixpkgs, home-manager, nvf, ... }:
     let
+      packages.${nixpkgs.system}.myWrapped = nvf.packages.${nixpkgs.system}.default;
+
       system = "x86_64-linux";
       bobox = import inputs.robox { inherit system; };
       hyprland = inputs.hyprland.packages.${system}.hyprland;
-      pkgs = nixpkgs;
       username = "sunshine";
       nvim_path = ./modules/nvim;
     in
@@ -46,13 +51,19 @@
         let
           pkgs = import nixpkgs {
             inherit system;
-            config.allowUnfree = true;
+            overlays = [ nur.overlays.default ];
+            config = {
+              allowUnfree = true;
+              # permittedInsecurePacakges = [ "dotnet-sdk-6.0.428" ];
+              permittedInsecurePackages = [ "dotnet-sdk-6.0.428" ];
+              allowInsecurePredicate = _: true;
+            };
           };
         in
         {
           "${username}" = home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
-            extraSpecialArgs = { inherit inputs; inherit username; inherit hyprland; inherit bobox; };
+            extraSpecialArgs = { inherit inputs; inherit username; inherit hyprland; };
             modules = [
               ./users/sunshine/home.nix
               {

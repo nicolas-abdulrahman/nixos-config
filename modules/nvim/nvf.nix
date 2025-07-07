@@ -1,13 +1,13 @@
 { pkgs, ... }:
 let
   tabbys-package = pkgs.vimUtils.buildVimPlugin {
-    name = "aerial-nvim";
+    name = "tabbys-nvim";
     src = ./my-plugins/tabbys;
   };
 in
 {
   config.vim = {
-    vim.debugger.nvim-dap = {
+    debugger.nvim-dap = {
       enable = true;
       mappings = {
         restart = "<leader>dr";
@@ -27,16 +27,17 @@ in
         toggleDapUI = "<leader>du";
       };
     };
-    visuals.nvim-web-devicons.enable = true;
-    telescope = {
-      enable = true;
-      extensions = [{
-        name = "fzf";
-        packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
-        setup = { fzf = { fuzzy = true; }; };
-      }];
-    };
-    treesitter.enable = true;
+    # visuals.nvim-web-devicons.enable = true;
+    telescope.enable = false;
+    # telescope = {
+    #   enable = true;
+    #   extensions = [{
+    #     name = "fzf";
+    #     packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
+    #     setup = { fzf = { fuzzy = true; }; };
+    #   }];
+    # };
+    # treesitter.enable = true;
     theme = {
       enable = true;
       name = "catppuccin";
@@ -64,14 +65,14 @@ in
     };
     languages =
       {
-        rust.enable = true;
-        nix.enable = true;
-        sql.enable = true;
-        clang.enable = true;
-        ts.enable = true;
-        python.enable = true;
-        zig.enable = true;
-        go.enable = true;
+        # rust.enable = true;
+        # nix.enable = true;
+        # sql.enable = true;
+        # clang.enable = true;
+        # ts.enable = true;
+        # python.enable = true;
+        # zig.enable = true;
+        # go.enable = true;
         lua.enable = true;
         enableDAP = true;
       };
@@ -79,13 +80,29 @@ in
       telescope-nvim
     ];
     extraPlugins = with pkgs.vimPlugins;{
+      #     packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
+      fzf = {
+        package = telescope-fzf-native-nvim;
+      };
+      telescope = {
+        package = telescope-nvim;
+        after = [ "fzf" ];
+        setup = pkgs.lib.readFile ./plugin/telescope.lua;
+      };
+
       notify = {
         package = nvim-notify;
       };
       tabbys = {
         package = tabbys-package;
-        setup = "require('tabbys').setup()";
-
+        setup = ''
+          require('tabbys').setup()
+          vim.keymap.set("n", "ts", function()
+          	require("tabbys").setup_tab()
+          end, {
+          	desc = "Tabby: new",
+          })
+        '';
       };
       neo_tree = {
         package = neo-tree-nvim;
@@ -94,12 +111,58 @@ in
           vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { noremap = true, silent = true })
         '';
       };
+      conform = {
+        package = conform-nvim;
+        setup = pkgs.lib.readFile ./plugin/conform.lua;
+      };
+      harpoon =
+        {
+          package = harpoon;
+          setup = pkgs.lib.readFile ./plugin/harpoon.lua;
+        };
       headlines = {
         package = headlines-nvim;
         setup = "require('headlines').setup()";
       };
+      cmp = {
+        package = nvim-cmp;
+      };
+      lspconfig = {
+        package = nvim-lspconfig;
+        setup = pkgs.lib.readFile ./plugin/lsp.lua;
+        after = [ "cmp" ];
+      };
     };
+    extraPackages = with pkgs;[
+
+      gopls
+      pyright
+      clang
+      zls
+      sqls
+      typescript-language-server
+      vscode-langservers-extracted
+      jdt-language-server
+      rust-analyzer
+      nixpkgs-fmt
+      nil
+      cmake-language-server
+      superhtml
+      rubyPackages_3_4.htmlbeautifier
+      jsbeautifier
+      html-tidy
+      stylua
+      prettierd
+      rustfmt
+      xclip
+      wl-clipboard
+      luajitPackages.lua-lsp
+      nixd
+      ripgrep
+      vscode-langservers-extracted
+    ];
     optPlugins = with pkgs.vimPlugins; [
+      nvim-web-devicons
       # nvim-java
       # luasnip
       # nvim-cmp
