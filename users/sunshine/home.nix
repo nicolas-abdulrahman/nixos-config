@@ -113,6 +113,8 @@ in
       extraConfig.credential.helper = "manager";
       extraConfig.credential."https://github.com".username = "outnicky";
       extraConfig.credential.credentialStore = "cache";
+      userName = "outnicky";
+      userEmail = "nicolashugo2001@gmail.com";
       enable = true;
     };
     home.packages = with pkgs; [
@@ -212,12 +214,11 @@ in
           myString = "\${@:2}";
         in
         ''
-
           dev(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/root/shells/#$1
+              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/#$1
              }
            ru(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/root/shells/#$1
+              NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/#$1
            }
            run(){
                nix run nixpkgs#$1 -- ${myString}
@@ -243,10 +244,10 @@ in
         ];
       };
       shellAliases = {
-        b = "nix build /etc/nixos";
+        b = "nix build ${nixos_path} -o ${nixos_path}/result";
         n = "/etc/nixos/result/bin/nvim";
         ".." = "cd ..";
-        s = "sudo nixos-rebuild switch --flake /etc/nixos/";
+        s = "sudo nixos-rebuild switch --flake ${nixos_path}";
         h = ''
           home-manager switch --flake ${nixos_path}
           # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
@@ -262,7 +263,9 @@ in
       enableCompletion = true;
       shellAliases = {
         ".." = "cd ..";
-        s = "sudo nixos-rebuild switch --flake /etc/nixos/";
+        b = "nix build ${nixos_path} -o ${nixos_path}/result";
+        n = "${nixos_path}/result/bin/nvim";
+        s = "sudo nixos-rebuild switch --flake ${nixos_path}";
         h = ''
           home-manager switch --flake ${nixos_path}
           # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result

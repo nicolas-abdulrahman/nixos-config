@@ -1,0 +1,11 @@
+(defwidget hello-widget []
+  (label :text "Hello, Eww!"))
+
+(defwindow main-window
+  :geometry (800x100)
+  :stacking "fg"
+  :exclusive true
+  :anchor "top center"
+  :visible true
+  (hello-widget))
+
