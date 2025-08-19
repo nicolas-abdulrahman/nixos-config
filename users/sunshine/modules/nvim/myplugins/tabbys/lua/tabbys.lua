@@ -206,6 +206,7 @@ vim.api.nvim_set_hl(0, "MyTerminalIcon", {
 	fg = "#50fa7b", -- example green
 	bold = true,
 })
+
 function M.to_display(name, buf, focus)
 	local devicons = require("nvim-web-devicons")
 	local buftype = vim.api.nvim_buf_get_option(buf, "buftype")

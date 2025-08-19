@@ -1,0 +1,9 @@
+[package]
+name = "karit"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.98"
+evdev = "0.13.1"
+uinput = "0.1.3"
