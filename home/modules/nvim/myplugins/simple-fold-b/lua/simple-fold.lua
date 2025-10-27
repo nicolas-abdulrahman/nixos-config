@@ -1,0 +1,174 @@
+local ts_utils = require("nvim-treesitter.ts_utils")
+--
+-- vim.opt.foldtext = "v:lua.MyFoldText()"
+-- vim.opt.fillchars:append("fold: ")
+--
+-- local augroup = vim.api.nvim_create_augroup("SimpleFold", { clear = true })
+--
+-- _G.simple_fold = {
+-- 	start_char = "┕",
+-- 	fill_char = "┄",
+-- 	end_char = "┤🯇 ",
+-- 	fold_at_less = 5,
+-- 	no_remap = false,
+-- 	preview = {},
+-- 	with_langs = { "any" },
+-- }
+--
+-- local any = require("langs/any").setup({})
+-- local lua = require("langs/lua")
+-- local js = require("langs/js")
+-- local langs = {
+-- 	any = any,
+-- 	js = js,
+-- 	lua = lua,
+-- }
+--
+-- function _G.MyFoldText()
+-- 	local tab_size = vim.api.nvim_get_option("tabstop")
+-- 	local start_line = vim.fn.getline(vim.v.foldstart) -- First line of the fold
+-- 	local end_line = vim.fn.getline(vim.v.foldend) -- Last line of the fold
+-- 	local num_lines = vim.v.foldend - vim.v.foldstart + 1
+-- 	return string.format(
+-- 		"%s%sFolded %d lines%s%s",
+-- 		simple_fold.start_char,
+-- 		string.rep(simple_fold.fill_char, tab_size),
+-- 		num_lines,
+-- 		string.rep(simple_fold.fill_char, tab_size),
+-- 		simple_fold.end_char
+-- 	)
+-- end
+--
+-- local function fold()
+-- 	local current_buffer = vim.api.nvim_get_current_buf()
+-- 	local parser = vim.treesitter.get_parser(current_buffer)
+-- 	local tree = parser:parse()[1]
+-- 	local root = tree:root()
+-- 	local current_node = root:child(0) -- Start with the first child of the root
+-- 	local break_outer = false
+-- 	while current_node do
+-- 		for i, lang in ipairs(simple_fold.with_langs) do
+-- 			print(any)
+-- 			if langs[lang]:fold(current_node) then
+-- 				break_outer = true
+-- 				break
+-- 			end
+-- 		end
+-- 		current_node = current_node:next_sibling()
+-- 	end
+-- end
+--
+-- function simple_fold:create_preview(row, type)
+-- 	type = type or "lua"
+-- 	local buf = vim.api.nvim_create_buf(true, true)
+-- 	vim.api.nvim_buf_set_name(buf, "*scratch*")
+-- 	vim.api.nvim_set_option_value("filetype", type, { buf = buf })
+-- 	local width = 100
+-- 	local height = row
+-- 	local cursor = vim.api.nvim_win_get_cursor(0) -- {row, col}, 1-based indexing
+-- 	local cursor_row = cursor[1] -- Current row of the cursor (1-based)
+-- 	local topline = vim.fn.line("w0") -- Line at the top of the window
+-- 	local relative_position = cursor_row - topline
+-- 	local a = vim.fn.winheight(0) - relative_position
+-- 	local win_opts = {
+-- 		relative = "cursor", -- Position relative to the editor
+-- 		width = width, -- Width of the preview window
+-- 		height = height, -- Height of the preview window
+-- 		row = 1, -- Centered vertically
+-- 		col = -vim.fn.wincol() + 10, -- Centered horizontally
+-- 		style = "minimal", -- No borders or extra UI
+-- 		border = "rounded", -- Rounded border
+-- 		focusable = false,
+-- 	}
+-- 	local win = vim.api.nvim_open_win(buf, false, win_opts)
+-- 	self.preview.window = win
+-- 	self.preview.buf = buf
+-- end
+--
+-- local function default_keybinds()
+-- 	vim.keymap.set("n", "<A-k>", create_preview, {})
+-- 	vim.keymap.set("n", "<A-f>", fold, {})
+-- end
+--
+-- function string.split(input, sep)
+-- 	sep = sep or "\n" -- Default separator is newline
+-- 	local t = {}
+-- 	for str in input:gmatch("([^" .. sep .. "]+)") do
+-- 		table.insert(t, str)
+-- 	end
+-- 	return t
+-- end
+--
+-- function count(array)
+-- 	local count = 0
+-- 	for _, _ in ipairs(array) do
+-- 		count = count + 1
+-- 	end
+-- 	return count
+-- end
+--
+-- local function check_cursor_position()
+-- 	local current_buffer = vim.api.nvim_get_current_buf()
+-- 	local parser = vim.treesitter.get_parser(current_buffer)
+-- 	local tree = parser:parse()[1]
+-- 	local root = tree:root()
+-- 	local current_node = root:child(0) -- Start with the first child of the root
+-- 	local break_outer = false
+-- 	while current_node do
+-- 		for _, lang in ipairs(simple_fold.with_langs) do
+-- 			if langs[lang]:create_preview(current_node) then
+-- 				break_outer = true
+-- 				break
+-- 			end
+-- 		end
+-- 		if break_outer then
+-- 			break
+-- 		end
+-- 		current_node = current_node:next_sibling()
+-- 	end
+-- 	if simple_fold.preview.buf then
+-- 		vim.api.nvim_buf_delete(simple_fold.preview.buf, { force = true })
+-- 		simple_fold.preview.buf = nil
+-- 	end
+-- end
+--
+-- local function close_all_buffers_except_current()
+-- 	local current_buf = vim.api.nvim_get_current_buf() -- Get the current buffer number
+--
+-- 	-- Get a list of all buffer numbers
+-- 	local buffers = vim.api.nvim_list_bufs()
+--
+-- 	-- Iterate over all buffers
+-- 	for _, buf in ipairs(buffers) do
+-- 		if buf ~= current_buf then
+-- 			-- Close the buffer if it's not the current one
+-- 			vim.api.nvim_buf_delete(buf, { force = true })
+-- 		end
+-- 	end
+-- end
+--
+-- --close_all_buffers_except_current()
+--
+-- local function setup(opts)
+-- 	for key, value in pairs(opts) do
+-- 		simple_fold[key] = value
+-- 	end
+-- 	if not simple_fold.no_remap then
+-- 		default_keybinds()
+-- 	end
+-- 	for _, lang in ipairs(simple_fold.with_langs) do
+-- 		local module = langs[lang]
+-- 		vim.api.nvim_create_autocmd("CursorMoved", {
+-- 			group = module.augroup, -- Specify the augroup
+-- 			pattern = module.pattern, -- Apply to all files
+-- 			callback = module.check_cursor_pos,
+-- 		})
+-- 	end
+-- end
+
+return {
+	-- setup = setup,
+	-- any = any,
+	-- lua = lua,
+	-- js = js,
+}

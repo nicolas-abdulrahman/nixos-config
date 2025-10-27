@@ -4,7 +4,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/9e83b64f727c88a7711a2c463a7b16eedb69a84c";
     eww.url = "github:elkowar/eww";
     # hyprland.url = "github:hyprwm/hyprland/86be75dd97b5633b8c0aa6bdcb3346fa871a8480";
-    hyprland.url = "github:hyprwm/hyprland/";
+    hyprland.url = "github:hyprwm/hyprland/bef1321f00e260ee3031aecd02faf4f53bcb5c66";
+    # hyprland.url = "github:hyprwm/hyprland/";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # xremap-flake.url = "github:xremap/nix-flake";
@@ -83,7 +84,7 @@
             inherit pkgs;
             extraSpecialArgs = { inherit inputs; inherit username; inherit hyprland; };
             modules = [
-              ./users/sunshine/home.nix
+              ./home/home.nix
               {
                 full = true;
                 hypr = true;

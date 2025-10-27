@@ -8,8 +8,13 @@ in
 pkgs.mkShell {
   name = nameNoExt;
   packages = [
-    pkgs.python39
-    pkgs.python311Packages.pip
+    (pkgs.python3.withPackages (p: [
+      p.pygame
+      # pkgs.python314Packages.pillow
+      p.pillow
+      p.pip
+      # Add more Python packages here as needed
+    ]))
     pkgs.pyright
     pkgs.isort
     pkgs.black
