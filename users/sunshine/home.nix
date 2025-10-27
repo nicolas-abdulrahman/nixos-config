@@ -215,10 +215,10 @@ in
         in
         ''
           dev(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/#$1
+              nix develop ${nixos_path}#$1
              }
            ru(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/#$1
+               nix run ${nixos_path}/#$1
            }
            run(){
                nix run nixpkgs#$1 -- ${myString}

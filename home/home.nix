@@ -118,6 +118,7 @@ in
       enable = true;
     };
     home.packages = with pkgs; [
+      ciscoPacketTracer8
       lazygit
       wf-recorder
       obs-studio

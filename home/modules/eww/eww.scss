@@ -1,0 +1,41 @@
+$surface-darkgrey: #20252b;
+$surface-fg: #949494;
+$surface-lightgrey: #3d464e;
+$surface-grey: #2b3238;
+$surface-red: #f87070;
+$white: #ffffff;
+$black: #000000;
+
+// * { all: unset; }
+
+.layout-box {
+  font-family: Phosphor, Koulen;
+  background-repeat: no-repeat;
+  background-size: contain;
+  padding: 5em;
+  color: rgba($white, 1.0);
+  
+  // pointer-events: none;
+  // cursor:
+}
+//
+.bt_time{
+  border: 1px  solid $white; 
+  border-radius:  30%;
+  // background-color: $white;
+  border-color: $surface-grey;
+  font-size: 1.2em;
+
+  // color: $surface-fg;
+  padding: 1px;
+    &:hover {
+    border-color: transparent; // Darker border on hover
+    background-color: $surface-grey; // Change background on hover
+    // color: $black; // Change text color on hover
+  }
+}
+
+.bt{
+  background-color: $black;
+  border-radius: 5px;
+}

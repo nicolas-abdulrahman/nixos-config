@@ -8,7 +8,7 @@ in
 pkgs.mkShell {
   name = nameNoExt;
   packages = [
-    pkgs.python39
+    pkgs.python314
     pkgs.python311Packages.pip
     pkgs.pyright
     pkgs.isort

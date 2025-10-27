@@ -1,0 +1,60 @@
+(defwindow main 
+  :monitor 0 ;; Optional for X11
+  :stacking "bg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry
+              :width "100%"
+              :height "100%")
+  (main_layout))
+
+(defwidget main_layout[]
+    (box :class "bx" :orientation "vertical" :height "100%"
+        (box :class "aa" :orientation "horizontal" :height "10%" :valign "start"
+          (_workspaces )
+          (box :width "30%" :halign "end"
+            (button :class "bt_time" :valign "start" (label :text time :class "time_tx"))
+            
+          )
+        )
+))
+(defpoll time :interval "1s"
+  `date +'%H:%M'`)
+
+
+
+(defpoll net :interval "100s"
+  :initial `N/A`
+  `nmcli -t -f SIGNAL,ACTIVE device wifi \
+    | awk -F':' '{if($2=="yes")print$1}'`)
+
+(defpoll worky :interval "5s" 
+  :initial `N/A`
+  `/etc/nixos/users/sunshine/modules/eww/landing/target/debug/landing`)
+
+
+
+
+(defwidget _workspaces []
+  (box :width "30%" :halignt "start" :interval "1s" :space-evenly false :spacing 5 
+    (for i in worky 
+      (button :class "bt" :border-radius "5px" (label :text {i[0]}))
+
+    )
+    "aaacccb"
+  )
+)
+
+
+
+(defwidget _battery [battery status one two three
+                     charge]
+  (box :class "bat-box" :interval "1s" :space-evenly false :spacing 1
+    (label :text {
+      battery < 33 ? one :
+        battery < 70 ? two :
+          three})
+    {status == 'Charging' ? charge :""}
+    "${battery}%"
+    ))
+
