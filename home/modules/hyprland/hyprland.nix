@@ -3,10 +3,20 @@
 {
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = hyprland;
+
+
   wayland.windowManager.hyprland.settings = {
+    #  exec-once = "hyprsunset";
+
     xwayland = {
       enabled = true;
     };
+    # profile =
+    #  {
+    #    time = "6:00";
+    #    temperature = 5500;
+    #    gamma = 0.8;
+    #  };
     input = {
       kb_layout = "us";
       # kb_model = "nodeadkeys";
@@ -61,7 +71,7 @@
         "$mod, I, exec, gimp"
         "$mod, T, exec, alacritty"
         "$mod, F, exec, firefox"
-        "$mod, D, exec, vesktop --  --enable-features=UseOzonePlatform   --ozone-platform=wayland"
+        "$mod, D, exec, equicord --  --enable-features=UseOzonePlatform   --ozone-platform=wayland"
         "$mod, M, exec, prismlauncher"
         "$mod, B, exec, wezterm -e btop"
 
@@ -130,7 +140,7 @@
       "bordercolor rgb(FFFF00), class:^(Alacritty)$"
 
     ];
-    exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP";
+    # exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP";
   };
   wayland.windowManager.hyprland.extraConfig = ''
     submap = not_on_term

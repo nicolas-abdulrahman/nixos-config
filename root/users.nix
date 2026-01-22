@@ -1,39 +1,51 @@
 { config, pkgs, inputs, nixgl, lib, ... }:
-#let 
-#    myjdk21 = pkgs.jdk21;
-#in
 {
-  # users.users.wireshark.group = "wireshark";
-  # users.users.wireshark = {           # isSystemUser= true;
-  # group = "wireshark";
-  # };
-  users.groups.wireshark.members = [ "sunshine" ];
-  users.groups.jupyter = lib.mkIf (config.full) {
-    members = [ "sunshine" ];
-  };
-  users.mutableUsers = false;
-  # users.users.jupyter.group = lib.optional (config.full) "jupyter";
-  users.users.sunshine = {
-    isNormalUser = true;
-    description = "happy sunshine";
-    extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" ];
-    shell = pkgs.zsh;
-    hashedPassword = "$y$j9T$BfDp8/sOWmP89sxNEqTlo0$sxkVAXNqeORIusCnJA.FCq/GQdvhx69u3z8i3Vxv2m4";
-    # password = "banana";
-    # users.users.your-user.initialHashedPassword = "banana";
+  nix.settings.trusted-users = [ "root" "sunshine" "nick" ];
+  users = {
+    mutableUsers = false;
+    extraGroups.vboxusers.members = [ "sunshine" ];
+    groups = {
+      wireshark.members = [ "sunshine" ];
+      jupyter = lib.mkIf (config.full) {
+        members = [ "sunshine" ];
+      };
+    };
 
-  };
+    users = {
+      root = {
+        hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
+        # hashedPassword = "$6$5arvbg2fMQVmGVqE$tCxUL/sUWXU.HgBgZVCV87ZH0JfkZcboHb7l1VovADWQQFaLvDPoIQ8KJcjQBIPz1oWFq39nfFvOgFjw5v58v";
 
+      };
+      susnhine = {
+        isNormalUser = true;
+        description = "happy sunshine";
+        extraGroups = [ "docker" "wireshark" "networkmanager" "wheel" "uinput" "input" ];
+        shell = pkgs.zsh;
+        hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
+        # hashedPassword = "$6$5arvbg2fMQVmGVqE$tCxUL/sUWXU.HgBgZVCV87ZH0JfkZcboHb7l1VovADWQQFaLvDPoIQ8KJcjQBIPz1oWFq39nfFvOgFjw5v58v";
+        group = "sunshine";
+      };
+      lfs = {
+        isNormalUser = true;
+        description = "binux from scratch";
+        extraGroups = [ ];
+        password = "";
+      };
+      nick = {
+        isNormalUser = true;
+        description = "Outnick";
+        extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" ];
+        shell = pkgs.zsh;
+        hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
+        # hashedPassword = "$6$5arvbg2fMQVmGVqE$tCxUL/sUWXU.HgBgZVCV87ZH0JfkZcboHb7l1VovADWQQFaLvDPoIQ8KJcjQBIPz1oWFq39nfFvOgFjw5v58v";
+      };
+
+    };
+  };
+  users.users.sunshine.isNormalUser = true;
+  users.groups.sunshine = {};
 
   users.defaultUserShell = pkgs.zsh;
-
-
-  users.users.lfs = {
-    isNormalUser = true;
-    description = "binux from scratch";
-    extraGroups = [ ];
-    password = "";
-
-  };
 
 }

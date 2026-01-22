@@ -4,7 +4,6 @@
   programs.wireshark.enable = true;
 
   virtualisation.docker.enable = true;
-  users.users.sunshine.extraGroups = [ "docker" ];
 
 
   programs.java = {
@@ -64,6 +63,20 @@
     };
 
   environment.systemPackages = with pkgs; [
+    xorg.xorgserver
+    xorg.libX11
+    xorg.xinit
+
+
+    xwayland
+    xorg.xrandr
+    xorg.xsetroot
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland
+    kdePackages.plasma-workspace
+
+
     xorg.xev
     xremap
     iproute2

@@ -5,54 +5,50 @@
 
 {
   imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
+    [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ata_piix" "usbhid" "sd_mod" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ata_piix" "usb_storage" "usbhid" "sd_mod" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/d91cec0a-80e5-4c4b-bc18-6bf2d16fc244";
+    { device = "/dev/disk/by-uuid/d91cec0a-80e5-4c4b-bc18-6bf2d16fc244";
       fsType = "ext4";
     };
 
   fileSystems."/home" =
-    {
-      # device = "/dev/disk/by-uuid/f548b175-df82-446a-ab31-b6bc69f6fa85";
-      device = "/dev/disk/by-uuid/43df48b7-fa9c-4253-829f-6ed121babd66";
+    { device = "/dev/disk/by-uuid/43df48b7-fa9c-4253-829f-6ed121babd66";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/BF2C-27D4";
+    { device = "/dev/disk/by-uuid/BF2C-27D4";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
-  fileSystems."/programs" =
-    {
-      device = "/dev/disk/by-uuid/221adf18-4a50-4d1b-9bfc-b603464abde3";
-      fsType = "ext4";
-    };
+
+ # fileSystems."/programs" =
+ #   { device = "/dev/disk/by-uuid/221adf18-4a50-4d1b-9bfc-b603464abde3";
+ #     fsType = "ext4";
+ #   };
 
   swapDevices =
-    [{ device = "/dev/disk/by-uuid/15275855-61d5-406d-afa8-0b46dd2fcfa8"; }];
+    [ { device = "/dev/disk/by-uuid/15275855-61d5-406d-afa8-0b46dd2fcfa8"; }
+    ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.br-85d92877d3dd.useDHCP = lib.mkDefault true;
   # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp3s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vmnet1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vmnet8.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth0a9be4c.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth42ba056.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
-

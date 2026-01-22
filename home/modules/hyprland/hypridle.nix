@@ -53,7 +53,7 @@ let path = "/etc/nixos/users/sunshine/home"; in
 
       listener = [
         {
-          timeout = 200;
+          timeout = 500;
           on-timeout = "hyprlock";
         }
         {
@@ -62,7 +62,7 @@ let path = "/etc/nixos/users/sunshine/home"; in
           on-resume = "hyprctl dispatch dpms on";
         }
         {
-          timeout = 9000;
+          timeout = 15000;
           on-timeout = "poweroff";
 
         }

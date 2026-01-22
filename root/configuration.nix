@@ -60,8 +60,6 @@
         </Directory>
       '';
     };
-    nix.settings.trusted-users = [ "root" "sunshine" ];
-    users.extraGroups.vboxusers.members = [ "sunshine" ];
     programs.steam = lib.mkIf (config.full) {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
@@ -72,7 +70,6 @@
       # };
     };
     programs.nix-ld.enable = true;
-    hardware.uinput.enable = true;
 
 
     time.timeZone = "America/Recife";
@@ -95,10 +92,10 @@
       gnome-keyring.enable = true;
     };
 
-    environment.sessionVariables = {
-      QT_QPA_PLATFORM = "wayland";
-      GDK_BACKEND = "wayland";
-    };
+    # environment.sessionVariables = {
+    # QT_QPA_PLATFORM = "wayland";
+    # GDK_BACKEND = "wayland";
+    # };
 
 
     # xdg.mime.defaultApplications = {
@@ -128,14 +125,8 @@
       WLR_NO_HARDWARE_CURSORS = "1";
       NIXOS_OZONE_WL = "1";
     };
-    services.xserver.xkb = {
-      layout = "br";
-      variant = "nodeadkeys";
-    };
-    console.keyMap = "br-abnt2";
     services.printing.enable = true;
 
-    hardware.pulseaudio.enable = false;
     services.pipewire = {
       enable = true;
       wireplumber.enable = true;
@@ -170,9 +161,12 @@
     };
 
 
-    hardware.opengl = {
-      enable = true;
-      extraPackages = with pkgs;[ pkgs.mesa.drivers libva-utils mesa ];
+    hardware = {
+      pulseaudio.enable = false;
+      uinput.enable = true;
+      opengl.enable = true;
+
+      # extraPackages = with pkgs;[ pkgs.mesa.drivers libva-utils mesa ];
     };
     system.stateVersion = "24.11";
   };
