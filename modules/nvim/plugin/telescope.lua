@@ -4,7 +4,8 @@ local actions = require("telescope.actions")
 require("telescope").load_extension("fzf")
 require("telescope").setup({
 	defaults = {
-		prompt_prefix = "Woof :3 ",
+		prompt_prefix = "الحمد لله",
+
 		file_previewer = require("telescope.previewers").vim_buffer_cat.new,
 		file_previewer_title = "File Preview",
 		mappings = {
@@ -32,14 +33,14 @@ local make_entry = require("telescope.make_entry")
 local entry_display = require("telescope.pickers.entry_display")
 local conf = require("telescope.config").values
 
-vim.keymap.set("n", "<leader>tfc", builtin.find_files, { desc = "find file" })
-vim.keymap.set("n", "<leader>tfn", function()
+vim.keymap.set("n", "<leader>tf", builtin.find_files, { desc = "find file" })
+vim.keymap.set("n", "<leader>tnf", function()
 	builtin.find_files({ cwd = "/etc/nixos/modules/nvim" })
 end, { desc = "Neovim" })
-vim.keymap.set("n", "<leader>tfg", builtin.git_files, { desc = "git_files" })
+vim.keymap.set("n", "<leader>tg", builtin.git_files, { desc = "git_files" })
 vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "diagnostics" })
 vim.keymap.set("n", "<leader>tb", builtin.buffers, { desc = "buffers" })
-vim.keymap.set("n", "<leader>tl", function()
+vim.keymap.set("n", "<leader>ts", function()
 	builtin.live_grep()
 end, { desc = "live grep" })
 vim.keymap.set("n", "<leader>tsb", function()
@@ -90,10 +91,10 @@ vim.keymap.set("n", "<leader>tsb", function()
 		:find()
 end, { desc = "grep string" })
 
-vim.keymap.set("n", "<leader>tsc", function()
+vim.keymap.set("n", "<leader>t.s", function()
 	builtin.grep_string({})
 end, { desc = "grep string" })
-vim.keymap.set("n", "<leader>tmb", function()
+vim.keymap.set("n", "<leader>t.m", function()
 	require("telescope.builtin").lsp_document_symbols({
 		symbols = { "Function", "Method" },
 		cwd = vim.fn.expand("%:p:h"),

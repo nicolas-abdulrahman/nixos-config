@@ -19,6 +19,13 @@ config.color_scheme = "Dracula"
 --}
 
 local wezterm_mod = "CTRL|SHIFT"
+config.font = wezterm.font_with_fallback({
+	"JetBrains Mono", -- your main font
+	"Noto Sans Arabic", -- Arabic shaping
+	"Noto Color Emoji",
+})
+
+config.font_size = 12.0
 config.keys = {
 	{ key = "V", mods = "CTRL", action = act.PasteFrom("Clipboard") },
 	{ key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },

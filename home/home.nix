@@ -2,6 +2,18 @@
 let
   nixos_path = "/etc/nixos";
   browser = "google-chrome";
+  username = "nick";
+  shellAliases = {
+    b = "nix build /etc/nixos";
+    n = "/etc/nixos/result/bin/nvim";
+    ".." = "cd ..";
+    s = "sudo nixos-rebuild switch --flake /etc/nixos/";
+    h = ''
+      home-manager switch --flake ${nixos_path}
+      # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
+      # ${nixos_path}/result/activate
+    '';
+  };
 in
 {
 
@@ -23,6 +35,7 @@ in
   };
   imports = [
     ./modules
+    inputs.nixcord.homeModules.nixcord
   ];
   config = {
     home.username = username;
@@ -118,7 +131,12 @@ in
       enable = true;
     };
     home.packages = with pkgs; [
-      ciscoPacketTracer8
+      equicord
+      hyprsunset
+
+      blockbench
+
+      # ciscoPacketTracer8
       lazygit
       wf-recorder
       obs-studio
@@ -198,14 +216,14 @@ in
     programs.zsh = {
       enable = true;
       enableAutosuggestions = true;
-      defaultKeymap = "vicmd";
+      # defaultKeymap = "vicmd";
       dirHashes = {
         docs = "$HOME/Documents";
         vids = "$HOME/Videos";
         dl = "$HOME/Downloads";
         imgs = "$HOME/images";
       };
-      dotDir = ".config/zsh";
+      # dotDir = ".config/zsh";
       historySubstringSearch = {
         enable = true;
       };
@@ -226,12 +244,13 @@ in
            }
 
         '';
-      initExtra = ''
-        \builtin alias cd=__zoxide_z
-        \builtin alias zi=__zoxide_zi
-         eval "$(zoxide init zsh)"  >/dev/null 2>&1
-         export WARP_PATH="${pkgs.warp-terminal}/bin/warp-terminal"
-      ''; #.zshrc
+      inherit shellAliases;
+      #    initContent = ''
+      #      \builtin alias cd=__zoxide_z
+      #      \builtin alias zi=__zoxide_zi
+      #       eval "$(zoxide init zsh)"  >/dev/null 2>&1
+      #       export WARP_PATH="${pkgs.warp-terminal}/bin/warp-terminal"
+      #    ''; #.zshrc
       oh-my-zsh = {
         extraConfig = "AGNOSTER_PROMPT_SEGMENTS=prompt_git";
         enable = true;
@@ -244,17 +263,6 @@ in
 
         ];
       };
-      shellAliases = {
-        b = "nix build /etc/nixos";
-        n = "/etc/nixos/result/bin/nvim";
-        ".." = "cd ..";
-        s = "sudo nixos-rebuild switch --flake /etc/nixos/";
-        h = ''
-          home-manager switch --flake ${nixos_path}
-          # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
-          # ${nixos_path}/result/activate
-        '';
-      };
       profileExtra = '''';
 
     };
@@ -262,15 +270,7 @@ in
     programs.bash = {
       enable = true;
       enableCompletion = true;
-      shellAliases = {
-        ".." = "cd ..";
-        s = "sudo nixos-rebuild switch --flake /etc/nixos/";
-        h = ''
-          home-manager switch --flake ${nixos_path}
-          # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
-          # ${nixos_path}/result/activate
-        '';
-      };
+      inherit shellAliases;
     };
 
   };

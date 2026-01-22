@@ -7,6 +7,7 @@ let
 in
 {
   config.vim = {
+    visuals.nvim-web-devicons.enable = true;
     debugger.nvim-dap = {
       enable = true;
       mappings = {
@@ -65,6 +66,10 @@ in
     };
     languages =
       {
+        rust = {
+          enable = true;
+          keymaps = "";
+        };
         # rust.enable = true;
         # nix.enable = true;
         # sql.enable = true;
@@ -77,8 +82,34 @@ in
         enableDAP = true;
       };
     startPlugins = with pkgs.vimPlugins; [
+      nvim-web-devicons
       telescope-nvim
     ];
+
+    conform =
+      {
+        lua = [
+          "stylua"
+        ];
+        python = [
+          "isort", "black"
+        ];
+        rust = [
+          "rustfmt"; lsp_format = "fallback"
+        ];
+        javascript = [ "prettierd"; "prettier"; stop_after_first = true ];
+        html = [ "htmlbeautifier"; "superhtml"; "js-beautify"; "tidy"; "prettierd"; stop_after_first = true ];
+        css = [ "js-beautify"; "tidy"; "prettierd"; stop_after_first = true ];
+        nix = [ "nixpkgs_fmt"; stop_after_first = true ];
+        typescript = [ "prettier" ];
+        javascriptreact = [ "prettierd" ];
+        typescriptreact = [ "prettierd" ];
+        json = [ "prettierd" ];
+        html = [ "prettierd" ];
+        css = [ "prettierd" ];
+        markdown = [ "prettierd" ];
+      }
+        conform = { };
     extraPlugins = with pkgs.vimPlugins;{
       #     packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
       fzf = {
@@ -104,12 +135,17 @@ in
           })
         '';
       };
+      icons = {
+        package = nvim-web-devicons;
+      };
       neo_tree = {
         package = neo-tree-nvim;
         setup = ''
           require('neo-tree').setup()
+          require("nvim-web-devicons")
           vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { noremap = true, silent = true })
         '';
+        after = [ "icons" ];
       };
       conform = {
         package = conform-nvim;
@@ -127,10 +163,17 @@ in
       cmp = {
         package = nvim-cmp;
       };
+      cmp_nvim_lsp =
+        {
+          package = cmp-nvim-lsp;
+        };
+      rust = {
+        package = rust-tools-nvim;
+      };
       lspconfig = {
         package = nvim-lspconfig;
         setup = pkgs.lib.readFile ./plugin/lsp.lua;
-        after = [ "cmp" ];
+        after = [ "cmp" "cmp_nvim_lsp" "rust" ];
       };
     };
     extraPackages = with pkgs;[
@@ -185,10 +228,13 @@ in
     luaConfigRC = {
       remap = pkgs.lib.readFile ./lua/remap.lua;
       set = pkgs.lib.readFile ./lua/set.lua;
-      lsp = pkgs.lib.readFile ./lua/lsp.lua;
+      # lsp = pkgs.lib.readFile ./lua/lsp.lua;
     };
   };
 }
+
+
+
 
 
 
