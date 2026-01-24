@@ -170,7 +170,7 @@ in
       lutris
       godot_4
       qbittorrent
-      floorp
+      floorp-bin
       android-tools
       google-chrome
       brave
@@ -185,9 +185,9 @@ in
     ] else [ ])
     ++ (if config.full then [
       jetbrains.idea-community-src
-      smartgithg
+      smartgit
       # opera
-      libsForQt5.okular
+      # okular
       weston
       gamescope
       protonup-qt

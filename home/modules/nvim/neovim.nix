@@ -35,6 +35,7 @@
 
 
       plugins = with pkgs.vimPlugins; [
+        # rust-tools-nvim
         {
           plugin = myautocmds;
           config = luaFile ./plugin/myautocmds.lua;
@@ -121,7 +122,6 @@
         nvim-treesitter.withAllGrammars
         nvim-cmp
         cmp-nvim-lsp
-        rust-tools-nvim
         nvim-comment
         headlines-nvim
         nvim-web-devicons
