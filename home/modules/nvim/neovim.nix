@@ -121,7 +121,7 @@
         nvim-treesitter.withAllGrammars
         nvim-cmp
         cmp-nvim-lsp
-        rust-tools-nvim
+        # rust-tools-nvim
         nvim-comment
         headlines-nvim
         nvim-web-devicons
