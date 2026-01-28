@@ -10,7 +10,7 @@ in
     ./alacritty.nix
     ./tmux
     ./wezterm
-    ./nixcord
+    # ./nixcord.nix
     #./xremap.nix
   ]
   ++ (lib.optionals true [

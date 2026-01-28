@@ -98,28 +98,6 @@
     # };
 
 
-    # xdg.mime.defaultApplications = {
-    #   "application/pdf" = [ "okular.desktop" ];
-    #   "text/html" = [ "firefox.desktop" ];
-    #   "x-scheme-handler/http" = [ "firefox.desktop" ];
-    #   "x-scheme-handler/https" = [ "firefox.desktop" ];
-    # };
-    #
-    # # XDG Portal configuration
-    # xdg.portal = {
-    #   enable = true;
-    #   extraPortals = with pkgs; [
-    #     xdg-desktop-portal-kde
-    #     xdg-desktop-portal-gtk
-    #   ];
-    #   config.common = {
-    #     default = [ "gtk" "kde" ];
-    #     "org.freedesktop.impl.portal.FileChooser" = [ "dolphin" ];
-    #     "org.freedesktop.impl.portal.WebBrowser" = [ "firefox" ];
-    #     "org.freedesktop.impl.portal.Document" = [ "okular" ];
-    #     # "org.freedesktop.impl.portal.OpenURI" = [ "kde" ];
-    #   };
-    # };
 
     environment.sessionVariables = {
       WLR_NO_HARDWARE_CURSORS = "1";

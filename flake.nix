@@ -4,17 +4,25 @@
   description = "NixOS configuration";
   inputs = {
 
-    nixpkgs.url = "github:nixos/nixpkgs/9e83b64f727c88a7711a2c463a7b16eedb69a84c";
+    # nixpkgs.url = "github:nixos/nixpkgs/9e83b64f727c88a7711a2c463a7b16eedb69a84c";
+    nixpkgs.url = "github:nixos/nixpkgs/";
     eww.url = "github:elkowar/eww";
-    hyprland.url = "github:hyprwm/hyprland/bef1321f00e260ee3031aecd02faf4f53bcb5c66";
+    # hyprland.url = "github:hyprwm/hyprland/bef1321f00e260ee3031aecd02faf4f53bcb5c66";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # hyprland.url = "github:hyprwm/hyprland/";
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-colors.url = "github:misterio77/nix-colors";
     nixgl.url = "github:nix-community/nixGL";
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.follows = "nixpkgs";
-    nvf.url = "github:Outnicky/nvf-fork?ref=nick";
+    # nvf.url = "github:Outnicky/nvf-fork?ref=nick";
+    nvf.url = "github:Outnicky/nvf-fork";
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -84,7 +92,8 @@
             modules = [
               ./home/home.nix
               {
-                full = true;
+                # laptop = true;
+                full = false;
                 hypr = true;
               }
             ];

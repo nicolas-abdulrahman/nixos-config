@@ -35,6 +35,7 @@ in
   };
   imports = [
     ./modules
+    ./pkgs.nix
     inputs.nixcord.homeModules.nixcord
   ];
   config = {
@@ -58,22 +59,40 @@ in
       ];
     };
 
+
     xdg.portal = {
       enable = true;
-      extraPortals = lib.mkForce
-        (with pkgs; [
-          # kdePackages.xdg-desktop-portal-kde
-          # xdg-desktop-portal-gtk # Fallback for GTK apps
-          pkgs.xdg-desktop-portal-hyprland
-        ]);
+
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-hyprland
+        # xdg-desktop-portal-gtk
+      ];
+
       xdgOpenUsePortal = true;
+
       config = {
-        hyprland.default = [ "hyprland" ];
+        hyprland = {
+          default = [ "hyprland" ];
+        };
       };
-
-      # gtkUsePortal = true;
-
     };
+
+    # xdg.portal = {
+    #   enable = true;
+    #   extraPortals = lib.mkForce
+    #     (with pkgs; [
+    #       kdePackages.xdg-desktop-portal-kde
+    #       xdg-desktop-portal-gtk # Fallback for GTK apps
+    #       pkgs.xdg-desktop-portal-hyprland
+    #     ]);
+    #   xdgOpenUsePortal = true;
+    #   config = {
+    #     hyprland.default = [ "hyprland" ];
+    #   };
+    #
+    #   # gtkUsePortal = true;
+    #
+    # };
     xdg.configFile."mimeapps.list".text = ''
       [Default Applications]
       application/pdf=okular.desktop
@@ -94,34 +113,6 @@ in
       WARP_PATH = "${pkgs.warp-terminal}/bin/warp-terminal"; # Or the correct binary path
     };
 
-    # xdg.mimeApps = {
-    # enable = true;
-
-    # defaultApplications = {
-    # "inode/directory" = [ "dolphin.desktop" ];
-    # };
-    # };
-
-    # xdg = {
-    # portal = {
-    # enable = true;
-    # xdgOpenUsePortal = true;
-    # config = {
-    # common.default = [ "gtk" "xdph" ];
-    # hyprland.default = [ "gtk" "hyprland" ];
-    # };
-    # extraPortals = [
-    # pkgs.xdg-desktop-portal-gtk
-    # pkgs.xdg-desktop-portal-kde
-    # pkgs.xdg-desktop-portal-hyprland
-    # ];
-    # };
-    # };
-
-    # xdg.configFile."mimeapps.list".force = true;
-    # home-manager.backupFileExtension = "backup";
-
-
     programs.git = {
       extraConfig.credential.helper = "manager";
       extraConfig.credential."https://github.com".username = "outnicky";
@@ -130,88 +121,6 @@ in
       userEmail = "nicolashugo2001@gmail.com";
       enable = true;
     };
-    home.packages = with pkgs; [
-      equicord
-      hyprsunset
-
-      blockbench
-
-      # ciscoPacketTracer8
-      lazygit
-      wf-recorder
-      obs-studio
-      flyctl
-      gitkraken
-      dbeaver-bin
-      warp-terminal
-      blender
-      steamcmd
-      audacity
-      git-credential-manager
-      pavucontrol
-      tmux
-      vdhcoapp
-      universal-ctags
-      # Network
-      arp-scan
-      nmap
-      kitty
-      swayimg
-      xorg.xrandr
-      brightnessctl
-      zoxide
-      radare2
-      openbox
-      broot
-      nnn
-      steam-run
-      firefox
-      discord
-      lutris
-      godot_4
-      qbittorrent
-      floorp
-      android-tools
-      google-chrome
-      brave
-    ] ++ (if config.hypr then [
-      grimblast
-      mako
-      waybar
-      eww
-      hyprpaper
-      hyprlock
-      hypridle
-    ] else [ ])
-    ++ (if config.full then [
-      jetbrains.idea-community-src
-      smartgithg
-      # opera
-      libsForQt5.okular
-      weston
-      gamescope
-      protonup-qt
-      vesktop
-      gimp
-      # notion
-      blender
-      krita
-      waydroid
-      wireshark
-      metabase
-      texliveFull
-      prismlauncher
-      # launcher
-      # bobox.grapejuice
-      thunderbird
-      android-studio
-      wireshark
-      whatsie
-      spotify
-      waydroid
-      libreoffice-qt6
-
-    ] else [ ]);
 
     programs.zsh = {
       enable = true;

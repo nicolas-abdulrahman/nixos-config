@@ -71,9 +71,6 @@
     xwayland
     xorg.xrandr
     xorg.xsetroot
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
     kdePackages.plasma-workspace
 
 
