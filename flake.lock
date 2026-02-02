@@ -861,9 +861,6 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "nix-colors": "nix-colors",
-        "nix-index-database": [
-          "nixpkgs"
-        ],
         "nixcord": "nixcord",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs_4",

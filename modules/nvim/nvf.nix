@@ -66,10 +66,10 @@ in
     };
     languages =
       {
-        rust = {
-          enable = true;
-          keymaps = "";
-        };
+        # r#ust = {
+        #    enable = true;
+        #   keymaps = "";
+        #   };
         # rust.enable = true;
         # nix.enable = true;
         # sql.enable = true;
@@ -86,150 +86,152 @@ in
       telescope-nvim
     ];
 
-    conform =
+    # conform =
+    #   {
+    #    lua = [
+    #     "stylua"
+    #  ];
+    # python = [
+    #   "isort"
+    #   "black"
+    # ];
+    #rust = [
+    # "rustfmt"
+    #];
+    #javascript = [ "prettierd" "prettier" ];
+    #html = [ "htmlbeautifier" "superhtml" "js-beautify" "tidy" "prettierd" ];
+    #css = [ "js-beautify" "tidy" "prettierd" ];
+    #nix = [ "nixpkgs_fmt" ];
+    #typescript = [ "prettier" ];
+    #javascriptreact = [ "prettierd" ];
+    #typescriptreact = [ "prettierd" ];
+    #json = [ "prettierd" ];
+    # html = [ "prettierd" ];
+    # css = [ "prettierd" ];
+    #markdown = [ "prettierd" ];
+    #};
+    extraPlugins = with pkgs.vimPlugins;
       {
-        lua = [
-          "stylua"
-        ];
-        python = [
-          "isort", "black"
-        ];
-        rust = [
-          "rustfmt"; lsp_format = "fallback"
-        ];
-        javascript = [ "prettierd"; "prettier"; stop_after_first = true ];
-        html = [ "htmlbeautifier"; "superhtml"; "js-beautify"; "tidy"; "prettierd"; stop_after_first = true ];
-        css = [ "js-beautify"; "tidy"; "prettierd"; stop_after_first = true ];
-        nix = [ "nixpkgs_fmt"; stop_after_first = true ];
-        typescript = [ "prettier" ];
-        javascriptreact = [ "prettierd" ];
-        typescriptreact = [ "prettierd" ];
-        json = [ "prettierd" ];
-        html = [ "prettierd" ];
-        css = [ "prettierd" ];
-        markdown = [ "prettierd" ];
-      }
-        conform = { };
-    extraPlugins = with pkgs.vimPlugins;{
-      #     packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
-      fzf = {
-        package = telescope-fzf-native-nvim;
-      };
-      telescope = {
-        package = telescope-nvim;
-        after = [ "fzf" ];
-        setup = pkgs.lib.readFile ./plugin/telescope.lua;
-      };
-
-      notify = {
-        package = nvim-notify;
-      };
-      tabbys = {
-        package = tabbys-package;
-        setup = ''
-          require('tabbys').setup()
-          vim.keymap.set("n", "ts", function()
-          	require("tabbys").setup_tab()
-          end, {
-          	desc = "Tabby: new",
-          })
-        '';
-      };
-      icons = {
-        package = nvim-web-devicons;
-      };
-      neo_tree = {
-        package = neo-tree-nvim;
-        setup = ''
-          require('neo-tree').setup()
-          require("nvim-web-devicons")
-          vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { noremap = true, silent = true })
-        '';
-        after = [ "icons" ];
-      };
-      conform = {
-        package = conform-nvim;
-        setup = pkgs.lib.readFile ./plugin/conform.lua;
-      };
-      harpoon =
-        {
-          package = harpoon;
-          setup = pkgs.lib.readFile ./plugin/harpoon.lua;
+        #     packages = [ pkgs.vimPlugins.telescope-fzf-native-nvim ];
+        fzf = {
+          package = telescope-fzf-native-nvim;
         };
-      headlines = {
-        package = headlines-nvim;
-        setup = "require('headlines').setup()";
-      };
-      cmp = {
-        package = nvim-cmp;
-      };
-      cmp_nvim_lsp =
-        {
-          package = cmp-nvim-lsp;
+        telescope = {
+          package = telescope-nvim;
+          after = [ "fzf" ];
+          setup = pkgs.lib.readFile ./plugin/telescope.lua;
         };
-      rust = {
-        package = rust-tools-nvim;
-      };
-      lspconfig = {
-        package = nvim-lspconfig;
-        setup = pkgs.lib.readFile ./plugin/lsp.lua;
-        after = [ "cmp" "cmp_nvim_lsp" "rust" ];
-      };
-    };
-    extraPackages = with pkgs;[
 
-      gopls
-      pyright
-      clang
-      zls
-      sqls
-      typescript-language-server
-      vscode-langservers-extracted
-      jdt-language-server
-      rust-analyzer
-      nixpkgs-fmt
-      nil
-      cmake-language-server
-      superhtml
-      rubyPackages_3_4.htmlbeautifier
-      jsbeautifier
-      html-tidy
-      stylua
-      prettierd
-      rustfmt
-      xclip
-      wl-clipboard
-      luajitPackages.lua-lsp
-      nixd
-      ripgrep
-      vscode-langservers-extracted
-    ];
-    optPlugins = with pkgs.vimPlugins; [
-      nvim-web-devicons
-      # nvim-java
-      # luasnip
-      # nvim-cmp
-      # cmp-nvim-lsp
-      # rust-tools-nvim
-      # nvim-comment
-      # headlines-nvim
-      # nvim-web-devicons
-      # crates-nvim
-      # plenary-nvim
-      # dracula-nvim
-      # nvim-snippy
-      # nvim-dap
-      # nvim-dap-ui
-    ];
-    additionalRuntimePaths = [
-      ./nvim/lua
-      ./nvim
-    ];
-    luaConfigRC = {
-      remap = pkgs.lib.readFile ./lua/remap.lua;
-      set = pkgs.lib.readFile ./lua/set.lua;
-      # lsp = pkgs.lib.readFile ./lua/lsp.lua;
-    };
+        notify = {
+          package = nvim-notify;
+        };
+        tabbys = {
+          package = tabbys-package;
+          setup = ''
+            require('tabbys').setup()
+            vim.keymap.set("n", "ts", function()
+            	require("tabbys").setup_tab()
+            end, {
+            	desc = "Tabby: new",
+            })
+          '';
+        };
+        icons = {
+          package = nvim-web-devicons;
+        };
+        neo_tree = {
+          package = neo-tree-nvim;
+          setup = ''
+            -- require('neo-tree').setup()
+            --      require("nvim-web-devicons")
+                  vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { noremap = true, silent = true })
+          '';
+          after = [ "icons" ];
+        };
+        conform = {
+          package = conform-nvim;
+          setup = pkgs.lib.readFile ./plugin/conform.lua;
+        };
+        harpoon =
+          {
+            package = harpoon;
+            setup = pkgs.lib.readFile ./plugin/harpoon.lua;
+          };
+        headlines = {
+          package = headlines-nvim;
+          setup = "require('headlines').setup()";
+        };
+        cmp = {
+          package = nvim-cmp;
+        };
+        cmp_nvim_lsp =
+          {
+            package = cmp-nvim-lsp;
+          };
+        # rust = {
+        #    package = rustaceanvim;
+        #  lspconfig = {
+        #     package = nvim-lspconfig;
+        #       setup = pkgs.lib.readFile ./plugin/lsp.lua;
+        #       after = [ "cmp" "cmp_nvim_lsp" "rust" ];
+        #      };
+        #  };
+        #   extraPackages = with pkgs;[
+        #     cargo
+        #     rustc
+        #     gopls
+        #     pyright
+        #     clang
+        #     zls
+        #     sqls
+        #     typescript-language-server
+        #     vscode-langservers-extracted
+        #     jdt-language-server
+        #     rust-analyzer
+        #     nixpkgs-fmt
+        #     nil
+        #     cmake-language-server
+        #     superhtml
+        #    rubyPackages_3_4.htmlbeautifier
+        #     jsbeautifier
+        #     html-tidy
+        #     stylua
+        #     prettierd
+        #     rustfmt
+        #     xclip
+        #     wl-clipboard
+        #     luajitPackages.lua-lsp
+        #     nixd
+        #     ripgrep
+        #     vscode-langservers-extracted
+        #   ];
+        #  optPlugins = with pkgs.vimPlugins; [
+        #    nvim-web-devicons
+        # nvim-java
+        # luasnip
+        # nvim-cmp
+        # cmp-nvim-lsp
+        # rust-tools-nvim
+        # nvim-comment
+        # headlines-nvim
+        # nvim-web-devicons
+        # crates-nvim
+        # plenary-nvim
+        # dracula-nvim
+        # nvim-snippy
+        # nvim-dap
+        # nvim-dap-ui
+        # ];
+        #    additionalRuntimePaths = [
+        #       ./nvim/lua
+        #       ./nvim
+        #     ];
+        #  luaConfigRC = {
+        # remap = pkgs.lib.readFile ./lua/remap.lua;
+        #  set = pkgs.lib.readFile ./lua/set.lua;
+        # lsp = pkgs.lib.readFile ./lua/lsp.lua;
+        # };
+      };
   };
 }
 

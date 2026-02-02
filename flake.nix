@@ -19,8 +19,8 @@
     };
     nix-colors.url = "github:misterio77/nix-colors";
     nixgl.url = "github:nix-community/nixGL";
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.follows = "nixpkgs";
+    #   nix-index-database.url = "github:Mic92/nix-index-database";
+    #   nix-index-database.follows = "nixpkgs";
     # nvf.url = "github:Outnicky/nvf-fork?ref=nick";
     nvf.url = "github:Outnicky/nvf-fork";
     nur = {

@@ -22,6 +22,14 @@
 
   };
 
+  # programs.hyprland.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    config.hyprland.default = [ "hyprland" ];
+  };
+
   ########### DESKTOP ENVIRONMENTS ###########
   # --- Plasma 6 (KDE) ---
   services.desktopManager.plasma6.enable = true;

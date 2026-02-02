@@ -177,7 +177,7 @@ function concat_if_exist(path, path2)
 		return path .. path2
 	end
 end
-local rust_tools = require("rust-tools")
+local rust = require("rustaceanvim")
 
 lldb_exec = concat_if_exist(os.getenv("LLDB"), "/bin/lldb-vscode")
 lldb_lib = concat_if_exist(os.getenv("LLDB_LIB"), "/lib")
@@ -209,27 +209,27 @@ dap.configurations.rust = {
 require("lspconfig").gopls.setup({
 	cmd = { os.getenv("GOPLS_PATH") },
 })
-rust_tools.setup({
-	server = {
-		on_attach = function(client, bufnr)
-			on_attach(client, bufnr)
-			require("crates").setup()
-			-- vim.keymap.set('n', '<leader>ca', rust_tools.hover_actions.hover_actions, {buffer = bufnr})
-		end,
-		cmd = { "rust-analyzer" },
+--rust_tools.setup({
+--server = {
+--on_attach = function(client, bufnr)
+--on_attach(client, bufnr)
+--	require("crates").setup()
+-- vim.keymap.set('n', '<leader>ca', rust_tools.hover_actions.hover_actions, {buffer = bufnr})
+--	end,
+--	cmd = { "rust-analyzer" },
 
-		root_dir = require("lspconfig.util").root_pattern({ ".git" }),
-		capabilities = capabilities,
-	},
+--	root_dir = require("lspconfig.util").root_pattern({ ".git" }),
+--	capabilities = capabilities,
+--},
 
-	dap = {
-		adapter = {
-			type = "executable",
-			command = "gdb",
-			name = "rt_gdb",
-		},
-	},
-})
+--dap = {
+--	adapter = {
+--		type = "executable",
+--		command = "gdb",
+--		name = "rt_gdb",
+--	},
+--},
+--})
 
 -- local cap = vim.lsp.protocol.make_client_capabilities()
 -- cap.textDocument.completion.completionItem.snippetSupport = true
