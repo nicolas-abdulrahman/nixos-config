@@ -1,8 +1,8 @@
 { pkgs, lib, hyprland, ... }:
 
 {
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.package = hyprland;
+  # wayland.windowManager.hyprland.enable = true;
+  # wayland.windowManager.hyprland.package = hyprland;
 
 
   wayland.windowManager.hyprland.settings = {

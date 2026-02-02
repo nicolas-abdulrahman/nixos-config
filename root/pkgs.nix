@@ -8,7 +8,7 @@
 
   programs.java = {
     enable = config.full;
-    package = pkgs.jdk23;
+    # package = pkgs.jdk23;
   };
   services.mysql = {
     enable = true;
@@ -80,7 +80,7 @@
     lsof
     xorg.libX11
     inetutils
-    unixtools.nettools
+    nettools
     docker
     home-manager
     tree
@@ -98,7 +98,7 @@
     btop
     unzip
     imagemagick
-    vdhcoapp
+    # vdhcoapp
     ffmpeg
     libnotify
     broot
@@ -118,15 +118,14 @@
     slurp
     grim
     devbox
-    vdhcoapp #firefox plugin to download vids
-    kdePackages.xwaylandvideobridge
+    #  vdhcoapp #firefox plugin to download vids
+    # kdePackages.xwaylandvideobridge
     kdePackages.dolphin
     gradle
     prismlauncher
     bun
     lua
     rust-analyzer-unwrapped
-    clang-tools_16
     python314
     luajitPackages.lua-lsp
     vscode
