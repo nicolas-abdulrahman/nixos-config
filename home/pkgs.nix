@@ -51,16 +51,17 @@
     hyprlock
     hypridle
 
+        krita
   ] else [ ])
   # ++ (if config.laptop then [
   # st
   # ] else [
   # ])
   ++ (if config.full then [
-    jetbrains.idea-community-src
-    smartgithg
+   # jetbrains.idea-community-src
+    smartgit
     # opera
-    libsForQt5.okular
+   # okular
     weston
     gamescope
     protonup-qt

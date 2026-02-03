@@ -10,14 +10,11 @@ in
     ./alacritty.nix
     ./tmux
     ./wezterm
+    ./hyprland
+    ./eww
     # ./nixcord.nix
     #./xremap.nix
   ]
-  ++ (lib.optionals true [
-    ./hyprland
-    ./eww
-  ]
-  );
 
   options = {
     enable_hypr = lib.mkEnableOption "Enable foo module";
