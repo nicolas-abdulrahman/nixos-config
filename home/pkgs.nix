@@ -1,5 +1,9 @@
 { config, pkgs, inputs, lib, username, ... }: {
   home.packages = with pkgs; [
+    nodejs_20
+    nodePackages.tailwindcss
+    ventoy
+
     equicord
     hyprsunset
     blockbench
@@ -33,7 +37,7 @@
     nnn
     steam-run
     firefox
-    discord
+    # discord
     lutris
     godot_4
     qbittorrent
@@ -51,17 +55,17 @@
     hyprlock
     hypridle
 
-        krita
+    krita
   ] else [ ])
   # ++ (if config.laptop then [
   # st
   # ] else [
   # ])
   ++ (if config.full then [
-   # jetbrains.idea-community-src
+    # jetbrains.idea-community-src
     smartgit
     # opera
-   # okular
+    # okular
     weston
     gamescope
     protonup-qt

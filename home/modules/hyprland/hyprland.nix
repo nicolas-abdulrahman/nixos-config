@@ -1,9 +1,9 @@
 { pkgs, lib, hyprland, ... }:
 
 {
-  # wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.enable = true;
   # wayland.windowManager.hyprland.package = hyprland;
-
+ # home.file.".config/hypr/hyprland.conf".force = true;
 
   wayland.windowManager.hyprland.settings = {
     #  exec-once = "hyprsunset";
@@ -136,10 +136,10 @@
       "$mod, mouse:273, resizewindow"
     ];
 
-    windowrulev2 = [
-      "bordercolor rgb(FFFF00), class:^(Alacritty)$"
+ #   windowrulev2 = [
+  #    "bordercolor rgb(FFFF00), class:^(Alacritty)$"
 
-    ];
+   # ];
     # exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP";
   };
   wayland.windowManager.hyprland.extraConfig = ''

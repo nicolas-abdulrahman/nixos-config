@@ -48,15 +48,6 @@
           program = "${vscode-wayland}/bin/vscode-wayland";
         };
       devShells."${system}".default = pkgs.mkShell {
-        packages = with pkgs;
-          [
-            # myvscode
-            vscode
-          ];
-        allowUnfree = true;
-        buildInputs = with pkgs;[
-        ];
-        VSCODE = pkgs.vscode;
       };
 
     };
