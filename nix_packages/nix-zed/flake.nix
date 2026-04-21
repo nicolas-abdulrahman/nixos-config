@@ -11,8 +11,8 @@
 
   outputs = { self, nixpkgs, home-manager, ... }: {
     # Home Manager module — the primary entry point
-    homeManagerModules.default = import ./modules/home-manager.nix;
-    homeManagerModules.nix-zed = import ./modules/home-manager.nix;
+    homeManagerModules.default = import ./modules/zed.nix;
+    homeManagerModules.nix-zed = import ./modules/zed.nix;
 
     # Expose helper lib for advanced use
     lib = import ./lib { inherit nixpkgs; };

@@ -28,6 +28,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixcord.url = "github:FlameFlag/nixcord";
+    nix-zed = {
+        url = "path:./nix_packages/nix-zed";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
 
   };
 
@@ -109,6 +113,7 @@
             extraSpecialArgs = { inherit inputs; inherit username; inherit hyprland; };
             modules = [
               ./home/home.nix
+              inputs.nix-zed.homeManagerModules.nix-zed
               {
                 # laptop = true;
                 full = false;

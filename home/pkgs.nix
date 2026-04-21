@@ -90,4 +90,13 @@
     libreoffice-qt6
 
   ] else [ ]);
+
+  programs.zed= {
+    enable = false;
+    settings = {
+           theme = "One Dark";
+           ui_font_size = 16;
+           buffer_font_size = 14;
+         };
+    };
 }
