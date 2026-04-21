@@ -12,9 +12,9 @@ in
     ./wezterm
     ./hyprland
     ./eww
-    # ./nixcord.nix
+     ./nixcord.nix
     #./xremap.nix
-  ]
+  ];
 
   options = {
     enable_hypr = lib.mkEnableOption "Enable foo module";

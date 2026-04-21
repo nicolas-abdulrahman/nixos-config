@@ -13,7 +13,6 @@ pkgs.mkShell {
     pnpm
     #javascript-typescript-langserver
     nodePackages_latest.typescript-language-server
-    pkgs2.bun
     # nodePackages.sass
   ];
 

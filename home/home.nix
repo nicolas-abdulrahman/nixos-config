@@ -14,6 +14,22 @@ let
       # ${nixos_path}/result/activate
     '';
   };
+  envExtra =
+    let
+      myString = "\${@:2}";
+    in
+    ''
+      dev(){
+          NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/#$1
+         }
+       ru(){
+          NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/#$1
+       }
+       run(){
+           nix run nixpkgs#$1 -- ${myString}
+       }
+
+    '';
 in
 {
 
@@ -115,10 +131,10 @@ in
 
     programs.git = {
       extraConfig.credential.helper = "manager";
-      extraConfig.credential."https://github.com".username = "outnicky";
+      extraConfig.credential."https://github.com".username = "nicolas-abdulrahman";
       extraConfig.credential.credentialStore = "cache";
-      userName = "outnicky";
-      userEmail = "nicolashugo2001@gmail.com";
+      userName = "nicolas-abdulrahman";
+      userEmail = "nicolas.abdul.rahman@gmail.com";
       enable = true;
     };
 
@@ -136,23 +152,8 @@ in
       historySubstringSearch = {
         enable = true;
       };
+      inherit envExtra;
       #.zshenv
-      envExtra =
-        let
-          myString = "\${@:2}";
-        in
-        ''
-          dev(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix develop ${nixos_path}/#$1
-             }
-           ru(){
-              NIX_SHELL_PRESERVE_PROMPT=1 nix run ${nixos_path}/#$1
-           }
-           run(){
-               nix run nixpkgs#$1 -- ${myString}
-           }
-
-        '';
       inherit shellAliases;
       #    initContent = ''
       #      \builtin alias cd=__zoxide_z
@@ -180,6 +181,7 @@ in
       enable = true;
       enableCompletion = true;
       inherit shellAliases;
+      bashrcExtra = envExtra;
     };
 
   };

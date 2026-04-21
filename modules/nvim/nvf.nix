@@ -148,6 +148,7 @@ in
           '';
           after = [ "icons" ];
         };
+
         conform = {
           package = conform-nvim;
           setup = pkgs.lib.readFile ./plugin/conform.lua;
@@ -168,70 +169,85 @@ in
           {
             package = cmp-nvim-lsp;
           };
-        # rust = {
-        #    package = rustaceanvim;
-        #  lspconfig = {
-        #     package = nvim-lspconfig;
-        #       setup = pkgs.lib.readFile ./plugin/lsp.lua;
-        #       after = [ "cmp" "cmp_nvim_lsp" "rust" ];
-        #      };
+        # avante = {
+        #    package = avante-nvim;
+        #     after = ["codecompanion"];
+        #      setup = pkgs.lib.readFile ./plugin/ai.lua;
         #  };
-        #   extraPackages = with pkgs;[
-        #     cargo
-        #     rustc
-        #     gopls
-        #     pyright
-        #     clang
-        #     zls
-        #     sqls
-        #     typescript-language-server
-        #     vscode-langservers-extracted
-        #     jdt-language-server
-        #     rust-analyzer
-        #     nixpkgs-fmt
-        #     nil
-        #     cmake-language-server
-        #     superhtml
-        #    rubyPackages_3_4.htmlbeautifier
-        #     jsbeautifier
-        #     html-tidy
-        #     stylua
-        #     prettierd
-        #     rustfmt
-        #     xclip
-        #     wl-clipboard
-        #     luajitPackages.lua-lsp
-        #     nixd
-        #     ripgrep
-        #     vscode-langservers-extracted
-        #   ];
-        #  optPlugins = with pkgs.vimPlugins; [
-        #    nvim-web-devicons
-        # nvim-java
-        # luasnip
-        # nvim-cmp
-        # cmp-nvim-lsp
-        # rust-tools-nvim
-        # nvim-comment
-        # headlines-nvim
-        # nvim-web-devicons
-        # crates-nvim
-        # plenary-nvim
-        # dracula-nvim
-        # nvim-snippy
-        # nvim-dap
-        # nvim-dap-ui
-        # ];
-        #    additionalRuntimePaths = [
-        #       ./nvim/lua
-        #       ./nvim
-        #     ];
-        #  luaConfigRC = {
-        # remap = pkgs.lib.readFile ./lua/remap.lua;
-        #  set = pkgs.lib.readFile ./lua/set.lua;
-        # lsp = pkgs.lib.readFile ./lua/lsp.lua;
-        # };
+        codecompanion = {
+          package = codecompanion-nvim;
+        };
+        nui = { package = nui-nvim; };
+        dressing = { package = dressing-nvim; };
+        render-md = { package = render-markdown-nvim; };
       };
+    # rust = {
+    #    package = rustaceanvim;
+    #  lspconfig = {
+    #     package = nvim-lspconfig;
+    #       setup = pkgs.lib.readFile ./plugin/lsp.lua;
+    #       after = [ "cmp" "cmp_nvim_lsp" "rust" ];
+    #      };
+    #  };
+    extraPackages = with pkgs;[
+      cargo
+      rustc
+      gopls
+      pyright
+      clang
+      zls
+      sqls
+      typescript-language-server
+      vscode-langservers-extracted
+      jdt-language-server
+      rust-analyzer
+      nixpkgs-fmt
+      nil
+      cmake-language-server
+      superhtml
+      rubyPackages_3_4.htmlbeautifier
+      jsbeautifier
+      html-tidy
+      stylua
+      prettierd
+      rustfmt
+      xclip
+      wl-clipboard
+      luajitPackages.lua-lsp
+      nixd
+      ripgrep
+      vscode-langservers-extracted
+    ];
+    #  optPlugins = with pkgs.vimPlugins; [
+    #    nvim-web-devicons
+    # nvim-java
+    # luasnip
+    # nvim-cmp
+    # cmp-nvim-lsp
+    # rust-tools-nvim
+    # nvim-comment
+    # headlines-nvim
+    # nvim-web-devicons
+    # crates-nvim
+    # plenary-nvim
+    # dracula-nvim
+    # nvim-snippy
+    # nvim-dap
+    # nvim-dap-ui
+    # ];
+    #    additionalRuntimePaths = [
+    #       ./nvim/lua
+    #       ./nvim
+    #     ];
+    #     extraConfigLua = ''
+    #       ${builtins.readFile ./lua/set.lua}
+    #       ${builtins.readFile ./lua/remap.lua}
+    #     '';
+    luaConfigRC = {
+      remap = pkgs.lib.readFile ./lua/remap.lua;
+      set = pkgs.lib.readFile ./lua/set.lua;
+      lsp = pkgs.lib.readFile ./lua/lsp.lua;
+    };
   };
 }
 

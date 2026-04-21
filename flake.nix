@@ -58,12 +58,30 @@
       packages.${system} =
         {
           default =
-            (nvf.lib.neovimConfiguration {
+            let
+              # 1. Your existing nvf configuration
+              nvfPkg = (nvf.lib.neovimConfiguration {
+                pkgs = nixpkgs.legacyPackages.x86_64-linux;
+                modules = [ ./modules/nvim/nvf.nix ];
+              }).neovim;
+              GEMINI_API_KEY = "AIzaSyBFM6qm8HopurT5NU-TDPYuE1XPU3RYdm4:3"; # better: use sops-nix
+
               pkgs = nixpkgs.legacyPackages.x86_64-linux;
-              modules = [
-                ./modules/nvim/nvf.nix
-              ];
-            }).neovim;
+            in
+            pkgs.symlinkJoin {
+              name = "nvim";
+              paths = [ nvfPkg ];
+              buildInputs = [ pkgs.makeWrapper ];
+              postBuild = ''
+                # Rename the original binary so we can put our script in its place
+                mv $out/bin/nvim $out/bin/nvim-unwrapped
+                makeWrapper $out/bin/nvim-unwrapped $out/bin/nvim \
+                  --argv0 "nvim" \
+                  --run 'export AVANTE_GEMINI_API_KEY="${GEMINI_API_KEY}"' \
+                  --run 'export GEMINI_API_KEY="${GEMINI_API_KEY}"' \
+
+              '';
+            };
 
           ewwWrapper = ewwWrapper;
         };
@@ -128,6 +146,7 @@
         let
           pkgs = import nixpkgs {
             inherit system;
+            config.allowUnfree = true;
           };
         in
         {
@@ -138,6 +157,8 @@
           rust = import ./shells/rust.nix { inherit pkgs; };
           wine = import ./shells/wine.nix { inherit pkgs; };
           zig = import ./shells/zig.nix { inherit pkgs; };
+          zed = import ./modules/zed { inherit pkgs; };
+          vscode = import ./shells/vscode { inherit pkgs; };
         };
     };
 }
