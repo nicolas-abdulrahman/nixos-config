@@ -1,0 +1,1 @@
+nircmd.exe win hide class Shell_TrayWnd

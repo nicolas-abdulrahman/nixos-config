@@ -1,0 +1,28 @@
+(defcfg
+  process-unmapped-keys yes
+)
+
+;; 1. The "Source"
+(defsrc
+  caps a s d  w  q e   f g   h j k l   u i o
+)
+
+;; 2. The "Alias"
+(defalias
+  cap (layer-while-held caps-change)
+)
+
+;; 3. The "Base Layer"
+(deflayer base
+  @cap a  s d w q e   f g   h j k l   u i o
+)
+
+;; 4. The "Caps-Change" Layer
+;; q e     -> | &
+;; f g     -> $ #
+;; h j k l -> % ~ ^ *
+;; o p     -> [ ]
+(deflayer caps-change
+  _  left down right up  / \   S-4 S-5  S-3 S-` S-6 S-8  ' [ ]
+
+)
