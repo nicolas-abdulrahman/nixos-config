@@ -1,0 +1,10 @@
+# Windows and Linux Executables / Libraries
+*.exe filter=lfs diff=lfs merge=lfs -text
+*.EXE filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.DLL filter=lfs diff=lfs merge=lfs -text
+
+# Native Linux Binaries & Shared Libraries
+*.so filter=lfs diff=lfs merge=lfs -text
+*.so.* filter=lfs diff=lfs merge=lfs -text
+*.out filter=lfs diff=lfs merge=lfs -text
