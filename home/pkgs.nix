@@ -1,8 +1,10 @@
-{ config, pkgs, inputs, lib, username, ... }: {
+{ config, pkgs, inputs, lib, username, ... }:
+{
   home.packages = with pkgs; [
+
+    aseprite
     nodejs_20
     nodePackages.tailwindcss
-    ventoy
 
     equicord
     hyprsunset
@@ -91,12 +93,20 @@
 
   ] else [ ]);
 
-  programs.zed= {
-    enable = false;
-    settings = {
-           theme = "One Dark";
-           ui_font_size = 16;
-           buffer_font_size = 14;
-         };
-    };
+  #programs.zed = {
+  #   enable = true;
+  #   settings = {
+  #     theme = "One Dark";
+  #     ui_font_size = 16;
+  #     buffer_font_size = 14;
+  #   };
+  #  keymap = [
+  #    {
+  #      context = "editor";
+  #      bindings = {
+  #        "Ctrl+Shift+Z" = "zed";
+  # };
+  #    }
+  #   ];
+  # };
 }

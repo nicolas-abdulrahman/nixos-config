@@ -13,6 +13,7 @@ in
     ./hyprland
     ./eww
      ./nixcord.nix
+     ./godot
     #./xremap.nix
   ];
 

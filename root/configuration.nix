@@ -6,12 +6,12 @@
 
   imports =
     [
-      ./jupyter.nix
+      # ./jupyter.nix
       ./hardware-configuration.nix
       ./boot.nix
       ./desktop_manager.nix
       ./pkgs.nix
-      ./network.nix
+      ./security.nix
       ./users.nix
     ];
   options = {
