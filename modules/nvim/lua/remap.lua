@@ -4,6 +4,8 @@ vim.api.nvim_set_keymap("n", "<C-s>", ":wa!<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "ss", ":wa!<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<leader>s", ":wa!<CR>", { noremap = true })
 
+local opts = { noremap = true, silent = true }
+
 vim.keymap.set("n", "so", function()
 	vim.cmd("wa!")
 	vim.cmd("so")
@@ -114,8 +116,6 @@ vim.keymap.set("n", "<S-h>", vim.cmd.CommentToggle, { silent = true })
 vim.keymap.set("v", "<S-h>", ":'<,'>CommentToggle<CR>", { silent = true })
 vim.cmd(":tnoremap <Esc> <C-\\><C-n>")
 
--- TABS
-
 -- QUICKFIX
 vim.keymap.set("n", "qj", "<cmd>cnext<CR>", { silent = true })
 vim.keymap.set("n", "qk", "<cmd>cprev<CR>", { silent = true })
@@ -135,29 +135,7 @@ vim.keymap.set("n", "cld", "<cmd>lcd %:h<CR>", { silent = true })
 vim.keymap.set("n", "<A-a>", "<C-S-w>|", { silent = true })
 vim.keymap.set("n", "<A-s>", "<C-S-w>=", { silent = true })
 
-vim.o.tabline = "%!v:lua.MyTabLine()"
-
 local telescope = require("telescope.builtin")
-
-function MyTabLine()
-	local buffers = vim.api.nvim_list_bufs()
-	local s = ""
-
-	-- Iterate through each buffer and filter active ones
-	for _, buf in ipairs(buffers) do
-		-- Check if the buffer is loaded and listed
-		if vim.api.nvim_buf_is_loaded(buf) and vim.fn.buflisted(buf) == 1 then
-			-- Get the buffer's file name and number
-			local buf_name = vim.api.nvim_buf_get_name(buf)
-			local buf_number = vim.api.nvim_buf_get_number(buf)
-			s = s .. "|" .. tostring(buf_number)
-			tostring(buf_number)
-			-- Print the buffer number and name
-			-- print("Active Buffer " .. buf_number .. ": " .. buf_name)
-		end
-	end
-	return s
-end
 
 vim.keymap.set("n", "<A-t>", function()
 	local results = {}
@@ -172,3 +150,72 @@ vim.keymap.set("n", "<A-t>", function()
 		-- table.insert(results, entry.value)
 	end)
 end, { silent = true })
+
+vim.keymap.set("v", "<leader>w", function()
+	local char = vim.fn.getcharstr()
+	local pairs = {
+		["("] = { "(", ")" },
+		[")"] = { "(", ")" },
+		["["] = { "[", "]" },
+		["]"] = { "[", "]" },
+		["{"] = { "{", "}" },
+		["}"] = { "{", "}" },
+		["<"] = { "<", ">" },
+		[">"] = { "<", ">" },
+	}
+
+	local open_char, close_char = char, char
+	if pairs[char] then
+		open_char, close_char = pairs[char][1], pairs[char][2]
+	end
+
+	local keys = vim.api.nvim_replace_termcodes("c" .. open_char .. '<C-r>"' .. close_char .. "<Esc>v`[v`]", true, false, true)
+	vim.api.nvim_feedkeys(keys, "m", false)
+end, { desc = "Wrap visual selection with next char" })
+
+vim.keymap.set("v", "r", function()
+	vim.cmd('normal! "vy')
+	local selected_text = vim.fn.getreg("v")
+
+	local escaped_text = vim.fn.escape(selected_text, [[\/^*$~[]])
+
+	if string.find(selected_text, "\n") then
+		vim.notify("Can't replace multipe lines", vim.log.levels.INFO)
+		return
+	end
+
+	if escaped_text == "" then
+		return
+	end
+
+	vim.ui.input({
+		prompt = "Replace selection with: ",
+		default = selected_text,
+	}, function(input)
+		if not input or input == "" or input == selected_text then
+			return
+		end
+
+		-- 3. Pure Lua Buffer Manipulation (No Vim commands to break)
+		local bufnr = vim.api.nvim_get_current_buf()
+		-- Pull every single line in the current file
+		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+		-- Escape raw text into a strict, clean Lua search pattern
+		-- (This makes sure characters like ., -, +, *, etc., don't break things)
+		local pattern = selected_text:gsub("([^%w])", "%%%1")
+
+		-- Loop through the lines and execute the replacement
+		for i, line in ipairs(lines) do
+			lines[i] = string.gsub(line, pattern, input)
+		end
+
+		-- Write the altered lines back to your screen instantly
+		vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+
+		print(string.format('Successfully replaced all occurrences with "%s"', input))
+	end)
+end, { desc = "Interactively replace visual selection file-wide" })
+vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, {
+	desc = "LSP Rename symbol project-wide",
+})

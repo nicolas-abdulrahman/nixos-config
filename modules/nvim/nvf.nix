@@ -4,6 +4,11 @@ let
     name = "tabbys-nvim";
     src = ./my-plugins/tabbys;
   };
+  tab-pin = pkgs.vimUtils.buildVimPlugin {
+    name = "tab-pin";
+    src = ./my-plugins/tab-pin;
+  };
+
 in
 {
   config.vim = {
@@ -148,6 +153,12 @@ in
           '';
           after = [ "icons" ];
         };
+        tmux_navigator = {
+          package = pkgs.vimPlugins.vim-tmux-navigator;
+          setup = ''
+            vim.g.tmux_navigator_no_mappings = 0 -- Keep default Ctrl mappings enabled
+          '';
+        };
 
         conform = {
           package = conform-nvim;
@@ -157,6 +168,21 @@ in
           {
             package = harpoon;
             setup = pkgs.lib.readFile ./plugin/harpoon.lua;
+          };
+        tab-pin =
+          {
+            package = tab-pin;
+            setup = ''
+              require("tab-pin").setup()
+              local tab_prefix = "<C-A-"
+              vim.keymap.set("n", tab_prefix .. "o>", ":tabonly<CR>", { silent = true, desc = "Close all other tabs" })
+              vim.keymap.set("n", tab_prefix .. "p>", ":TabPinToggle<CR>", { silent = true, desc = "Toggle Tab Pin" })
+              vim.keymap.set("n", tab_prefix .. "l>", ":TabPinNext<CR>", { silent = true, desc = "Next Tab" })
+              vim.keymap.set("n", tab_prefix .. "h>", ":TabPinPrev<CR>", { silent = true, desc = "Previous Tab" })
+              vim.keymap.set("n", tab_prefix .. "r>", ":TabPinRename ", { silent = false, desc = "Rename Tab" })
+              vim.keymap.set("n", tab_prefix .. "s>", ":TabPinSave<CR>", { silent = true, desc = "Save Tab Pins" })
+              vim.keymap.set("n", tab_prefix .. "g>", ":TabPinLoad<CR>", { silent = true, desc = "Load Tab Pins" })
+              '';
           };
         headlines = {
           package = headlines-nvim;
@@ -245,8 +271,11 @@ in
     #     '';
     luaConfigRC = {
       remap = pkgs.lib.readFile ./lua/remap.lua;
+   #   quick = pkgs.lib.readFile ./lua/quick_macros.lua;
       set = pkgs.lib.readFile ./lua/set.lua;
       lsp = pkgs.lib.readFile ./lua/lsp.lua;
+      autocmds = pkgs.lib.readFile ./lua/autocmds.lua;
+
     };
   };
 }

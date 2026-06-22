@@ -40,7 +40,13 @@ config.keys = {
 	{ key = "3", mods = wezterm_mod, action = act.ActivateTab(2) },
 	{ key = "4", mods = wezterm_mod, action = act.ActivateTab(3) },
 	{ key = "n", mods = wezterm_mod, action = act.SpawnWindow },
-	{ key = "t", mods = wezterm_mod, action = act.SpawnTab("CurrentPaneDomain") },
+	{
+		key = "t",
+		mods = wezterm_mod,
+		action = act.SpawnCommandInNewTab({
+			args = { "tmux", "new-session" },
+		}),
+	},
 	{ key = "Enter", mods = wezterm_mod, action = act.ToggleFullScreen },
 	{ key = "q", mods = wezterm_mod, action = act.CloseCurrentTab({ confirm = true }) },
 	{ key = "[", mods = wezterm_mod, action = act.ActivateTabRelative(-1) },
@@ -58,6 +64,6 @@ config.window_padding = {
 
 config.hide_tab_bar_if_only_one_tab = true
 
-config.default_prog = { "zsh", "-c", "tmux attach || tmux" }
+config.default_prog = { "tmux", "new-session", "-A" }
 
 return config

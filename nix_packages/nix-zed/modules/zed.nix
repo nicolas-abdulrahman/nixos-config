@@ -151,6 +151,7 @@ in
           }
         ]
       '';
+    };
 
     extraSettings = lib.mkOption {
          type = lib.types.str;
@@ -163,6 +164,7 @@ in
              }
            }
          '';
+    };
   };
 
   # ---------------------------------------------------------------------------
@@ -187,11 +189,11 @@ in
           then { lsp = zedLib.buildLspConfig cfg.lsp; }
           else { };
 
-        finalSettings = lib.recursiveMerge [
-          cfg.settings
-          extensionAttrs
+        finalSettings = (
+          cfg.settings //
+          extensionAttrs //
           lspAttrs
-        ]
+        )
         ++ (if cfg.extraSettings!= "" then builtins.fromJSON cfg.extraKeymap else []);
       in
       settingsFormat.generate "zed-settings.json" finalSettings;

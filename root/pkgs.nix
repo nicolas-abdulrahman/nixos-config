@@ -61,13 +61,36 @@
       };
 
     };
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    alsa-lib
+    glib
+    libGL
+    libX11
+    libXcursor
+    libXext
+    libXinerama
+    libXrandr
+    libXrender
+    libxi
+    libxkbcommon
+    openssl
+    vulkan-loader
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXext
+    xorg.libXi
+    xorg.libXinerama
+    xorg.libXrandr
+    zlib
+  ];
+
 
   environment.systemPackages = with pkgs; [
+    cacert  # Provides standard security certificates
     xorg.xorgserver
     xorg.libX11
     xorg.xinit
-
-
     xwayland
     xorg.xrandr
     xorg.xsetroot

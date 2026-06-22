@@ -2,154 +2,134 @@
 
 {
   wayland.windowManager.hyprland.enable = true;
-  # wayland.windowManager.hyprland.package = hyprland;
- # home.file.".config/hypr/hyprland.conf".force = true;
 
   wayland.windowManager.hyprland.settings = {
-    #  exec-once = "hyprsunset";
 
     xwayland = {
       enabled = true;
     };
-    # profile =
-    #  {
-    #    time = "6:00";
-    #    temperature = 5500;
-    #    gamma = 0.8;
-    #  };
     input = {
       kb_layout = "us";
-      # kb_model = "nodeadkeys";
-      follow_mouse = 1;
-      sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
+      follow_mouse = 2;
+      sensitivity = 0;
     };
     general = {
-      gaps_in = 5;
+      gaps_in = -200;
       gaps_out = 0;
       border_size = 2;
-      #  col.active_border = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-      # col.inactive_border = "rgba(595959aa)";
+      layout = "master";
     };
     decoration = {
       inactive_opacity = 0.8;
-      rounding = 20;
-      # shadow_ignore_window = false;
-      # dim_inactive = true
-      # dim_strength = 0.8
+      active_opacity = 1;
+      rounding = 10;
       blur = {
         enabled = true;
         size = 3;
         passes = 1;
-        #  popus = true
       };
-      master = {
-        # new_is_master= true;
+      shadow = {
+        enabled = true;
+        range = 15;
+        render_power = 3;
+        color = "rgba(00000066)";
       };
-      # drop_shadow = yes;
-      # shadow_range = 4;
-      # shadow_render_power = 3;
-      # col.shadow = "rgba(1a1a1aee)"
     };
     animations = {
       enabled = true;
+      bezier = "popOut, 0.13, 0.99, 0.29, 1.01";
+      animation = "windows, 1, 4, popOut, slide";
     };
     misc = {
       enable_anr_dialog = false;
       force_default_wallpaper = 0;
     };
 
+    dwindle = {
+      pseudotile = true;
+      preserve_split = true;
+    };
 
+    master = {
+      new_status = "master";
+    };
+
+
+    windowrule = [
+      # 1. Main Godot Editor: Always launch in Fullscreen
+      "match:class ^[Gg]odot$, match:title .*Godot Engine.*, fullscreen on"
+
+      # 2. Game Preview: Send to second monitor and force maximize it
+      # (Replace 'DP-2' with your exact monitor name from `hyprctl monitors`)
+      "match:class ^[Gg]odot$, match:title .*DEBUG.*, monitor DP-1, maximize on"
+    ];
     "$mod" = "SUPER";
-    bind =
-      [
-        "$mod, A, fullscreen, 0"
-        "$mod, Q, killactive"
-        "$mod, E, exec, xdg-open ~"
-        "$mod, Y, exec, wezterm"
-        "$mod, G, exec, google-chrome-stable"
-        "$mod, K, exec, krita"
-        "$mod, I, exec, gimp"
-        "$mod, T, exec, alacritty"
-        "$mod, F, exec, firefox"
-        "$mod, D, exec, equicord --  --enable-features=UseOzonePlatform   --ozone-platform=wayland"
-        "$mod, M, exec, prismlauncher"
-        "$mod, B, exec, wezterm -e btop"
+    bind = [
+      "$mod, A, fullscreen, 0"
+      "$mod, Q, killactive"
+      "$mod, E, exec, xdg-open ~"
+      "$mod, Y, exec, wezterm"
+      "$mod, G, exec, google-chrome-stable"
+      "$mod, K, exec, krita"
+      "$mod, I, exec, gimp"
+      "$mod, T, exec, alacritty"
+      "$mod, F, exec, firefox"
+      "$mod, D, exec, equicord -- --enable-features=UseOzonePlatform --ozone-platform=wayland"
+      "$mod, M, exec, prismlauncher"
+      "$mod, B, exec, wezterm -e btop"
+      "$mod, C, exec, pkill waybar"
+      "$mod+CTRL, C, exec, waybar"
+      ", Print, exec, grimblast copy area"
+      "$mod+Shift, M, exit"
+      "$mod, Q, killactive"
+      "$mod, mouse:274, togglefloating,"
+      "$mod, Tab, swapactiveworkspaces, current +1"
+      "$mod, Tab, focusmonitor, +1"
+    ]
 
-        # "$mod, K, exec, kitty"
-        "$mod, C, exec, pkill waybar"
-        "$mod+CTRL, C, exec, waybar"
-
-        ", Print, exec, grimblast copy area"
-        "$mod+Shift, M, exit"
-        "$mod, Q, killactive"
-      ]
-      ++ (
-        # workspaces
-        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-        builtins.concatLists (builtins.genList
-          (
-            x:
-            let
-              ws =
-                let
-                  c = (x + 1) / 10;
-                in
-                builtins.toString (x + 1 - (c * 10));
-            in
-            [
-              "$mod, ${ws}, workspace, ${toString (x + 1)}"
-              "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-            ]
-          )
-          10)
-      )
-      ++ (
-        builtins.concatLists (builtins.genList
-          (
-            x:
-            let
-              keys = [ "left" "right" "up" "down" ];
-              keys2 = [ "h" "l" "k" "j" ];
-              dir = [ "l" "r" "u" "d" ];
-
-              d = builtins.toString (
-                builtins.elemAt dir x
-              );
-              k = builtins.toString (
-                builtins.elemAt keys x
-              );
-              k2 = builtins.toString (
-                builtins.elemAt keys2 x
-              );
-            in
-            [
-              "$mod, ${k}, movefocus, ${d}"
-              "$mod, ${k2}, movefocus, ${d}"
-            ]
-          )
-
-          4)
-
-      );
+    ++ (
+      builtins.concatLists (builtins.genList
+        (x:
+          let
+            keys = [ "left" "right" "up" "down" ];
+            keys2 = [ "h" "l" "k" "j" ];
+            dir = [ "l" "r" "u" "d" ];
+            k = builtins.elemAt keys x;
+            k2 = builtins.elemAt keys2 x;
+            d = builtins.elemAt dir x;
+          in
+          [
+            "$mod, ${k}, movefocus, ${d}"
+            "$mod, ${k2}, movefocus, ${d}"
+          ]
+        ) 4)
+    )
+    # FIXED: Clean, single workspace loop for 1-10 (handles 0 key for workspace 10)
+    ++ (
+      builtins.concatLists (builtins.genList
+        (x:
+          let
+            # If x is 9 (the 10th item), bind it to the "0" key, otherwise use x + 1
+            key = if x == 9 then "0" else toString (x + 1);
+            ws = toString (x + 1);
+          in
+          [
+            "$mod, ${key}, workspace, ${ws}"
+            "$mod SHIFT, ${key}, movetoworkspace, ${ws}"
+          ]
+        ) 10)
+    );
     bindm = [
       "$mod, mouse:272, movewindow"
       "$mod, mouse:273, resizewindow"
     ];
-
- #   windowrulev2 = [
-  #    "bordercolor rgb(FFFF00), class:^(Alacritty)$"
-
-   # ];
-    # exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP";
   };
+
   wayland.windowManager.hyprland.extraConfig = ''
     submap = not_on_term
     bind= Alt, 1, workspace, 1
     bind= Alt, 2, workspace, 2
     bind= Alt, 3, workspace, 3
     submap = reset
-
   '';
-
-
 }
