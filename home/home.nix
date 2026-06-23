@@ -2,13 +2,15 @@
 let
 
   nixos_path = "/etc/nixos";
-  browser = "google-chrome";
+  browser = "firefox";
+  fileExplorer = "pcmanfm";
+  terminal = "st";
+
   username = "nick";
   shellAliases = {
-    b = "nix build /etc/nixos";
+    b = "nix build /etc/nixos#nvim";
     n = "/etc/nixos/result/bin/nvim";
     ".." = "cd ..";
-    s = "sudo nixos-rebuild switch --flake /etc/nixos/";
     h = ''
       home-manager switch --flake ${nixos_path}
       # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
@@ -20,6 +22,9 @@ let
       myString = "\${@:2}";
     in
     ''
+          s(){
+            sudo nixos-rebuild switch --flake "/etc/nixos#$1";
+          } # <-- Fixed "$1}" to "$1" and added a semicolon
             dev(){
                  nix develop ${nixos_path}/#$1
                }
@@ -36,7 +41,7 @@ let
               # No arguments passed at all (e.g., 'run godot4')
               nix run "${nixos_path}/#$target"
           elif [[ "$1" == "--" ]]; then
-              # You already typed the '--' manually (e.g., 'run godot4 -- godot-arg=true')
+              # You already typed the '--' manually (e.g., 'run godot4 -- godot-arg=true') nix run "/etc/nixos/sheels/#$target" "$@"
               nix run "/etc/nixos/sheels/#$target" "$@"
           else
               # Arguments exist but you omitted the '--' (e.g., 'run godot4 godot-arg=true')
@@ -74,7 +79,7 @@ in
   config = {
     home.username = username;
     home.homeDirectory = /home/${username};
-    home.stateVersion = "24.11";
+    home.stateVersion = "26.05";
     programs.vscode = lib.mkIf (config.full) {
       enable = true;
       extensions = with pkgs.vscode-extensions; [
@@ -126,22 +131,26 @@ in
     #   # gtkUsePortal = true;
     #
     # };
-    xdg.configFile."mimeapps.list".text = ''
-      [Default Applications]
-      application/pdf=okular.desktop
-      text/html=${browser}.desktop
-      x-scheme-handler/http=${browser}.desktop
-      x-scheme-handler/https=${browser}.desktop
-      x-scheme-handler/about=${browser}.desktop
-      x-scheme-handler/unknown=${browser}.desktop
-    '';
-    xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-      [preferred]
-      default=gtk;kde
-      org.freedesktop.impl.portal.FileChooser=${browser}
-      org.freedesktop.impl.portal.WebBrowser=${browser}
-      org.freedesktop.impl.portal.Document=okular
-    '';
+
+
+xdg.configFile."mimeapps.list".text = ''
+    [Default Applications]
+    application/pdf=okular.desktop   # you can change this
+    text/html=${browser}.desktop
+    x-scheme-handler/http=${browser}.desktop
+    x-scheme-handler/https=${browser}.desktop
+    x-scheme-handler/about=${browser}.desktop
+    x-scheme-handler/unknown=${browser}.desktop
+    inode/directory=${fileExplorer}.desktop
+  '';
+
+  # Portal configuration (for file chooser dialogs)
+  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
+    [preferred]
+    default=gtk
+    # If you want the file chooser to use pcmanfm-qt, you'd need the portal backend,
+    # but gtk is fine for a lightweight setup.
+  '';
     home.sessionVariables = {
       WARP_PATH = "${pkgs.warp-terminal}/bin/warp-terminal"; # Or the correct binary path
     };

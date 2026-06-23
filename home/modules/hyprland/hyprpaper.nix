@@ -1,5 +1,5 @@
 { pkgs, lib, ... }: 
-let path = "/etc/nixos/users/sunshine/home"; in
+let path = "./."; in
 {
     services.hyprpaper={
        enable = true;

@@ -37,6 +37,7 @@ let path = "/etc/nixos/users/sunshine/home"; in
             '<span foreground="##cad3f5">ٱلْحَمْدُ لِلَّٰهِ</span>'
           '';
           shadow_passes = 2;
+          hide_input = false;
         }
       ];
     };

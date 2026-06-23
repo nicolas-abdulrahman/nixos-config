@@ -1,3 +1,6 @@
+
+
+
 { pkgs, inputs, config, lib, ... }:
 
 {
@@ -62,7 +65,7 @@
 
     };
   programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
+  programs.nix-ld.libraries = with pkgs;[]++  (lib.optionals (config.full) [
     alsa-lib
     glib
     libGL
@@ -83,78 +86,19 @@
     xorg.libXinerama
     xorg.libXrandr
     zlib
-  ];
+  ]);
 
 
-  environment.systemPackages = with pkgs; [
-    cacert  # Provides standard security certificates
-    xorg.xorgserver
-    xorg.libX11
-    xorg.xinit
-    xwayland
-    xorg.xrandr
-    xorg.xsetroot
-    kdePackages.plasma-workspace
-
-
-    xorg.xev
-    xremap
-    iproute2
-    lsof
-    xorg.libX11
-    inetutils
-    nettools
-    docker
-    home-manager
-    tree
-    treecat
-    patchelf
-    file
-    bubblewrap
-    firejail
-    glib
-
-    nix-index
-    glibc
-    docker-compose
-    firefox
-    btop
-    unzip
-    imagemagick
-    # vdhcoapp
-    ffmpeg
-    libnotify
-    broot
-    neofetch
-    nixd
-    neovim
-    git
-    zsh
-    wget
-    curl
-    zsh
-    jq
-    gparted
-  ] ++ (lib.optionals (config.full) [
-
-    wineWowPackages.full
-    slurp
-    grim
-    devbox
-    #  vdhcoapp #firefox plugin to download vids
-    # kdePackages.xwaylandvideobridge
-    kdePackages.dolphin
-    gradle
-    prismlauncher
-    bun
-    lua
-    rust-analyzer-unwrapped
-    python314
-    luajitPackages.lua-lsp
-    vscode
-    gdb
-    gdb-dashboard
-    inputs.nixgl
-
+  environment.systemPackages = with pkgs;
+# Essentials
+  [
+    home-manager pcmanfm 
+    cacert iproute2 inetutils nettools xremap tmux
+    zsh git wget curl jq btop unzip file glib nix-index tree lsof st surf xwayland
+  ] ++ 
+  # Optionals (System-level CLI only)
+  (lib.optionals (config.full) [
+    ffmpeg imagemagick firejail 
+    xorg.xorgserver xorg.xinit xorg.xrandr xorg.xsetroot xorg.xev
   ]);
 }

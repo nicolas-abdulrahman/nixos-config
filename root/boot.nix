@@ -28,7 +28,7 @@ in
       grub = {
         enable = true;
         device = "nodev";
-        useOSProber = true; # Set to false since you have your manual entry now!
+        useOSProber = false; # Set to false since you have your manual entry now!
         efiSupport = true;
 
         extraEntries = ''

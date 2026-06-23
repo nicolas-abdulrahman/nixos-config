@@ -1,58 +1,33 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, useHypr, ... }:
 
 {
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-  console.keyMap = "us";
-  #services.xserver.xkb = {
-  #  layout = "br";
-  #  variant = "nodeadkeys";
-  # };
-  #console.keyMap = "br-abnt2";
-  services.xserver.videoDrivers = [ "modsetting" "amdgpu" ];
-  ########### DISPLAY & LOGIN MANAGER ###########
-  services.displayManager.sddm.enable = true;
-
   services.xserver = {
     enable = true;
     autorun = true;
-
+    xkb.layout = "us";
+    videoDrivers = [ "amdgpu" ];
+    desktopManager.xfce.enable = true;
+    desktopManager.lxqt.enable = true;
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [ dmenu i3status i3lock ];
+    };
   };
 
-  # programs.hyprland.enable = true;
+  console.keyMap = "us";
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-    config.hyprland.default = [ "hyprland" ];
-  };
-
-  ########### DESKTOP ENVIRONMENTS ###########
-  # --- Plasma 6 (KDE) ---
-  services.desktopManager.plasma6.enable = true;
-  # --- XFCE ---
-  services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.desktopManager.lxqt.enable = true;
-
-  ########### WAYLAND COMPOSITOR ###########
-  # Hyprland on Wayland
-  programs.hyprland = {
+  programs.hyprland = if useHypr then {
     enable = true;
     xwayland.enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+  } else {
+    enable = false;
   };
 
+  services.displayManager = {
+    sddm.enable = false;
+    ly.enable = true;
+  };
 
-
-  ########### OPTIONAL QUALITY OF LIFE ###########
-  # Allows you to pick Plasma / XFCE / Hyprland at login
-  services.displayManager.sddm.wayland.enable = true;
-
-  # Enable polkit & PAM for session auth
-  security.pam.services.sddm.enable = true;
   security.pam.services.login.enable = true;
-  # security.pam.services.gdm.enable = true;
-
 }
