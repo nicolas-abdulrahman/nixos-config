@@ -49,6 +49,8 @@ in
       conform = { package = conform-nvim; setup = builtins.readFile ./plugin/conform.lua; };
       harpoon = { package = harpoon; setup = builtins.readFile ./plugin/harpoon.lua; };
       cmp = { package = nvim-cmp; };
+      cmp-nvim-lsp = { package = cmp-nvim-lsp; };
+      lspconfig = { package = nvim-lspconfig; };
       codecompanion = { package = codecompanion-nvim; };
       nui = { package = nui-nvim; };
       dressing = { package = dressing-nvim; };
@@ -59,6 +61,13 @@ in
       set = builtins.readFile ./lua/set.lua;
       lsp = builtins.readFile ./lua/lsp.lua;
       autocmds = builtins.readFile ./lua/autocmds.lua;
+    lsp2 = ''
+        vim.keymap.set('n', '<leader>ll', function()
+          -- This executes the contents of your lsp.lua file only when pressed
+          ${builtins.readFile ./plugin/lsp.lua}
+          print("LSP2 configuration loaded!")
+        end, { desc = "Load LSP2 configurations", silent = true })
+      ''; 
     };
 
     startPlugins = with pkgs.vimPlugins; [
@@ -78,8 +87,14 @@ in
     enable = true;
     highlight.enable = true;
     indent.enable = true;
-    
-    # Use the 'grammars' option defined in your module
+    grammars = with pkgs.vimPlugins.nvim-treesitter-parsers; [
+        lua
+        nix
+        python
+        gdscript
+        rust
+        godot_resource # Adds syntax highlighting for .tres and .tscn files
+      ];
     };
   };
 }

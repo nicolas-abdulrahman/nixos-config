@@ -1,277 +1,205 @@
--- require("java").setup()
+vim.g.mapleader = " "
 
 local cmp = require("cmp")
-vim.g.mapleader = " "
 cmp.setup({
-	snippet = {
-		-- REQUIRED - you must specify a snippet engine
-		expand = function(args)
-			-- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-			-- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-			require("snippy").expand_snippet(args.body) -- For `snippy` users.
-			-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-		end,
-	},
-	window = {
-		completion = cmp.config.window.bordered(),
-		-- documentation = cmp.config.window.bordered(),
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-m>"] = cmp.mapping.scroll_docs(-4),
-		["<C-,>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
-		["<C-e>"] = cmp.mapping.abort(),
-		["<Tab>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-	}),
-	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
-		--  { name = 'vsnip' }, -- For vsnip users.
-		-- { name = 'luasnip' }, -- For luasnip users.
-		-- { name = 'ultisnips' }, -- For ultisnips users.
-		{ name = "snippy" }, -- For snippy users.
-	}, {
-		{ name = "buffer" },
-	}),
+    snippet = {
+        expand = function(args)
+            vim.snippet.expand(args.body)
+        end,
+    },
+    window = {
+        completion = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+        ["<C-m>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-,>"] = cmp.mapping.scroll_docs(4),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+        ["<Tab>"] = cmp.mapping.confirm({ select = true }),
+    }),
+    sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "snippy" },
+    }, {
+        { name = "buffer" },
+    }),
 })
---local capabilities = vim.lsp.protocol.make_client_capabilities()
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+local status_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+if status_ok then
+    capabilities = cmp_lsp.default_capabilities()
+end
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
---require("nvim-autopairs").setup()
-function on_attach(client, bufnr)
-	local opts = { buffer = bufnr, remap = false }
-	vim.api.nvim_set_keymap("n", "<leader>cjr", "JavaRunnerRunMain", { noremap = true })
-	vim.api.nvim_set_keymap("n", "<leader>cjb", "JavaBuildBuildWorkspace", { noremap = true })
-	vim.keymap.set("n", "K", function()
-		vim.lsp.buf.hover()
-	end, opts)
-	vim.keymap.set("n", "<leader>ls", function()
-		vim.lsp.buf.workspace_symbol()
-	end, opts)
-	vim.keymap.set("n", "<C-d>", function()
-		vim.diagnostic.open_float()
-	end, opts)
-	vim.keymap.set("n", "<leader>ld", function()
-		vim.diagnostic.open_float()
-	end, opts)
-	vim.keymap.set("n", "]d", function()
-		vim.diagnostic.goto_next()
-	end, opts)
-	vim.keymap.set("n", "[d", function()
-		vim.diagnostic.goto_prev()
-	end, opts)
-	vim.keymap.set("n", "<leader>lsa", function()
-		vim.lsp.buf.code_action()
-	end, opts)
-	vim.keymap.set("n", "<leader>lsr", function()
-		vim.lsp.buf.references()
-	end, opts)
-	vim.keymap.set("n", "<leader>li", function()
-		vim.lsp.buf.implementation()
-	end, opts)
-	vim.keymap.set("n", "<leader>lt", function()
-		vim.lsp.buf.type_definition()
-	end, opts)
-	vim.keymap.set("n", "<leader>lr", function()
-		vim.lsp.buf.rename()
-	end, opts)
-	vim.keymap.set("n", "<C-Space>", function()
-		vim.lsp.buf.signature_help()
-	end, opts)
-	vim.keymap.set("n", "<S-Space>", function()
-		vim.lsp.buf.hover()
-	end, opts)
-	vim.keymap.set("n", "<leader>gd", function()
-		vim.lsp.buf.definition()
-	end, opts)
-	vim.keymap.set("n", "<leader>gt", function()
-		vim.lsp.buf.type_definition()
-	end, opts)
-	vim.keymap.set("n", "<leader>td", "<cmd>Telescope diagnostics<CR>", opts)
-	vim.keymap.set("n", "<leader>cf", function()
-		vim.lsp.buf.format()
-	end, opts)
-	vim.keymap.set("n", "<S-h>", "<cmd>CommentToggle<CR>", opts)
-	vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format)
-	-- vim.keymap.set("n", "<leader>h", require("lsp_lines").toggle, opts)
+local function on_attach(client, bufnr)
+    local opts = { buffer = bufnr, remap = false }
+    vim.api.nvim_set_keymap("n", "<leader>cjr", "JavaRunnerRunMain", { noremap = true })
+    vim.api.nvim_set_keymap("n", "<leader>cjb", "JavaBuildBuildWorkspace", { noremap = true })
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>ls", vim.lsp.buf.workspace_symbol, opts)
+    vim.keymap.set("n", "<C-d>", vim.diagnostic.open_float, opts)
+    vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
+    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+    vim.keymap.set("n", "<leader>lsa", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader>lsr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)
+    vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, opts)
+    vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<C-Space>", vim.lsp.buf.signature_help, opts)
+    vim.keymap.set("n", "<S-Space>", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "<leader>gt", vim.lsp.buf.type_definition, opts)
+    vim.keymap.set("n", "<leader>td", "<cmd>Telescope diagnostics<CR>", opts)
+    vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, opts)
+    vim.keymap.set("n", "<S-h>", "<cmd>CommentToggle<CR>", opts)
 end
 
--- vim.keymap.set("n", "<leader>h", require("lsp_lines").toggle, opts)
-
-require("lspconfig").clangd.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	cmd = { "clangd", "-I/usr/include/qt", "-I/usr/include/qt/QtCore", "-I/usr/include/qt/QtWidgets" },
-})
-require("lspconfig").pyright.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	cmd = { "pyright-langserver", "--stdio" },
+vim.lsp.config("clangd", {
+    cmd = { "/run/current-system/sw/bin/clangd", "-I/usr/include/qt", "-I/usr/include/qt/QtCore", "-I/usr/include/qt/QtWidgets" },
+    on_attach = on_attach,
+    capabilities = capabilities,
 })
 
--- require("rust-tools").setup({
--- cmd = {"rustup", "run", "stable", "rust_analyzer"}
--- on_attach= lsp.on_attach
--- })
--- require('rust-tools').inlay_hints.enable()
---lsp.setup_servers({"rust_analyzer"})
--- require("lspconfig").rust_analyzer.setup{
--- cmd = {"rustup", "run", "stable", "rust_analyzer"},
--- root_dir = require('lspconfig.util').root_pattern({'.git'})
-
--- }
---
--- require("lspconfig").rust_analyzer.setup{}
--- require("lspconfig").asm_lsp.setup{
---     cmd={"rustup", "run", "stable", "asm-lsp"},
---     filetypes= { "asm", "vmasm", "s", "S"}
--- }
--- lsp.skip_server_setup({'rust_analyzer'})
--- require("lspconfig").rust_analyzer.setup({
--- cmd = {"/run/current-system/sw/bin/rust-analyzer"}
--- }
--- )
--- require("lspconfig").angularls.setup({
--- root_dir = require('lspconfig.util').root_pattern({'.git'})
-
--- })
--- require("lspconfig").antlersls.setup({
--- root_dir = require('lspconfig.util').root_pattern({'.git'})
--- })
---
--- require("lspconfig").html.setup({})
-require("lspconfig").tsserver.setup({
-	cmd = { "typescript-language-server", "--stdio" },
-	-- cmd = { "nix", "run", "nixpkgs#typescript-language-server", "--", "--stdio" },
-	on_attach = on_attach,
-	capabilities = capabilities,
-	root_dir = require("lspconfig.util").root_pattern({ ".git" }),
-})
--- lldb_exec = concat_if_exist(os.getenv("LLDB"), "/bin/lldb-vscode")
-require("lspconfig").lua_ls.setup({
-	cmd = { "/run/current-system/sw/bin/lua-lsp" },
-	on_attach = on_attach,
-})
-require("lspconfig").nixd.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
--- require("lspconfig").tsserver.setup({
--- cmd = { "typescript-language-server", "--stdio"},
--- on_attach = on_attach,
--- capabilities = capabilities
--- })
-require("lspconfig").clangd.setup({
-	cmd = { "/run/current-system/sw/bin/clangd" },
-	on_attach = on_attach,
-	capabilities = capabilities,
+vim.lsp.config("pyright", {
+    cmd = { "pyright-langserver", "--stdio" },
+    on_attach = on_attach,
+    capabilities = capabilities,
 })
 
-require("lspconfig").zls.setup({})
+vim.lsp.config("ts_ls", {
+    cmd = { "typescript-language-server", "--stdio" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
 
-function concat_if_exist(path, path2)
-	if path == nil then
-		return
-	else
-		return path .. path2
-	end
+vim.lsp.config("lua_ls", {
+    cmd = { "/run/current-system/sw/bin/lua-lsp" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("nixd", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("zls", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("gopls", {
+    cmd = { os.getenv("GOPLS_PATH") },
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("cssls", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("html", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("css", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("cmake", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("jdtls", {
+    cmd = { "jdtls" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("nil_ls", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("gdscript", {
+    -- Connects natively to Godot's running LSP server instance (default port 6005)
+    cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
+    filetypes = { "gdscript" },
+    root_markers = { "project.godot", ".git" },
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
+vim.lsp.config("sqls", {
+    on_attach = function(client, bufnr)
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+        on_attach(client, bufnr)
+    end,
+    capabilities = capabilities,
+    settings = {
+        sqls = {
+            connections = {
+                {
+                    driver = "mysql",
+                    dataSourceName = "root:root@tcp(127.0.0.1:3306)/RuaSolidaria",
+                },
+            },
+        },
+    },
+})
+
+vim.lsp.enable({
+    "clangd",
+    "pyright",
+    "ts_ls",
+    "lua_ls",
+    "nixd",
+    "zls",
+    "gopls",
+    "cssls",
+    "html",
+    "css",
+    "cmake",
+    "jdtls",
+    "nil_ls",
+    "sqls",
+})
+
+local function concat_if_exist(path, path2)
+    return path and (path .. path2) or nil
 end
-local rust = require("rustaceanvim")
 
-lldb_exec = concat_if_exist(os.getenv("LLDB"), "/bin/lldb-vscode")
-lldb_lib = concat_if_exist(os.getenv("LLDB_LIB"), "/lib")
+local lldb_exec = concat_if_exist(os.getenv("LLDB"), "/bin/lldb-vscode")
 local dap = require("dap")
 
 dap.adapters.codelldb = {
-	type = "server",
-	port = "${port}",
-	executable = {
-		command = lldb_exec,
-		args = { "--port", "${port}" },
-	},
+    type = "server",
+    port = "${port}",
+    executable = {
+        command = lldb_exec,
+        args = { "--port", "${port}" },
+    },
 }
 
 dap.configurations.rust = {
-	{
-		name = "Rust debug",
-		type = "codelldb",
-		request = "launch",
-		program = function()
-			vim.fn.jobstart("cargo build")
-			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
-		end,
-		cwd = "${workspaceFolder}",
-		stopOnEntry = false,
-		showDisassembly = "never",
-	},
+    {
+        name = "Rust debug",
+        type = "codelldb",
+        request = "launch",
+        program = function()
+            vim.fn.jobstart("cargo build")
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+        end,
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+        showDisassembly = "never",
+    },
 }
-require("lspconfig").gopls.setup({
-	cmd = { os.getenv("GOPLS_PATH") },
-})
---rust_tools.setup({
---server = {
---on_attach = function(client, bufnr)
---on_attach(client, bufnr)
---	require("crates").setup()
--- vim.keymap.set('n', '<leader>ca', rust_tools.hover_actions.hover_actions, {buffer = bufnr})
---	end,
---	cmd = { "rust-analyzer" },
 
---	root_dir = require("lspconfig.util").root_pattern({ ".git" }),
---	capabilities = capabilities,
---},
-
---dap = {
---	adapter = {
---		type = "executable",
---		command = "gdb",
---		name = "rt_gdb",
---	},
---},
---})
-
--- local cap = vim.lsp.protocol.make_client_capabilities()
--- cap.textDocument.completion.completionItem.snippetSupport = true
--- require("lspconfig").html.setup({
--- capabilities = cap,
--- })
-require("lspconfig").cssls.setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
-require("lspconfig").html.setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
-
-require("lspconfig").css.setup({
-	capabilities = capabilities,
-})
-require("lspconfig").cmake.setup({
-
-	on_attach = on_attach,
-})
-require("lspconfig").jdtls.setup({
-	cmd = { "jdtls" },
-	on_attach = on_attach,
-})
-
-require("lspconfig").nil_ls.setup({})
-require("lspconfig").sqls.setup({
-	on_attach = function(client, bufnr)
-		-- Disable all formatting capability of sqls
-		client.server_capabilities.documentFormattingProvider = false
-		client.server_capabilities.documentRangeFormattingProvider = false
-	end,
-	settings = {
-		sqls = {
-			connections = {
-				{
-					driver = "mysql",
-					dataSourceName = "root:root@tcp(127.0.0.1:3306)/RuaSolidaria",
-				},
-			},
-		},
-	},
-})

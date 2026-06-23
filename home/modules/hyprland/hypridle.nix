@@ -1,13 +1,15 @@
 { pkgs, lib, ... }:
-let path = "/etc/nixos/users/sunshine/home"; in
+let
+  # Path to your config files (if needed)
+  path = "/etc/nixos/users/sunshine/home";
+in
 {
-
   programs.hyprlock = {
     enable = true;
     settings = {
       general = {
         disable_loading_bar = false;
-        grace = 300;
+        grace = 600;                # 10 minutes – you can dismiss without password during this time
         hide_cursor = true;
         no_fade_in = false;
         gaps_in = 10;
@@ -37,38 +39,47 @@ let path = "/etc/nixos/users/sunshine/home"; in
             '<span foreground="##cad3f5">ٱلْحَمْدُ لِلَّٰهِ</span>'
           '';
           shadow_passes = 2;
-          hide_input = false;
         }
       ];
     };
-
   };
+
   services.hypridle = {
     enable = true;
     settings = {
       general = {
         after_sleep_cmd = "hyprctl dispatch dpms on";
         ignore_dbus_inhibit = false;
-        lock_cmd = "hyprlock";
+        lock_cmd = "hyprlock";      # This is the command to lock; we'll use it at 20 minutes
       };
 
       listener = [
+        # 1. Show hyprlock after 20 minutes (1200s)
         {
-          timeout = 500;
+          timeout = 1200;
           on-timeout = "hyprlock";
         }
+
+        # 2. Turn screen off after 30 minutes (1800s)
         {
-          timeout = 3000;
+          timeout = 1800;
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
-        {
-          timeout = 15000;
-          on-timeout = "poweroff";
 
+        # 3. Suspend (sleep) after 1 hour (3600s)
+        {
+          timeout = 3600;
+          on-timeout = "systemctl suspend";
+          on-resume = "hyprctl dispatch dpms on";   # Re-enable screen after wake
+        }
+
+        # 4. Shut down after 3 hours (10800s)
+        {
+          timeout = 10800;
+          on-timeout = "poweroff";
         }
       ];
     };
   };
-
 }

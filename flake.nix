@@ -20,9 +20,11 @@
       url = "path:./nix_packages/nix-zed";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # Bleeding edge
+    
   };
 
-  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, ... }:
+  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -32,6 +34,9 @@
           # Keep your insecure packages here too
           permittedInsecurePackages = [ "dotnet-sdk-6.0.428" ];
         };
+      };
+      pkgs-unstable = import nixpkgs-unstable{
+        inherit system;
       };
       username = "nick";
 
@@ -53,9 +58,11 @@
         '';
       };
 
-      godotModule = import ./shells/godot4 { inherit pkgs; nvim= myNvim; };
+
+      godotModule = import ./shells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
     in
     {
+    
       homeConfigurations."${username}" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         extraSpecialArgs = { inherit inputs username godotModule; hyprland = inputs.hyprland; };
@@ -65,6 +72,7 @@
           { full = false; hypr = true; }
         ];
       };
+
 
       nixosConfigurations =
         let
@@ -93,6 +101,7 @@
             useHypr = false;
           };
         };
+
 
       packages.${system} = {
         nvim = myNvim;
