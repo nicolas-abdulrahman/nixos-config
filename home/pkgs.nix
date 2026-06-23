@@ -1,112 +1,26 @@
+
 { config, pkgs, inputs, lib, username, ... }:
 {
-  home.packages = with pkgs; [
-
-    aseprite
-    nodejs_20
-    nodePackages.tailwindcss
-
-    equicord
-    hyprsunset
-    blockbench
-    # ciscoPacketTracer8
-    lazygit
-    wf-recorder
-    obs-studio
-    flyctl
-    gitkraken
-    dbeaver-bin
-    warp-terminal
-    blender
-    steamcmd
-    audacity
-    git-credential-manager
-    pavucontrol
-    tmux
-    # vdhcoapp
-    universal-ctags
-    # Network
-    arp-scan
-    nmap
-    kitty
-    swayimg
-    xorg.xrandr
-    brightnessctl
-    zoxide
-    radare2
-    openbox
-    broot
-    nnn
-    steam-run
-    firefox
-    # discord
-    lutris
-    godot_4
-    qbittorrent
-    floorp-bin
-    android-tools
-    google-chrome
-    brave
-    st
-  ] ++ (if config.hypr then [
-    grimblast
-    mako
-    waybar
-    eww
-    hyprpaper
-    hyprlock
-    hypridle
-
-    krita
-  ] else [ ])
-  # ++ (if config.laptop then [
-  # st
-  # ] else [
-  # ])
-  ++ (if config.full then [
-    # jetbrains.idea-community-src
-    smartgit
-    # opera
-    # okular
-    weston
-    gamescope
-    protonup-qt
-    vesktop
-    gimp
-    # notion
-    blender
-    krita
-    waydroid
-    wireshark
-    metabase
-    texliveFull
-    prismlauncher
-    # launcher
-    # bobox.grapejuice
-    thunderbird
-    android-studio
-    wireshark
-    whatsie
-    spotify
-    waydroid
-    libreoffice-qt6
-
-  ] else [ ]);
-
-  #programs.zed = {
-  #   enable = true;
-  #   settings = {
-  #     theme = "One Dark";
-  #     ui_font_size = 16;
-  #     buffer_font_size = 14;
-  #   };
-  #  keymap = [
-  #    {
-  #      context = "editor";
-  #      bindings = {
-  #        "Ctrl+Shift+Z" = "zed";
-  # };
-  #    }
-  #   ];
-  # };
+home.packages = with pkgs; 
+  # Essentials: Daily utilities, CLI tools, and networking
+  [
+    lazygit zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
+    warp-terminal git-credential-manager android-tools arp-scan nmap
+  ] ++ 
+  # Hyprland: Window manager specific tools
+  (lib.optionals config.hypr [
+    grimblast mako waybar eww hyprpaper hyprlock hypridle 
+    wf-recorder hyprsunset swayimg
+  ]) ++ 
+  # Full: Heavy GUI apps, media, and office software
+  (lib.optionals config.full [
+    # Browsers & Media
+    firefox floorp-bin google-chrome brave thunderbird spotify qbittorrent
+    obs-studio audacity blender krita gimp
+    
+    # Utilities & Office
+    wireshark metabase texliveFull prismlauncher protonup-qt 
+    vesktop libreoffice-qt6 lutris waydroid steam-run steamcmd 
+    gamescope weston blockbench equicord
+  ]);
 }

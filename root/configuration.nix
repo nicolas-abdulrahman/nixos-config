@@ -1,27 +1,21 @@
 { config, pkgs, inputs, nixgl, lib, ... }:
-#let 
-#    myjdk21 = pkgs.jdk21;
-#in
+
 {
+  imports = [
+    ./hardware-configuration.nix
+    ./boot.nix
+    ./desktop_manager.nix
+    ./pkgs.nix
+    ./security.nix
+    ./users.nix
+  ];
 
-  imports =
-    [
-      # ./jupyter.nix
-      ./hardware-configuration.nix
-      ./boot.nix
-      ./desktop_manager.nix
-      ./pkgs.nix
-      ./security.nix
-      ./users.nix
-    ];
   options = {
-
-    full = lib.mkOption
-      {
-        type = lib.types.bool;
-        default = false;
-        description = "full nixos";
-      };
+    full = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "full nixos";
+    };
 
     laptop = lib.mkOption {
       type = lib.types.bool;
@@ -30,21 +24,11 @@
     };
   };
 
-
   config = {
-    # virtualisation = lib.mkIf (config.full) {
-    #   vmware.host.enable = true;
-    #   virtualbox.host.enableKvm = false; # Disable KVM for VirtualBox
-    #   virtualbox.host.addNetworkInterface = false; # Disable network interface for KVM
-    #   virtualbox.host.enable = true;
-    #   docker.enable = true;
-    #   waydroid.enable = true;
-    # };
     services.httpd = lib.mkIf (config.full) {
       enablePHP = true;
       enable = true;
       extraConfig = ''
-        # Serve /hello from /codes/mywebsite
         Alias /hello "/programs/codes/php/hello"
         Alias /rua_solidaria "/programs/codes/node/Prototipo-rua-solidaria"
 
@@ -53,6 +37,7 @@
           AllowOverride All
           Require all granted
         </Directory>
+
         <Directory "/programs/codes/node/Prototipo-rua-solidaria">
           Options Indexes FollowSymLinks
           AllowOverride All
@@ -60,17 +45,16 @@
         </Directory>
       '';
     };
+
     programs.steam = lib.mkIf (config.full) {
       enable = true;
-      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-      # package = pkgs.steam.override {
-      # withPrimus = true;
-      # extraPkgs = with pkgs; [ bumblebee glxinfo ];
-      # };
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
     };
-    programs.nix-ld.enable = true;
 
+    programs.nix-ld.enable = true;
+    programs.dconf.enable = true;
+    programs.zsh.enable = true;
 
     time.timeZone = "America/Recife";
 
@@ -87,22 +71,7 @@
       LC_TIME = "pt_BR.UTF-8";
     };
 
-    programs.dconf.enable = true;
-    services.gnome = {
-      gnome-keyring.enable = true;
-    };
-
-    # environment.sessionVariables = {
-    # QT_QPA_PLATFORM = "wayland";
-    # GDK_BACKEND = "wayland";
-    # };
-
-
-
-    environment.sessionVariables = {
-      WLR_NO_HARDWARE_CURSORS = "1";
-      NIXOS_OZONE_WL = "1";
-    };
+    services.gnome.gnome-keyring.enable = true;
     services.printing.enable = true;
 
     services.pipewire = {
@@ -113,16 +82,16 @@
       pulse.enable = true;
     };
 
-
+    environment.sessionVariables = {
+      WLR_NO_HARDWARE_CURSORS = "1";
+      NIXOS_OZONE_WL = "1";
+    };
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    programs.zsh.enable = true;
-
 
     nixpkgs.config.allowUnfree = true;
 
     fonts.packages = with pkgs; [
-      # (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
       nerd-fonts._0xproto
       nerd-fonts.droid-sans-mono
       nerd-fonts.hack
@@ -130,7 +99,6 @@
       gentium
       cantarell-fonts
       textfonts
-
     ];
 
     fonts.fontconfig.defaultFonts = {
@@ -138,14 +106,22 @@
       emoji = [ "OpenMoji Color" ];
     };
 
-
     hardware = {
       pulseaudio.enable = false;
       uinput.enable = true;
       opengl.enable = true;
-
-      # extraPackages = with pkgs;[ pkgs.mesa.drivers libva-utils mesa ];
     };
-    system.stateVersion = "24.11";
+
+    system.stateVersion = "26.05";
+
+    systemd.user.services.xremap = {
+      description = "Xremap keyboard remapper";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.xremap}/bin/xremap ${pkgs.writeText "remap.yml" (builtins.readFile ./conf/remap.yml)}";
+        Restart = "on-failure";
+      };
+    };
   };
 }

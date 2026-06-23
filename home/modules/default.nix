@@ -2,7 +2,6 @@
 let
   enable_hypr = config.hypr or false;
   enable_all = config.full or false;
-
 in
 {
   imports = [
@@ -16,12 +15,4 @@ in
      ./godot
     #./xremap.nix
   ];
-
-  options = {
-    enable_hypr = lib.mkEnableOption "Enable foo module";
-  };
-  # ++ (if config.full then [
-  #   #
-  #
-  # ] else [ ]);
 }

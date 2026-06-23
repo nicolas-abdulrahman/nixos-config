@@ -6,7 +6,6 @@
     eww.url = "github:elkowar/eww";
     hyprland = {
       url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -14,7 +13,7 @@
     };
     nix-colors.url = "github:misterio77/nix-colors";
     nixgl.url = "github:nix-community/nixGL";
-    nvf.url = "github:Outnicky/nvf-fork";
+    nvf.url = "github:NotAShelf/nvf";
     nur.url = "github:nix-community/NUR";
     nixcord.url = "github:FlameFlag/nixcord";
     nix-zed = {
@@ -67,18 +66,33 @@
         ];
       };
 
-      nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
-          system = system;
-          specialArgs = { inherit inputs; hyprland = inputs.hyprland; };
-          modules = [ ./root/configuration.nix { full = true; } ];
+      nixosConfigurations =
+        let
+          system = "x86_64-linux"; # Adjust if your systems differ
+
+          # Define a helper function to build systems without repeating boilerplate
+          mkSystem = { hardwareFile, isFull, useHypr }: nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = {
+              inherit inputs isFull useHypr hardwareFile;
+              hyprland = inputs.hyprland;
+            };
+            modules = [ ./root/configuration.nix ];
+          };
+        in
+        {
+          nixos= mkSystem {
+            hardwareFile = ./root/hardware-configuration.nix;
+            isFull = true;
+            useHypr = true;
+          };
+
+          laptop = mkSystem {
+            hardwareFile = ./root/laptop-hardware-configuration.nix;
+            isFull = false;
+            useHypr = false;
+          };
         };
-        nixos-full = nixpkgs.lib.nixosSystem {
-          system = system;
-          specialArgs = { inherit inputs; hyprland = inputs.hyprland; };
-          modules = [ ./root/configuration.nix { full = true; } ];
-        };
-      };
 
       packages.${system} = {
         nvim = myNvim;

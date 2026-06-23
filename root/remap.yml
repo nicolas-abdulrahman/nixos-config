@@ -1,0 +1,122 @@
+keypress_delay_ms: 25
+
+default_mode: default
+virtual_modifiers: 
+  - CapsLock
+modmap:
+  - name: main
+    remap:
+      CapsLock : 
+        held: CapsLock
+        alone: Esc 
+      Alt_R: 
+        # held: Alt_R 
+        held: Shift_L
+        alone: enter 
+      Tab:
+        held: ALT_L
+        alone: Tab        # send Tab when pressed alone
+      #  i:
+        #  held: i
+      #     chain: 
+      #       launch: "notify-send banana"
+      #       key_press: i 
+        #  alone: i 
+        #  press:
+#   launch: "notify-send banana"
+      #    
+
+keymap:
+  - name : main remap
+    remap :
+      # super-i : 
+      # set_mode: command
+      CapsLock-e: minus
+      CapsLock-minus: KEY_LEFTSHIFT-minus 
+      CapsLock-w: KEY_UP
+      CapsLock-a: KEY_LEFT
+      CapsLock-s: KEY_DOWN
+      CapsLock-d: KEY_RIGHT
+      CapsLock-i: leftbrace 
+      CapsLock-o: rightbrace 
+      # CapsLock-i: apostrophe
+      # CapsLock-o: KEY_LEFTSHIFT-apostrophe
+      CapsLock-n: KEY_LEFTSHIFT-equal  # + 
+      CapsLock-t: minus  
+      CapsLock-m: equal 
+      CapsLock-p: backspace 
+      CapsLock-j: KEY_LEFTSHIFT-8 # *
+      CapsLock-k: KEY_LEFTSHIFT-slash # ?
+      CapsLock-l: KEY_LEFTSHIFT-1 # ~ 
+      
+      
+      
+      
+      CapsLock-g: KEY_LEFTSHIFT-grave # ~
+      CapsLock-b: KEY_LEFTSHIFT-5 # %
+      
+      CapsLock-9: KEY_LEFTSHIFT-9
+      CapsLock-0: KEY_LEFTSHIFT-0
+      CapsLock-u: KEY_LEFTSHIFT-apostrophe
+      CapsLock-y: KEY_LEFTSHIFT-apostrophe 
+      CapsLock-v: KEY_LEFTSHIFT-KEY_3 # # 
+      CapsLock-f: KEY_LEFTSHIFT-KEY_4 # $ 
+      CapsLock-h: KEY_LEFTSHIFT-KEY_6 # ^ 
+      CapsLock-r: apostrophe 
+      Shift-leftbrace: backspace
+      CapsLock-leftbrace: backspace
+      CapsLock-semicolon: KEY_LEFTSHIFT-semicolon 
+      CapsLock-comma: KEY_LEFTSHIFT-comma
+      CapsLock-dot: KEY_LEFTSHIFT-dot 
+      CapsLock-apostrophe: KEY_LEFTSHIFT-apostrophe
+
+
+      # CapsLock-w: KEY_0
+      # Alt_L-q: KEY_0
+      # Alt_L-w: KEY_1
+      # Alt_L-e: KEY_2
+      # Alt_L-r: KEY_3
+      # Alt_L-a: KEY_4
+      # Alt_L-s: KEY_5
+      # Alt_L-d: KEY_6
+      # Alt_L-i: KEY_7
+      # Alt_L-o: KEY_8
+      # Alt_L-p: KEY_9
+      # Alt-p: delete 
+      # Alt-leftbrace: delete 
+      # Alt_R-w: KEY_LEFTSHIFT-KEY_backslash
+      # Alt_R-e: backslash
+      # Alt_R-q: slash
+      # Alt_R-r: grave # `
+
+
+      CapsLock-q: slash
+      CapsLock-r: backslash
+      CapsLock-e: KEY_LEFTSHIFT-7
+      CapsLock-u: KEY_LEFTSHIFT-KEY_backslash
+      CapsLock-y: grave
+      CapsLock-c: KEY_LEFTSHIFT-2
+
+      Alt_L-0: KEY_KP0
+      Alt_L-1: KEY_KP1
+      Alt_L-2: KEY_KP2
+      Alt_L-3: KEY_KP3
+      Alt_L-4: KEY_KP4
+      Alt_L-5: KEY_KP5
+      Alt_L-6: KEY_KP6
+      Alt_L-7: KEY_KP7
+      Alt_L-8: KEY_KP8
+      Alt_L-9: KEY_KP9
+      Alt_L-equal: Print
+      Alt_L-minus: 
+        launch: ["bash", "-c", "REGION=$(slurp); sleep 0.1; grim -g \"$REGION\" ~/Pictures/$(date +%Y%m%d_%H%M%S).png"]
+
+
+    mode : default
+  
+  
+  - name : command remap
+    remap :
+      super-i : 
+        set_mode: default
+    mode: command
