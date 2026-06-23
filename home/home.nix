@@ -42,11 +42,11 @@ let
               nix run "${nixos_path}/#$target"
           elif [[ "$1" == "--" ]]; then
               # You already typed the '--' manually (e.g., 'run godot4 -- godot-arg=true') nix run "/etc/nixos/sheels/#$target" "$@"
-              nix run "/etc/nixos/sheels/#$target" "$@"
+              nix run "/etc/nixos/shells/#$target" "$@"
           else
               # Arguments exist but you omitted the '--' (e.g., 'run godot4 godot-arg=true')
               # The function cleanly injects '--' for you!
-              nix run "/etc/nixos/sheels/#$target" -- "$@"
+              nix run "/etc/nixos/shells/#$target" -- "$@"
           fi
       }
 

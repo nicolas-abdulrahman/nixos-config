@@ -116,8 +116,7 @@
 
     systemd.user.services.xremap = {
       description = "Xremap keyboard remapper";
-      wantedBy = [ "graphical-session.target" ];
-      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "default.target" ];
       serviceConfig = {
         ExecStart = "${pkgs.xremap}/bin/xremap ${pkgs.writeText "remap.yml" (builtins.readFile ./conf/remap.yml)}";
         Restart = "on-failure";
