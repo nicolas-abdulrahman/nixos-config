@@ -60,8 +60,9 @@ hl.window_rule({
     maximize = true
 })
 
+
 hl.bind(mainMod .. " + A", hl.dsp.window.fullscreen({ action = "toggle" }))
-hl.bind(mainMod .. " + Q", hl.dsp.window.kill())
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("xdg-open ~"))
 hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd("wezterm"))
 hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("google-chrome-stable"))

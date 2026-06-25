@@ -6,10 +6,14 @@ let
     SOCKET="/tmp/godot-nvim.pipe"
     FILE="$1"
     LINE="$2"
+    PROJECT="$3"
     if [ -S "$SOCKET" ]; then
         ${nvim}/bin/nvim --server "$SOCKET" --remote-send "<C-\><C-N>:e $FILE<CR>:$LINE<CR>"
     else
-        ${pkgs.wezterm}/bin/wezterm start -- ${nvim}/bin/nvim --listen "$SOCKET" +"$LINE" "$FILE"
+        ${pkgs.wezterm}/bin/wezterm start \
+        --class "godot-nvim" \
+        --title "Godot Neovim" \
+        --cwd "$PROJECT --${nvim}/bin/nvim --listen "$SOCKET" +"$LINE" "$FILE"
     fi
   '';
 

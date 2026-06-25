@@ -75,7 +75,6 @@ vim.lsp.config("ts_ls", {
 })
 
 vim.lsp.config("lua_ls", {
-    cmd = { "/run/current-system/sw/bin/lua-lsp" },
     on_attach = on_attach,
     capabilities = capabilities,
 })
