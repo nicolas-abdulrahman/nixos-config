@@ -33,7 +33,7 @@ require("conform").setup({
 		},
 	},
 })
-vim.keymap.set({ "n", "v" }, "<leader>cf", function()
+vim.keymap.set({ "n", "v" }, "<leader>pp", function()
 	require("conform").format({
 		lsp_format = "fallback",
 		async = true,

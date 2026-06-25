@@ -17,6 +17,15 @@ local function get_buffer_name(bufnr)
 	return vim.fs.basename(path)
 end
 
+local function update_tab_title(tabpage, bufnr)
+	if pinned_tabs[tabpage] then
+		local name = get_buffer_name(bufnr)
+		vim.api.nvim_tabpage_set_var(tabpage, "tab_title", name)
+	else
+		pcall(vim.api.nvim_tabpage_del_var, tabpage, "tab_title")
+	end
+end
+
 -- Persistence Engine: Save active pins grouped by CWD
 function M.save_pins()
 	local cwd = vim.fn.getcwd()
@@ -61,6 +70,20 @@ function M.save_pins()
 	end
 end
 
+local function clear_tabs()
+    local initial_tab = vim.api.nvim_get_current_tabpage()
+    local all_tabs = vim.api.nvim_list_tabpages()
+    for _, tab in ipairs(all_tabs) do
+        if tab ~= initial_tab and vim.api.nvim_tabpage_is_valid(tab) then
+            -- Force close windows within the tab to prevent hang-ups
+            pcall(function()
+                vim.cmd(vim.api.nvim_tabpage_get_number(tab) .. "tabclose!")
+            end)
+        end
+    end
+    -- Clear out any dead tab tracking history references 
+end
+
 -- Persistence Engine: Restore pins safely for the current CWD
 function M.load_pins()
 	local cwd = vim.fn.getcwd()
@@ -87,6 +110,8 @@ function M.load_pins()
 
 	is_processing = true
 	allowing_new_tab = true
+    clear_tabs()
+    pinned_tabs = {}
 
 	-- Analyze the starting tab to see if it's empty or holding a file passed via CLI
 	local first_tab = vim.api.nvim_get_current_tabpage()
@@ -116,16 +141,6 @@ function M.load_pins()
 	is_processing = false
 	vim.cmd("redrawtabline")
 end
--- Helper to dynamically manage tab names without caching stale strings
-local function update_tab_title(tabpage, bufnr)
-	if pinned_tabs[tabpage] then
-		local name = get_buffer_name(bufnr)
-		vim.api.nvim_tabpage_set_var(tabpage, "tab_title", name)
-	else
-		pcall(vim.api.nvim_tabpage_del_var, tabpage, "tab_title")
-	end
-end
-
 -- Function 1: Toggle the Pin status of the current tab
 function M.toggle_pin()
 	local current_tab = vim.api.nvim_get_current_tabpage()
@@ -339,18 +354,35 @@ function M.setup(opts)
 		end,
 	})
 
+    vim.api.nvim_create_autocmd({ "VimEnter" }, {
+        group = group,
+        callback = function()
+            vim.schedule(M.load_pins)
+        end,
+    })
+
 	_G.TabPinsRender = M.render_tabline
 	vim.opt.tabline = "%!v:lua.TabPinsRender()"
-
 	vim.api.nvim_create_user_command("TabPinToggle", M.toggle_pin, {})
 	vim.api.nvim_create_user_command("TabPinNext", M.next_tab, {})
 	vim.api.nvim_create_user_command("TabPinPrev", M.prev_tab, {})
 	vim.api.nvim_create_user_command("TabPinRename", M.rename_tab, { nargs = 1 })
 	vim.api.nvim_create_user_command("TabPinSave", M.save_pins, {})
 	vim.api.nvim_create_user_command("TabPinLoad", M.load_pins, {})
+
+	local prefix =  opts.prefix or "t"
+
+    local remap = opts.remap or true 
+	if remap then
+		vim.keymap.set("n", prefix .. "p", "<cmd>TabPinToggle<CR>", { desc = "TabPin: Toggle Pin" })
+		vim.keymap.set("n", prefix .. "l", "<cmd>TabPinNext<CR>", { desc = "TabPin: Next Tab" })
+		vim.keymap.set("n", prefix .. "h", "<cmd>TabPinPrev<CR>", { desc = "TabPin: Prev Tab" })
+		vim.keymap.set("n", prefix .. "r", "<cmd>TabPinRename ", { desc = "TabPin: Rename Tab" }) -- Left open for typing
+		vim.keymap.set("n", prefix .. "s", "<cmd>TabPinSave<CR>", { desc = "TabPin: Save Pins" })
+		vim.keymap.set("n", prefix .. "o", "<cmd>TabPinLoad<CR>", { desc = "TabPin: Load Pins" })
+	end
 end
 
-M.setup()
-
+	-- Concatenating the prefix dynamically to your keys
 
 return M

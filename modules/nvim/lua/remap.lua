@@ -11,38 +11,6 @@ vim.keymap.set("n", "so", function()
 	vim.cmd("so")
 	vim.notify("sourced")
 end, opts)
-vim.api.nvim_create_user_command("ReplaceSelection", function()
-	-- Save the selected text to a variable
-	local _, start_line, start_col, _ = unpack(vim.fn.getpos("'<"))
-	local _, end_line, end_col, _ = unpack(vim.fn.getpos("'>"))
-
-	local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
-	if #lines == 0 then
-		return
-	end
-
-	-- Extract the actual selected text
-	if #lines == 1 then
-		lines[1] = string.sub(lines[1], start_col, end_col)
-	else
-		lines[1] = string.sub(lines[1], start_col)
-		lines[#lines] = string.sub(lines[#lines], 1, end_col)
-	end
-
-	local selected_text = table.concat(lines, "\n")
-	selected_text = vim.fn.escape(selected_text, "\\/") -- Escape for safe substitution
-
-	-- Ask for the replacement
-	local replacement = vim.fn.input('Replace "' .. selected_text .. '" with: ')
-	-- if replacement == "" then
-	-- return
-	-- end
-
-	-- Do the replacement in the whole buffer
-	vim.cmd(string.format("%%s/\\V%s/%s/g", selected_text, replacement))
-end, { range = true })
-
-vim.keymap.set("v", "<leader>rr", ":ReplaceSelection<CR>")
 
 function ren(line)
 	local word = vim.fn.expand("<cword>")
@@ -151,71 +119,40 @@ vim.keymap.set("n", "<A-t>", function()
 	end)
 end, { silent = true })
 
-vim.keymap.set("v", "<leader>w", function()
-	local char = vim.fn.getcharstr()
-	local pairs = {
-		["("] = { "(", ")" },
-		[")"] = { "(", ")" },
-		["["] = { "[", "]" },
-		["]"] = { "[", "]" },
-		["{"] = { "{", "}" },
-		["}"] = { "{", "}" },
-		["<"] = { "<", ">" },
-		[">"] = { "<", ">" },
-	}
 
-	local open_char, close_char = char, char
-	if pairs[char] then
-		open_char, close_char = pairs[char][1], pairs[char][2]
-	end
+local function next_buffer()
+  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+  local cur = vim.fn.bufnr('%')
+  local idx = nil
+  for i, b in ipairs(bufs) do
+    if b.bufnr == cur then idx = i; break end
+  end
+  if idx == nil then return end
+  local next_idx = idx + 1
+  if next_idx > #bufs then
+    vim.notify("Already at last buffer")
 
-	local keys = vim.api.nvim_replace_termcodes("c" .. open_char .. '<C-r>"' .. close_char .. "<Esc>v`[v`]", true, false, true)
-	vim.api.nvim_feedkeys(keys, "m", false)
-end, { desc = "Wrap visual selection with next char" })
+    return
+  end
+  vim.cmd('buffer ' .. bufs[next_idx].bufnr)
+end
 
-vim.keymap.set("v", "r", function()
-	vim.cmd('normal! "vy')
-	local selected_text = vim.fn.getreg("v")
+local function prev_buffer()
+  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+  local cur = vim.fn.bufnr('%')
+  local idx = nil
+  for i, b in ipairs(bufs) do
+    if b.bufnr == cur then idx = i; break end
+  end
+  if idx == nil then return end
+  local prev_idx = idx - 1
+  if prev_idx < 1 then
+    vim.notify("Already at first buffer")
+    return
+  end
+  vim.cmd('buffer ' .. bufs[prev_idx].bufnr)
+end
 
-	local escaped_text = vim.fn.escape(selected_text, [[\/^*$~[]])
-
-	if string.find(selected_text, "\n") then
-		vim.notify("Can't replace multipe lines", vim.log.levels.INFO)
-		return
-	end
-
-	if escaped_text == "" then
-		return
-	end
-
-	vim.ui.input({
-		prompt = "Replace selection with: ",
-		default = selected_text,
-	}, function(input)
-		if not input or input == "" or input == selected_text then
-			return
-		end
-
-		-- 3. Pure Lua Buffer Manipulation (No Vim commands to break)
-		local bufnr = vim.api.nvim_get_current_buf()
-		-- Pull every single line in the current file
-		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-
-		-- Escape raw text into a strict, clean Lua search pattern
-		-- (This makes sure characters like ., -, +, *, etc., don't break things)
-		local pattern = selected_text:gsub("([^%w])", "%%%1")
-
-		-- Loop through the lines and execute the replacement
-		for i, line in ipairs(lines) do
-			lines[i] = string.gsub(line, pattern, input)
-		end
-
-		-- Write the altered lines back to your screen instantly
-		vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-
-		print(string.format('Successfully replaced all occurrences with "%s"', input))
-	end)
-end, { desc = "Interactively replace visual selection file-wide" })
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, {
-	desc = "LSP Rename symbol project-wide",
-})
+vim.keymap.set('n', '<Tab>', ':b#<CR>', { desc = 'Toggle alternate buffer' })
+vim.keymap.set('n', '<S-Tab>', prev_buffer, { desc = 'Previous buffer' })
+vim.keymap.set('n', '<M-Tab>', next_buffer, { desc = 'Next buffer' })

@@ -6,6 +6,7 @@
     eww.url = "github:elkowar/eww";
     hyprland = {
       url = "github:hyprwm/Hyprland";
+      
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -18,6 +19,8 @@
     nixcord.url = "github:FlameFlag/nixcord";
     nix-zed = {
       url = "path:./nix_packages/nix-zed";
+
+
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # Bleeding edge
@@ -67,6 +70,7 @@
         inherit pkgs;
         extraSpecialArgs = { inherit inputs username godotModule; hyprland = inputs.hyprland; };
         modules = [
+
           ./home/home.nix
           inputs.nix-zed.homeManagerModules.nix-zed
           { full = false; hypr = true; }
