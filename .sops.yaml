@@ -1,0 +1,5 @@
+creation_rules:
+  - path_regex: .* # <-- This matches absolutely ANY file you run sops on
+    key_groups:
+      - age:
+          - age1wvwey98g3rqz2y9hx5rlucpn909978caf9k45asqv9snmrd8sygs6ncsgf

@@ -1,36 +1,7 @@
-vim.g.mapleader = " "
 
 local cmp = require("cmp")
-cmp.setup({
-    snippet = {
-        expand = function(args)
-            vim.snippet.expand(args.body)
-        end,
-    },
-    window = {
-        completion = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-        ["<C-m>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-,>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.abort(),
-        ["<Tab>"] = cmp.mapping.confirm({ select = true }),
-    }),
-    sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "snippy" },
-    }, {
-        { name = "buffer" },
-    }),
-})
+cmp.setup()
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-local status_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-if status_ok then
-    capabilities = cmp_lsp.default_capabilities()
-end
-capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 local function on_attach(client, bufnr)
     local opts = { buffer = bufnr, remap = false }
@@ -126,14 +97,6 @@ vim.lsp.config("nil_ls", {
     capabilities = capabilities,
 })
 
-vim.lsp.config("gdscript", {
-    -- Connects natively to Godot's running LSP server instance (default port 6005)
-    cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
-    filetypes = { "gdscript" },
-    root_markers = { "project.godot", ".git" },
-    on_attach = on_attach,
-    capabilities = capabilities,
-})
 
 vim.lsp.config("sqls", {
     on_attach = function(client, bufnr)
@@ -169,6 +132,43 @@ vim.lsp.enable({
     "jdtls",
     "nil_ls",
     "sqls",
+    "gdscript",
+})
+
+vim.lsp.config("gdscript", {
+  root_markers = { "project.godot", ".git" },
+  capabilities = require('blink.cmp').get_lsp_capabilities(),
+    on_attach = function(client, bufnr)
+        print("i attached")
+        on_attach(client, bufnr)
+    end,
+}) 
+
+-- 2. Create an autocommand to enable it ONLY when a GDScript file is opened
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "gdscript",
+  callback = function()
+    print("GDScript LSP: Enabling...")
+    vim.lsp.enable("gdscript")
+  end,
+})
+
+vim.filetype.add({
+  extension = {
+    gd = "gdscript",
+    tres = "gdscript_resource",
+    tscn = "gdscript_resource",
+  },
+})
+
+-- 3. Debugging: This prints when the LSP actually attaches to a buffer
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client.name == "gdscript" then
+      print("GDScript LSP attached to: " .. vim.api.nvim_buf_get_name(0))
+    end
+  end,
 })
 
 local function concat_if_exist(path, path2)

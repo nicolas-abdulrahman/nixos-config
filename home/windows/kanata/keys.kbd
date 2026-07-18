@@ -6,8 +6,11 @@
 (defsrc
   caps a s d  w  q e   f g   h j k l   u i o
 )
+;;map alt-r to enter if u press it, if you hold it acts as modifier 2, so if you do alt-r c it makes the cute face, and alt-r h sends a heart ♡
 
-;; 2. The "Alias"
+
+
+;; 2. The "Alias" make it if i press it be the key esc!
 (defalias
   cap (layer-while-held caps-change)
 )
@@ -17,12 +20,15 @@
   @cap a  s d w q e   f g   h j k l   u i o
 )
 
-;; 4. The "Caps-Change" Layer
-;; q e     -> | &
-;; f g     -> $ #
-;; h j k l -> % ~ ^ *
+;; 4. The "Caps-Change" Layer (change to what is in the comment!)
+;; q e     -> / \  
+;; f g     -> $ ~  
+;; h j k l -> # ! ?  
+;; n m -> ,  . 
 ;; o p     -> [ ]
+;; z x c v b     -> & | + - =
 (deflayer caps-change
-  _  left down right up  / \   S-4 S-5  S-3 S-` S-6 S-8  ' [ ]
+  _  left down right up  / \    S-4 S-`   S-3  S-6 S-5 S-8  ' [ ]
 
+~
 )

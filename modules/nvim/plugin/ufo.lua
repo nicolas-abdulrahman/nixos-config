@@ -1,5 +1,5 @@
 vim.o.foldenable = true
-vim.o.foldcolumn = '1'           -- Disable built‑in fold column (statuscol replaces it)
+vim.o.foldcolumn = '0'           -- Disable built‑in fold column (statuscol replaces it)
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldmethod = "expr"
