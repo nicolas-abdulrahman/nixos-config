@@ -20,14 +20,14 @@
       nick = {
         isNormalUser = true;
         description = "Nicolas";
-        extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" ];
+        extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
         shell = pkgs.zsh;
         hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
       };
       nasr = {
         isNormalUser = true;
         description = "Nasrl Hakim Abdul Rahman";
-        extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" ];
+        extraGroups = [ "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
         shell = pkgs.zsh;
         hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
       };

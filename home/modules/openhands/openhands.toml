@@ -1,0 +1,76 @@
+##############################################################################
+# OpenHands config.toml
+#
+# Gets placed at ~/.openhands/config.toml by the home.file entry in
+# default.nix, so it's there as soon as a rebuild finishes.
+#
+# LLM provider / model / key are deliberately NOT set here — the current
+# CLI mostly ignores [llm] in config.toml and expects LLM_MODEL /
+# LLM_API_KEY as env vars plus --override-with-envs, which the wrapper
+# script already handles via programs.openhands.llm. This file covers
+# everything config.toml is still actually authoritative for.
+##############################################################################
+
+[core]
+# Where the workspace is mounted inside the sandbox itself
+workspace_mount_path_in_sandbox = "/workspace"
+
+# Hard cap on agent loop steps for a single task before it gives up
+max_iterations = 100
+
+# "docker" (isolated, default) or "local" (runs directly on your machine)
+runtime = "docker"
+
+# Which built-in agent persona handles tasks by default
+default_agent = "CodeActAgent"
+
+# Where session/event history gets persisted between runs
+file_store = "local"
+file_store_path = "~/.openhands/file_store"
+
+[agent]
+enable_browsing = true
+enable_jupyter = true
+enable_cmd = true
+enable_editor = true
+enable_llm_editor = false
+enable_think = true
+enable_finish = true
+# Lets the agent trim old history instead of erroring out once a
+# conversation outgrows the model's context window
+enable_history_truncation = true
+
+[sandbox]
+# Image the Docker sandbox boots from
+base_container_image = "nikolaik/python-nodejs:python3.12-nodejs22-slim"
+
+# Seconds a sandbox command can run before being killed
+timeout = 120
+
+# If true, the sandbox container survives between tasks instead of being
+# torn down each time — faster restarts, more persistent state
+keep_runtime_alive = false
+
+# Mount a host directory into the sandbox as host:container[:mode].
+# Swap in your actual home directory, or better: interpolate it from Nix
+# (see the note below the file listing).
+volumes = "/home/nick/workspace:/workspace:rw"
+
+[security]
+# CLI/headless only — the web UI overrides this per-session
+confirmation_mode = false
+security_analyzer = "llm"
+enable_security_analyzer = true
+
+[condenser]
+# "noop" keeps full conversation history. Switch to "recent" or "llm"
+# once tasks start running long enough to blow past the model's context.
+type = "noop"
+
+[mcp]
+# Example: give the agent an explicit MCP filesystem server scoped to one
+# directory, rather than relying on its built-in file tools against your
+# whole home directory.
+stdio_servers = [
+  { name = "filesystem", command = "npx", args = ["@modelcontextprotocol/server-filesystem", "/home/nick/workspace"] }
+]

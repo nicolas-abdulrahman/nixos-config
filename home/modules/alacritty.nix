@@ -6,16 +6,6 @@ in
   programs.alacritty.enable = true;
   programs.alacritty.settings = {
       env.TERM = "xterm-256color";
-      font = {
-   #       normal.family = "OpenMoji-Color";
-  #        normal.style="regular";
-   #       normal.size = 12;
-         # size = 12;
-       # size = 12;
- #       normal.family = "JetBrainsMono";
-  #      normal.style = "regular";
-       # draw_bold_text_with_bright_colors = true;
-      };
       scrolling.multiplier = 5;
       selection.save_to_clipboard = true;
       window.opacity = 0.85;

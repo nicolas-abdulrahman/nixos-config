@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, useHypr, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   services.xserver = {
@@ -16,7 +16,7 @@
 
   console.keyMap = "us";
 
-  programs.hyprland = if useHypr then {
+  programs.hyprland = if config.hypr then {
     enable = true;
     xwayland.enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;

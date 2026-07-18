@@ -44,7 +44,7 @@ config.keys = {
 		key = "t",
 		mods = wezterm_mod,
 		action = act.SpawnCommandInNewTab({
-			args = { "tmux", "new-session" },
+            args = { "zsh", "-c", "tmux new-session; zsh -i" },
 		}),
 	},
 	{ key = "Enter", mods = wezterm_mod, action = act.ToggleFullScreen },
@@ -64,6 +64,20 @@ config.window_padding = {
 
 config.hide_tab_bar_if_only_one_tab = true
 
-config.default_prog = { "tmux", "new-session", "-A" }
+config.default_prog = { 
+  'zsh', 
+  '-c', 
+  [[
+    if [ -z "$1" ]; then
+      tmux new-session -A -s 0 -n 0
+    else
+      tmux new-session "$@"
+    fi
+    
+    # After tmux closes, launch a fresh interactive shell so the window stays open
+    zsh -i
+  ]], 
+  '--' 
+}
 
 return config

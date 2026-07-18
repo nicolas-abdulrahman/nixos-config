@@ -1,0 +1,42 @@
+(defcfg
+  process-unmapped-keys yes
+  linux-dev (
+    "/dev/input/by-id/usb-Hengchangtong_HCT_USB_Entry_Keyboard_000000000015-event-kbd"
+  )
+)
+
+
+(defvar
+  kbd-keys (ralt spc a s d w q e f g h j k l u i o c r t y n m p z x v b 9 0 ; ' , . [ ])
+)
+;; 1. The "Source" (Exactly 26 Keys)
+(defsrc
+  caps ralt a s d w q e f g h j k l u i o c r t y n m p z x v b  9 0 ; ' , .  [ ]
+
+
+
+)
+
+;; 2. The "Aliases"
+(defalias
+cap (tap-hold-press 200 200 esc (layer-toggle caps-change))
+  altr (tap-hold 200 200 ret ralt) ;; Tapping sends Return (Enter), Holding sends Right Alt 
+)
+
+;; 3. The "Base Layer" 
+(deflayer base
+  @cap @altr  a s d w q e f g h j k l u i o c  r t y n m p z x v b 9 0 ; ' , . bspc del
+)
+
+;; ====================================================================
+;; 4. The "Caps-Change" Layer
+;; ====================================================================
+;; caps a s d w  => Esc Left Down Right Up
+;; q e r t y u i o p    => / \ @ %    ^ - [ ] =
+;; f g h j k l     => $ ~ # ! ? *
+;; z x c   n m   =>  & | `    , .
+;; ====================================================================
+;;            caps  ralt  a     s    d      w   q    e   f   g   h   j   k   l   u i o c r   t   y   n m p = z   x   v b 9   0   ;   '   ,   .   [ ]
+(deflayer caps-change
+  _ _           left down right up         /    \  S-4 S-` S-3  S-1      S-9 S-0 - [ ]  `  S-2   S-5  S-6 S-/ S-8  = S-7 S-\ _ _ S-9 S-0 S-; S-' S-, S-. _ _ 
+)

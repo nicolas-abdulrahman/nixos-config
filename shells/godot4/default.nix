@@ -7,13 +7,16 @@ let
     FILE="$1"
     LINE="$2"
     PROJECT="$3"
+    
     if [ -S "$SOCKET" ]; then
+        # Send to existing Neovim instance
         ${nvim}/bin/nvim --server "$SOCKET" --remote-send "<C-\><C-N>:e $FILE<CR>:$LINE<CR>"
     else
+        # Launch WezTerm and start Neovim server
         ${pkgs.wezterm}/bin/wezterm start \
         --class "godot-nvim" \
-        --title "Godot Neovim" \
-        --cwd "$PROJECT --${nvim}/bin/nvim --listen "$SOCKET" +"$LINE" "$FILE"
+        --cwd "$PROJECT" \
+        -- nvim --listen "$SOCKET" +"$LINE" "$FILE"
     fi
   '';
 

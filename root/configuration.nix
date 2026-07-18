@@ -1,8 +1,9 @@
-{ config, pkgs, inputs, nixgl, lib, ... }:
+{ config, pkgs, inputs, nixgl, lib,isFull, useHypr, hardwareFile, ... }:
 
 {
   imports = [
-    ./hardware-configuration.nix
+    hardwareFile
+    inputs.sops-nix.nixosModules.sops # <-- This makes the 'sops' option exist!
     ./boot.nix
     ./desktop_manager.nix
     ./pkgs.nix
@@ -14,17 +15,18 @@
     full = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "full nixos";
+      description = "Enable full comprehensive suite configuration flag.";
     };
-
-    laptop = lib.mkOption {
+    hypr = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "am i using da laptop?";
+      description = "Enable Hyprland ecosystem settings configuration flag.";
     };
   };
 
   config = {
+    full = isFull;
+    hypr = useHypr;
     services.httpd = lib.mkIf (config.full) {
       enablePHP = true;
       enable = true;
@@ -44,6 +46,13 @@
           Require all granted
         </Directory>
       '';
+    };
+    virtualisation.docker = {
+      enable = true;
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
     };
 
     programs.steam = lib.mkIf (config.full) {
@@ -114,13 +123,18 @@
 
     system.stateVersion = "26.05";
 
-    systemd.user.services.xremap = {
-      description = "Xremap keyboard remapper";
-      wantedBy = [ "default.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.xremap}/bin/xremap ${pkgs.writeText "remap.yml" (builtins.readFile ./conf/remap.yml)}";
-        Restart = "on-failure";
+     services.kanata = {
+      enable = true;
+
+      keyboards.default = {
+        devices = [
+      "/dev/input/by-path/pci-0000:00:1a.0-usb-0:1.3:1.1-event-kbd"
+      "/dev/input/by-path/pci-0000:00:1a.0-usb-0:1.4:1.0-event-kbd"
+    ];
+        configFile=  ./conf/keys.kbd;
       };
-    };
+    }; 
+    systemd.services."kanata-default".wantedBy = [ "multi-user.target" ];
+
   };
 }

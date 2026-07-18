@@ -24,7 +24,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # Bleeding edge
+    sops-nix.url = "github:Mic92/sops-nix";
     
+    continue = {
+    url = "github:continuedev/continue";
+    flake = false;
+    };
   };
 
   outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, ... }:
@@ -43,9 +48,18 @@
       };
       username = "nick";
 
+      customPkgs = pkgs.extend (final: prev: {
+        continue-nvim = prev.vimUtils.buildVimPlugin {
+          pname = "continue.nvim";
+          version = "latest";
+          src = inputs.continue; # Pulls directly from flake inputs here safely!
+        };
+      });
+
       nvfPkg = (nvf.lib.neovimConfiguration {
-        inherit pkgs;
-        modules = [ ./modules/nvim/nvf.nix ];
+        pkgs = customPkgs;
+        modules = [
+          ./modules/nvim/nvf.nix ];
       }).neovim;
 
       myNvim = pkgs.symlinkJoin {
@@ -63,17 +77,21 @@
 
 
       godotModule = import ./shells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
+      godotModule2 = import ./shells/godot { pkgs = pkgs-unstable; };
     in
     {
     
       homeConfigurations."${username}" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        extraSpecialArgs = { inherit inputs username godotModule; hyprland = inputs.hyprland; };
+        extraSpecialArgs = { inherit inputs username godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
+          full = true;
+          hypr = true;
+        };
         modules = [
-
           ./home/home.nix
+          ./modules/openhands
           inputs.nix-zed.homeManagerModules.nix-zed
-          { full = false; hypr = true; }
+          
         ];
       };
 
@@ -89,7 +107,9 @@
               inherit inputs isFull useHypr hardwareFile;
               hyprland = inputs.hyprland;
             };
-            modules = [ ./root/configuration.nix ];
+            modules = [ ./root/configuration.nix 
+
+            ];
           };
         in
         {
@@ -108,7 +128,7 @@
 
 
       packages.${system} = {
-        nvim = myNvim;
+        nvim = nvfPkg;
         godot = godotModule.app;
       };
 
@@ -123,10 +143,12 @@
         zed = import ./modules/zed { inherit pkgs; };
         vscode = import ./shells/vscode { inherit pkgs; };
         godot4 = godotModule.shell;
+        godot = godotModule2.shell;
       };
 
       apps.${system} = {
         godot4 = godotModule.app;
+        godot = godotModule2.app;
       };
     };
 }

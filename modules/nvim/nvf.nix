@@ -1,9 +1,10 @@
-{ pkgs, ... }:
+{ pkgs,  ... }:
 let
   tab-pin = pkgs.vimUtils.buildVimPlugin {
     name = "tab-pin";
     src = ./my-plugins/tab-pin;
   };
+
 in
 {
   config.vim = {
@@ -15,6 +16,11 @@ in
       lua.enable = true;
       enableDAP = true;
     };
+
+    ui.noice.enable = true; # Highly recommended for Avante's UI
+    
+    # We need to configure dressing to play nice with Avante
+    visuals.fidget-nvim.enable = true; # Useful for seeing AI progress
 
 
     # DAP Configuration
@@ -29,41 +35,34 @@ in
       };
     };
 
-    # Plugin Management
-    lazy.plugins = {
-      "aerial.nvim" = {
-        package = pkgs.vimPlugins.aerial-nvim;
-        setupModule = "aerial";
-        setupOpts = { backends = [ "lsp"  "markdown" ]; }; # Fixed the 'no symbols' issue
-        cmd = [ "AerialOpen" ];
-        event = [ "BufEnter" ];
-        keys = [
-          { mode = "n"; key = "<leader>x"; action = ":AerialToggle<CR>"; }
-          { mode = "n"; key = "<C-A-j>"; action = ":AerialNext<CR>"; }
-          { mode = "n"; key = "<C-A-k>"; action = ":AerialPrev<CR>"; }
-        ];
-      };
-      "neo-tree.nvim" = {
-    package = pkgs.vimPlugins.neo-tree-nvim;
-    setupModule = "neo-tree";
-    
-    # 1. Triggers that wake the plugin up
-    cmd = [ "Neotree" ];
-    keys = [
-      { mode = "n"; key = "<leader>e"; action = ":Neotree toggle<CR>"; }
-    ];
+       assistant.avante-nvim = {
+          enable = true;
+          setupOpts = {
+              mode = "manual";
+            provider = "gemini";
+            auto_suggestions_provider = "gemini";
+            
+            providers = {
+              gemini = {
+                model = "gemini-3.1-flash-lite"; 
+                api_key_name = "GEMINI_API_KEY_NASR";
+              };
+            };
 
-    # 2. Setup options converted directly to the lazy format
-    setupOpts = {
-      filesystem = {
-        follow_current_file = {
-          enabled = true;
+            # --- THE FIX ---
+            # This tells Avante to completely bypass vim.ui.select (which dressing 
+            # has infected) and route all of its menus through Telescope instead.
+            selector = {
+              provider = "telescope";
+            };
+          };
         };
-      };
-    };
-  };
-    };
 
+
+
+ 
+    # Plugin Management
+    lazy.plugins = import ./lazy.nix { inherit pkgs; };
     extraPlugins = with pkgs.vimPlugins; {
       promise-async = {
         package = promise-async;
@@ -76,6 +75,38 @@ in
         package = pkgs.vimPlugins.nvim-ufo;
         after = [ "promise-async" "statuscol" ];
         setup = builtins.readFile ./plugin/ufo.lua;
+      };
+      #avante = {
+      #  package = pkgs.vimPlugins.avante-nvim;
+      #   setup = builtins.readFile ./plugin/avante.lua;
+      # };
+      aider-nvim = {
+        package = aider-nvim;
+        setup = ''
+          require("aider").setup({
+            -- Use Gemini as the backend
+            backend = "gemini",
+            -- Model name (choose any Gemini variant you like)
+            model = "gemini-3.1-flash-lite",   
+            -- Optional: auto-open on file open? (default is false)
+            auto_manage = false,
+            -- If aider binary is not in PATH, specify full path:
+            -- aider_cmd = "${pkgs.aider-chat}/bin/aider",
+          })
+
+          vim.keymap.set("n", "<leader>aa", ":AiderToggle<CR>", { desc = "Toggle Aider" })
+        vim.keymap.set("n", "<leader>af", ":AiderAddFile<CR>", { desc = "Aider: Add file" })
+        vim.keymap.set("v", "<leader>as", ":AiderSend<CR>", { desc = "Aider: Send selection"})
+        '';
+      };
+
+
+
+      codecompanion = {
+        package = pkgs.vimPlugins.codecompanion-nvim;
+        # Ensure dependencies like plenary and treesitter are available
+        after = ["plenary"]; 
+        setup = builtins.readFile ./plugin/codecompanion.lua;
       };
 
       fzf = { package = telescope-fzf-native-nvim; };
@@ -93,15 +124,100 @@ in
 
       cmp = { package = nvim-cmp; };
       cmp-nvim-lsp = { package = cmp-nvim-lsp; };
-      lspconfig = { package = nvim-lspconfig; };
-      codecompanion = { package = codecompanion-nvim; };
-      nui = { package = nui-nvim; };
-      dressing = { package = dressing-nvim; };
+      lspconfig = { package = nvim-lspconfig;
+        after = ["cmp" "cmp-nvim-lsp"];
+        setup = builtins.readFile ./plugin/lsp.lua;
+      };
 
       indent-blankline = {
         package = indent-blankline-nvim;
         setup = "require('ibl').setup({ indent = { char = '┊' }, scope = { enabled = false } })";
       };
+
+
+      dressing = { 
+        package = dressing-nvim; 
+        setup = "require('dressing').setup({})"; 
+      };
+      mini = {
+        package = pkgs.vimPlugins.mini-nvim;
+        setup = "require('mini.ai').setup()";
+      };
+      hlslens = {
+        package = pkgs.vimPlugins.nvim-hlslens;
+        setup = builtins.readFile ./plugin/hlslens.lua;
+      };
+      lualine = {
+        package = pkgs.vimPlugins.lualine-nvim;
+        after = ["gitsigns"];
+        setup = builtins.readFile ./plugin/lualine.lua;
+      };
+
+      gitsigns = {
+        package = pkgs.vimPlugins.gitsigns-nvim;
+        setup = "require('gitsigns').setup()";
+      };
+
+      plenary = {
+        package = plenary-nvim;
+      };
+      minuet = {
+        package = pkgs.vimPlugins.minuet-ai-nvim;
+        after = ["plenary"];
+        setup = ''
+          require("minuet").setup({
+            provider = "gemini",
+            provider_options = {
+              gemini = {
+                model = "gemini-3.1-flash-lite",
+              },
+            },
+            virtualtext = {
+            auto_trigger_ft = { 
+  "python", "lua", "rust", "cpp", "javascript", "typescript", "nix", 
+  "go", "html", "css", "json", "yaml", "markdown", "bash", "sh", "gd", "tres", "gdscript"
+},
+              show_on_completion_menu = true, -- Forces Minuet to show over blink.cmp
+              keymap = {
+                accept = "<A-Tab>",    -- Alt+Tab: Accept full completion
+                accept_line = "<Tab>",  -- Tab: Accept one line
+              },
+            },
+          })
+        '';
+      };
+      blink-cmp = {
+        package = pkgs.vimPlugins.blink-cmp;
+        setup = ''
+          require("blink.cmp").setup({
+            sources = {
+              default = { "lsp", "path", "buffer", "snippets" },
+            },
+            completion = {
+              ghost_text = {
+                enabled = false, -- Disabled to prevent overlap with Minuet
+              },
+            },
+            keymap = {
+              preset = 'none',
+              ["<A-Up>"] = { 'scroll_documentation_up', 'fallback' },
+              ["<A-Down>"] = { 'scroll_documentation_down', 'fallback' },
+              ["<A-Space>"] = { 'show', 'show_documentation', 'hide_documentation' },
+              ["<Left>"] = { 'cancel' },
+              ["<Right>"] = { 'select_and_accept', 'fallback' },
+              ["<Up>"] = { 'select_prev', 'fallback' },
+              ["<Down>"] = { 'select_next', 'fallback' },
+            },
+            completion = {
+              documentation = { 
+                auto_show = true, 
+                auto_show_delay_ms = 200 
+              },
+            },
+          })
+        '';
+      };
+      
     };
 
 
@@ -110,9 +226,6 @@ in
       set = builtins.readFile ./lua/set.lua;
       lsp = builtins.readFile ./lua/lsp.lua;
       autocmds = builtins.readFile ./lua/autocmds.lua;
-      postHighlight = ''
-        vim.api.nvim_set_hl(0, "IblScope", { link = "Special" })
-      '';
     lsp2 = ''
         vim.keymap.set('n', '<leader>ll', function()
           -- This executes the contents of your lsp.lua file only when pressed
@@ -120,13 +233,18 @@ in
           print("LSP2 configuration loaded!")
         end, { desc = "Load LSP2 configurations", silent = true })
       ''; 
+
+      
+      macros = builtins.readFile ./lua/quick_macros.lua;
     };
+    languages.markdown.extensions.render-markdown-nvim.enable = true;
 
     startPlugins = with pkgs.vimPlugins; [
-      telescope-nvim
+      telescope-nvim img-clip-nvim render-markdown-nvim
     ];
 
     extraPackages = with pkgs; [
+      gemini-cli llm-ls nodejs ripgrep fd  aider-chat godot_4
       lua-language-server # lua_ls
       gopls pyright clang-tools zls sqls typescript-language-server nixd ripgrep
       stylua prettierd rust-analyzer

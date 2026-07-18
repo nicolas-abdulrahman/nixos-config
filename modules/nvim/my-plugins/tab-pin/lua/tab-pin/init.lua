@@ -1,5 +1,17 @@
 local M = {}
 
+
+-- Configure cool, high-quality symbols for your gutter diagnostics
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = " ", -- Heavy solid alert cross
+            [vim.diagnostic.severity.WARN]  = "•", -- Clear warning triangle
+            [vim.diagnostic.severity.HINT]  = "󰌵 ", -- Sleek glowing lightbulb
+            [vim.diagnostic.severity.INFO]  = " ", -- Clean info circle
+        },
+    },
+})
 -- State: Maps tabpage IDs to the specific Buffer IDs they are locked to
 local pinned_tabs = {}
 local allowing_new_tab = false
@@ -158,8 +170,8 @@ function M.toggle_pin()
 		vim.api.nvim_tabpage_set_var(current_tab, "tab_title", current_name)
 		vim.notify("Tab pinned: " .. current_name, vim.log.levels.INFO)
 	end
-
 	vim.cmd("redrawtabline")
+    M.save_pins()
 end
 
 -- Function 2: Custom Rename Tab Engine
@@ -192,7 +204,7 @@ local function handle_file_open()
 
 	-- Ignore special non-file windows (like Neo-tree, Telescope, toggleterm, etc.)
 	local buftype = vim.bo[current_buf].buftype
-	if buftype ~= "" then
+if buftype ~= "" then
 		return
 	end
 
@@ -334,30 +346,20 @@ function M.setup(opts)
 	})
 
 	-- Autocommand C: THE GUARDRAIL. Intercepts and blocks unauthorized manual tab expansion
-	vim.api.nvim_create_autocmd({ "TabNew" }, {
-		group = group,
-		callback = function()
-			if allowing_new_tab then
-				return
-			end
 
-			if last_active_tab and not last_active_was_pinned then
-				local unauthorized_tab = vim.api.nvim_get_current_tabpage()
-
-				vim.schedule(function()
-					if vim.api.nvim_tabpage_is_valid(unauthorized_tab) then
-						vim.cmd("tabclose")
-						vim.notify("Tabs Locked: You must 󰐃 Pin the current tab before you can open a new one!", vim.log.levels.WARN)
-					end
-				end)
-			end
-		end,
-	})
 
     vim.api.nvim_create_autocmd({ "VimEnter" }, {
         group = group,
         callback = function()
-            vim.schedule(M.load_pins)
+            local buf = vim.api.nvim_get_current_buf()
+            local buf_name = vim.api.nvim_buf_get_name(buf)
+            local buf_type = vim.api.nvim_get_option_value("buftype", { buf = buf })
+
+            -- Only run if the buffer has no name, isn't a special buffer (like a terminal/pipe), 
+            -- and no file arguments were passed.
+            if buf_name == "" and buf_type == "" and vim.fn.argc() == 0 then
+                vim.schedule(M.load_pins)
+            end
         end,
     })
 

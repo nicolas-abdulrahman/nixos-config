@@ -1,13 +1,15 @@
 { pkgs, lib, config, ... }:
 {
   imports = [
+    ./openhands
     ./alacritty.nix
     ./tmux
     ./wezterm
     ./hyprland
     ./eww
-     ./nixcord.nix
      ./godot
+    ./firefox
+    ./ai
     #./xremap.nix
   ];
 }

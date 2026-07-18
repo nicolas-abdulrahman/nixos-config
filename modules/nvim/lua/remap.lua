@@ -1,158 +1,85 @@
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>pe", vim.cmd.Ex)
-vim.api.nvim_set_keymap("n", "<C-s>", ":wa!<CR>", { noremap = true })
-vim.api.nvim_set_keymap("n", "ss", ":wa!<CR>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>s", ":wa!<CR>", { noremap = true })
 
 local opts = { noremap = true, silent = true }
 
-vim.keymap.set("n", "so", function()
-	vim.cmd("wa!")
-	vim.cmd("so")
-	vim.notify("sourced")
-end, opts)
-
-function ren(line)
-	local word = vim.fn.expand("<cword>")
-	local new_name = vim.fn.input("Rename '" .. word .. "' to: ")
-
-	if new_name == "" or new_name == word then
-		print("No change made.")
-		return
-	end
-
-	-- Do a whole word replacement in the current buffer
-	local escaped = vim.fn.escape(word, "\\/.*'$^~[]") -- escape Lua pattern chars
-	if line == false then
-		vim.cmd(":%s/\\<" .. escaped .. "\\>/" .. new_name .. "/g")
-	else
-		vim.cmd(":.s/\\<" .. escaped .. "\\>/" .. new_name .. "/g")
-	end
+-- Helper function to automatically inject descriptions into base opts
+local function M(desc_string)
+    return vim.tbl_extend("force", opts, { desc = desc_string })
 end
-vim.api.nvim_create_user_command("RenameWord", function()
-	ren(false)
-end, {})
-vim.api.nvim_create_user_command("RenameLine", function()
-	ren(true)
-end, {})
--- my setup
-vim.keymap.set("v", "<Tab>", "> | gv")
-vim.keymap.set("v", "<S-Tab>", "< | gv")
-vim.keymap.set("t", "<A-Space>", [[<C-\><C-n>]], { noremap = true })
-vim.keymap.set("n", "<A-j>", ":cnext<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<A-k>", ":cprev<CR>", { noremap = true, silent = true })
+
+-- GLOBAL ACTIONS & SAVING
+vim.keymap.set("n", "<leader>pe", "<cmd>Ex<CR>", M("Open file explorer"))
+vim.keymap.set("n", "<C-s>", ":wa!<CR>", M("Save all files"))
+vim.keymap.set("n", "ss", ":wa!<CR>", M("Save all files alternative"))
+vim.keymap.set("n", "<leader>s", ":wa!<CR>", M("Leader save all files"))
+vim.keymap.set("n", "<leader>so", function()
+    vim.cmd("wa!")
+    vim.cmd("so")
+    vim.notify("sourced")
+end, M("Save and source configuration"))
+vim.keymap.set("n", "<leader>qa", "<cmd>qa!<cr>", M("Force quit all"))
+
+-- EDITING & INDENTATION
+vim.keymap.set("v", "<Tab>", ">gv", M("Indent selection right"))
+vim.keymap.set("v", "<S-Tab>", "<gv", M("Indent selection left"))
+vim.keymap.set("t", "<A-Space>", [[<C-\><C-n>]], M("Exit terminal mode"))
+vim.keymap.set("n", "<A-j>", ":cnext<CR>", M("Next quickfix item"))
+vim.keymap.set("n", "<A-k>", ":cprev<CR>", M("Previous quickfix item"))
 vim.keymap.set("n", "<A-d>", function()
-	local qflist = vim.fn.getqflist()
-	local idx = vim.fn.getqflist({ idx = 0 }).idx
-	table.remove(qflist, idx)
-	vim.fn.setqflist(qflist, "r")
-end, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>cra", "<cmd>RenameWord<CR>", { desc = "Rename word under cursor" })
-vim.keymap.set("n", "<leader>crl", "<cmd>RenameLine<CR>", { desc = "Rename word under cursor" })
+    local qflist = vim.fn.getqflist()
+    local idx = vim.fn.getqflist({ idx = 0 }).idx
+    table.remove(qflist, idx)
+    vim.fn.setqflist(qflist, "r")
+end, M("Delete current quickfix item"))
 
--- the Primagean setup
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-vim.keymap.set("n", "J", "mzJ`z")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
--- greatest remap ever
-vim.keymap.set("x", "<leader>dd", [["_dP]])
+-- LINE MOVEMENTS
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", M("Move selected lines down"))
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", M("Move selected lines up"))
+vim.keymap.set("n", "J", "mzJ`z", M("Join line keeping cursor position"))
+vim.keymap.set("n", "<C-d>", "<C-d>zz", M("Scroll down and center cursor"))
+vim.keymap.set("n", "<C-u>", "<C-u>zz", M("Scroll up and center cursor"))
+vim.keymap.set("x", "<leader>dd", [["_dP]], M("Paste over selection without losing register"))
 
--- next greatest remap ever : asbjornHaland
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
-vim.keymap.set("n", "Q", "<nop>")
-vim.keymap.set("n", "q", "<nop>")
-vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("n", "<leader>mx", "<cmd>!chmod +x %<CR>", { silent = true })
+-- INTEGRATED SEARCH JUMPS (Centering + hlslens refresh)
 
--- Create a horizontal splitader>/', ':vsplit<CR>', { noremap = true })
-vim.keymap.set("n", "<C-h>", "<C-w>h", { silent = true })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { silent = true })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { silent = true })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { silent = true })
-vim.api.nvim_set_keymap("n", "<leader>-", ":split<CR>", { noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>/", ":vsplit<CR>", { noremap = true })
+-- REGISTERS, CLIPPINGS & MACROS
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], M("Copy to system clipboard"))
+vim.keymap.set("n", "<leader>Y", [["+Y]], M("Copy line to system clipboard"))
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], M("Delete into black hole register"))
+vim.keymap.set("n", "Q", "<nop>", M("Disable Ex mode shortcut"))
+vim.keymap.set("n", "q", "<nop>", M("Disable macro recording key"))
+vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], M("Search and replace word under cursor"))
+vim.keymap.set("n", "<leader>mx", "<cmd>!chmod +x %<CR>", M("Make current file executable"))
 
--- PLUGINS
-vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { silent = true })
-vim.keymap.set("n", "<S-h>", vim.cmd.CommentToggle, { silent = true })
-vim.keymap.set("v", "<S-h>", ":'<,'>CommentToggle<CR>", { silent = true })
-vim.cmd(":tnoremap <Esc> <C-\\><C-n>")
+-- WINDOW NAVIGATION & SPLITS
+vim.keymap.set("n", "<C-h>", "<C-w>h", M("Move cursor to left split"))
+vim.keymap.set("n", "<C-l>", "<C-w>l", M("Move cursor to right split"))
+vim.keymap.set("n", "<C-k>", "<C-w>k", M("Move cursor to upper split"))
+vim.keymap.set("n", "<C-j>", "<C-w>j", M("Move cursor to lower split"))
+vim.keymap.set("n", "<leader>-", ":split<CR>", M("Create horizontal split"))
+vim.keymap.set("n", "<leader>/", ":vsplit<CR>", M("Create vertical split"))
 
--- QUICKFIX
-vim.keymap.set("n", "qj", "<cmd>cnext<CR>", { silent = true })
-vim.keymap.set("n", "qk", "<cmd>cprev<CR>", { silent = true })
-vim.keymap.set("n", "qq", "<cmd>ccl<CR>", { silent = true })
+-- PLUGIN MANAGEMENT
+vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", M("Toggle file tree sidebar"))
+vim.keymap.set("n", "<S-h>", "<cmd>CommentToggle<CR>", M("Toggle line comment"))
+vim.keymap.set("v", "<S-h>", ":'<,'>CommentToggle<CR>", M("Toggle visual selection comment"))
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], M("Terminal mode escape to normal"))
 
--- BUFFERS
-vim.keymap.set("n", "ter", "<cmd>:term<CR>", { silent = true })
-vim.keymap.set("n", "na", "<cmd>%bwipeout!<CR>", { silent = true })
-vim.keymap.set("n", "nn", "<cmd>bdelete!<CR>", { silent = true })
--- vim.keymap.set("n", "n", "<cmd>bdelete!<CR>" , { silent = true })
+-- QUICKFIX ACTIONS
+vim.keymap.set("n", "qj", "<cmd>cnext<CR>", M("Quickfix next shortcut"))
+vim.keymap.set("n", "qk", "<cmd>cprev<CR>", M("Quickfix previous shortcut"))
+vim.keymap.set("n", "qq", "<cmd>ccl<CR>", M("Close quickfix window"))
 
-vim.keymap.set("n", "cd", "<cmd>cd %:h<CR>", { silent = true })
-vim.keymap.set("n", "ctd", "<cmd>tcd %:h<CR>", { silent = true })
-vim.keymap.set("n", "cld", "<cmd>lcd %:h<CR>", { silent = true })
+-- BUFFERS & TERMINALS
+vim.keymap.set("n", "ter", "<cmd>:term<CR>", M("Open terminal buffer"))
+vim.keymap.set("n", "<leader>ba", "<cmd>%bwipeout!<CR>", M("Wipe all listed buffers"))
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete!<CR>", M("Delete current buffer"))
 
--- vim.keymap.set("n", "<A-a>", "<C-S-w>_", { silent = true })
-vim.keymap.set("n", "<A-a>", "<C-S-w>|", { silent = true })
-vim.keymap.set("n", "<A-s>", "<C-S-w>=", { silent = true })
+-- ENVIRONMENT & DIRECTORIES
+vim.keymap.set("n", "<leader>cd", "<cmd>cd %:h<CR>", M("Change global directory to current file"))
+vim.keymap.set("n", "<leader>cD", "<cmd>tcd %:h<CR>", M("Change tab directory to current file"))
+vim.keymap.set("n", "<leader><C-d>", "<cmd>lcd %:h<CR>", M("Change local window directory to current file"))
 
-local telescope = require("telescope.builtin")
-
-vim.keymap.set("n", "<A-t>", function()
-	local results = {}
-	local picker = telescope.buffers()
-	local s = ""
-
-	-- Capture the results from the picker
-	picker.entry_manager:get_entries(function(entry)
-		s = s .. "|"
-		print(s)
-
-		-- table.insert(results, entry.value)
-	end)
-end, { silent = true })
-
-
-local function next_buffer()
-  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
-  local cur = vim.fn.bufnr('%')
-  local idx = nil
-  for i, b in ipairs(bufs) do
-    if b.bufnr == cur then idx = i; break end
-  end
-  if idx == nil then return end
-  local next_idx = idx + 1
-  if next_idx > #bufs then
-    vim.notify("Already at last buffer")
-
-    return
-  end
-  vim.cmd('buffer ' .. bufs[next_idx].bufnr)
-end
-
-local function prev_buffer()
-  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
-  local cur = vim.fn.bufnr('%')
-  local idx = nil
-  for i, b in ipairs(bufs) do
-    if b.bufnr == cur then idx = i; break end
-  end
-  if idx == nil then return end
-  local prev_idx = idx - 1
-  if prev_idx < 1 then
-    vim.notify("Already at first buffer")
-    return
-  end
-  vim.cmd('buffer ' .. bufs[prev_idx].bufnr)
-end
-
-vim.keymap.set('n', '<Tab>', ':b#<CR>', { desc = 'Toggle alternate buffer' })
-vim.keymap.set('n', '<S-Tab>', prev_buffer, { desc = 'Previous buffer' })
-vim.keymap.set('n', '<M-Tab>', next_buffer, { desc = 'Next buffer' })
+-- WINDOW DIMENSIONS
+vim.keymap.set("n", "<A-a>", "<C-S-w>|", M("Maximize current split width"))
+vim.keymap.set("n", "<A-s>", "<C-S-w>=", M("Equalize all split dimensions"))

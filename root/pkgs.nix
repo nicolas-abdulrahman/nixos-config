@@ -47,19 +47,9 @@
     {
       enable = true;
       wrappedBinaries = {
-        firefox = {
-          executable = "${lib.getBin pkgs.firefox}/bin/firefox";
-          profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
-        };
-        vesktop = {
-          executable = "${pkgs.vesktop}/bin/vesktop";
-          profile = "${pkgs.firejail}/etc/firejail/vesk.profile";
-          extraArgs = [
-            "--enable-features=UseOzonePlatform"
-            "--ozone-platform=wayland"
-            "--disable-x11"
-            "--no-sandbox"
-          ];
+        surf = {
+          executable = "${lib.getBin pkgs.surf}/bin/surf";
+          profile = "${pkgs.firejail}/etc/firejail/surf.profile";
         };
       };
 
@@ -92,13 +82,13 @@
   environment.systemPackages = with pkgs;
 # Essentials
   [
-    home-manager pcmanfm 
+    home-manager pcmanfm  kanata
     cacert iproute2 inetutils nettools xremap tmux
-    zsh git wget curl jq btop unzip file glib nix-index tree lsof st surf xwayland
+    zsh git wget curl jq btop unzip file glib nix-index tree lsof st surf 
   ] ++ 
   # Optionals (System-level CLI only)
   (lib.optionals (config.full) [
-    ffmpeg imagemagick firejail 
+    ffmpeg imagemagick 
     xorg.xorgserver xorg.xinit xorg.xrandr xorg.xsetroot xorg.xev
   ]);
 }
