@@ -76,7 +76,7 @@ in
   };
   imports = [
     ./user/nasr
-    ./modules
+    ./config
     ./pkgs.nix
     inputs.nixcord.homeModules.nixcord
   ];

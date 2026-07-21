@@ -88,9 +88,7 @@ in
           export AVANTE_GEMINI_API_KEY=$GEMINI_API_KEY
           export GITHUB_TOKEN=$(cat /run/secrets/ghp_nasr)
           export NIX_CONFIG="access-tokens = github.com=$GITHUB_TOKEN"
-          export OPENAI_API_KEY=$(cat /run/secrets/ghp_nasr)
-          export OPENAI_API_BASE="https://openrouter.ai/api/v1"
-          export AIDER_MODEL="gemini/gemma-4-31b-it"
+          export AIDER_MODEL="gemini/gemma-4-31b-it
         fi
           '';
       oh-my-zsh = {
