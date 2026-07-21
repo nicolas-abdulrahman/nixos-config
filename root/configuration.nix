@@ -27,6 +27,7 @@
   config = {
     full = isFull;
     hypr = useHypr;
+    services.envfs.enable = true;
     services.httpd = lib.mkIf (config.full) {
       enablePHP = true;
       enable = true;

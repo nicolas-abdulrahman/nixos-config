@@ -36,6 +36,10 @@ in
     program = "${godot-wrapped}/bin/godot";
   };
   shell = pkgs.mkShell {
-    packages = [ godot-wrapped ];
+    
+    packages = [ 
+      godot-wrapped 
+      pkgs.uv
+    ];
   };
 }
