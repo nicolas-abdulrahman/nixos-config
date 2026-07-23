@@ -168,9 +168,9 @@ in
               auto_trigger = true,
               debounce = 500,
               keymap = {
-                accept = "<Tab>",
+                accept = "<right>",
                 next = "<M-Tab>",
-                prev = "<S-Tab>",
+                prev = "<M-down>
                 dismiss = "<left>",
               },
             },
@@ -196,11 +196,11 @@ in
             },
             keymap = {
               preset = 'none',
-              ["<A-Up>"] = { 'scroll_documentation_up', 'fallback' },
-              ["<A-Down>"] = { 'scroll_documentation_down', 'fallback' },
-              ["<A-Space>"] = { 'show', 'show_documentation', 'hide_documentation' },
+              ["<S-Up>"] = { 'scroll_documentation_up', 'fallback' },
+              ["<S-Down>"] = { 'scroll_documentation_down', 'fallback' },
+              ["<S-Space>"] = { 'show', 'show_documentation', 'hide_documentation' },
               ["<Left>"] = { 'cancel' },
-              ["<Right>"] = { 'select_and_accept', 'fallback' },
+              ["<Tab>"] = { 'select_and_accept', 'fallback' },
               ["<Up>"] = { 'select_prev', 'fallback' },
               ["<Down>"] = { 'select_next', 'fallback' },
             },

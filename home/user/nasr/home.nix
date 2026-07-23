@@ -10,10 +10,10 @@ let
     n = "/etc/nixos/result/bin/nvim";
     ".." = "cd ..";
     h = ''
-      home-manager switch --flake ${nixos_path} .#${username}_${system}
+      home-manager switch --flake ${nixos_path}#${username}_${system}
     '';
     s = ''
-        sudo nixos-rebuild switch --flake "/etc/nixos#${system}";
+        sudo nixos-rebuild switch --flake "${nixos_path}#${system}";
     '';
   };
   envExtra =
