@@ -43,7 +43,7 @@ home.packages = with pkgs;
         zainchen.json
       ];
     };
-  programs.nixcord = {
+  programs.nixcord = lib.mkIf (config.full) {
     enable = true;
 
     # Choose your client (enable only one of these two)

@@ -78,21 +78,31 @@
 
       godotModule = import ./shells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
       godotModule2 = import ./shells/godot { pkgs = pkgs-unstable; };
-    in
-    {
-    
-      homeConfigurations."${username}" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit inputs username godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
-          full = true;
-          hypr = true;
-        };
         modules = [
           ./home/home.nix
           ./modules/openhands
           inputs.nix-zed.homeManagerModules.nix-zed
-          
         ];
+    in
+    {
+    
+      homeConfigurations."nick_desktop" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs modules;
+        extraSpecialArgs = { inherit inputs godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
+          username = "nick";
+          full = true;
+          hypr = true;
+          system = "desktop";
+        };
+      };
+      homeConfigurations."nick_laptop" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs modules;
+        extraSpecialArgs = { inherit inputs username godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
+          user = "nick";
+          full = false;
+          hypr = false;
+          system= "laptop";
+        };
       };
 
 
@@ -113,7 +123,7 @@
           };
         in
         {
-          nixos= mkSystem {
+          desktop= mkSystem {
             hardwareFile = ./root/hardware-configuration.nix;
             isFull = true;
             useHypr = true;
