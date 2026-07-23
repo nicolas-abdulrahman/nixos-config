@@ -143,9 +143,5 @@ xdg.configFile."mimeapps.list".text = ''
       inherit shellAliases;
       bashrcExtra = envExtra;
     };
-
-  # Optional: If you want it to start automatically when you log in
-    services.openhands.enable = false;
-
   };
 }

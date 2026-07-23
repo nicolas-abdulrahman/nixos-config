@@ -11,9 +11,8 @@
 
   programs.java = {
     enable = config.full;
-    # package = pkgs.jdk23;
   };
-  services.mysql = {
+  services.mysql = lib.mkIf config.full {
     enable = true;
     package = pkgs.mariadb;
     settings = {
@@ -26,7 +25,7 @@
   };
 
 
-  users.mysql = {
+  users.mysql = lib.mkIf config.full {
     enable = false;
     host = "localhost";
     user = "sunshine";

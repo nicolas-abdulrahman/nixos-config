@@ -1,30 +1,26 @@
-{pkgs,...}:
+{pkgs,username, system, ...}:
 let
-
   nixos_path = "/etc/nixos";
   browser = "firefox";
   fileExplorer = "pcmanfm";
   terminal = "st";
 
-  username = "nick";
   shellAliases = {
     b = "nix build /etc/nixos#nvim";
     n = "/etc/nixos/result/bin/nvim";
     ".." = "cd ..";
     h = ''
-      home-manager switch --flake ${nixos_path}
-      # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
-      # ${nixos_path}/result/activate
+      home-manager switch --flake ${nixos_path} .#${username}_${system}
+    '';
+    s = ''
+        sudo nixos-rebuild switch --flake "/etc/nixos#${system}";
     '';
   };
   envExtra =
     ''
-          s(){
-            sudo nixos-rebuild switch --flake "/etc/nixos#$1";
-          } # <-- Fixed "$1}" to "$1" and added a semicolon
-            dev(){
-                 nix develop ${nixos_path}/#$1
-               }
+        dev(){
+             nix develop ${nixos_path}/#$1
+           }
          #example nix run godot4 -- godot-arg=true
          run() {
           # 1. Grab the first argument as the target app/shell name
@@ -82,14 +78,14 @@ in
       };
       inherit envExtra sessionVariables shellAliases;
       initExtra = ''
-        if [ -f /run/secrets/gemini_api_key ]; then
-          export GEMINI_API_KEY=$(cat /run/secrets/gemini_api_key)
-          export GEMINI_API_KEY_NASR=$(cat /run/secrets/gemini_api_key_nasr)
-          export AVANTE_GEMINI_API_KEY=$GEMINI_API_KEY
-          export GITHUB_TOKEN=$(cat /run/secrets/ghp_nasr)
-          export NIX_CONFIG="access-tokens = github.com=$GITHUB_TOKEN"
-          export AIDER_MODEL="gemini/gemma-4-31b-it
-        fi
+      if [ -f /run/secrets/gemini_api_key ]; then
+    export GEMINI_API_KEY=$(cat /run/secrets/gemini_api_key)
+    export GEMINI_API_KEY_NASR=$(cat /run/secrets/gemini_api_key_nasr)
+    export AVANTE_GEMINI_API_KEY="$GEMINI_API_KEY"
+    export GITHUB_TOKEN=$(cat /run/secrets/ghp_nasr)
+    export NIX_CONFIG="access-tokens = github.com=$GITHUB_TOKEN"
+    export AIDER_MODEL="gemini/gemma-4-31b-it"
+fi
           '';
       oh-my-zsh = {
         extraConfig = "AGNOSTER_PROMPT_SEGMENTS=prompt_git";
