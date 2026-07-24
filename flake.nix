@@ -17,12 +17,6 @@
     nvf.url = "github:NotAShelf/nvf";
     nur.url = "github:nix-community/NUR";
     nixcord.url = "github:FlameFlag/nixcord";
-    nix-zed = {
-      url = "path:./nix_packages/nix-zed";
-
-
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable"; # Bleeding edge
     sops-nix.url = "github:Mic92/sops-nix";
     
@@ -81,7 +75,6 @@
         modules = [
           ./home/home.nix
           ./modules/openhands
-          inputs.nix-zed.homeManagerModules.nix-zed
         ];
     in
     {
@@ -133,6 +126,7 @@
             hardwareFile = ./root/laptop-hardware-configuration.nix;
             isFull = false;
             useHypr = false;
+
           };
         };
 
