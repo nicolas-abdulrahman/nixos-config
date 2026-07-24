@@ -170,7 +170,7 @@ in
               keymap = {
                 accept = "<right>",
                 next = "<M-Tab>",
-                prev = "<M-down>
+                prev = "<M-down>",  
                 dismiss = "<left>",
               },
             },
