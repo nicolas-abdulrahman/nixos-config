@@ -1,8 +1,19 @@
-{ config, pkgs, inputs, nixgl, ... }:
+{ config, pkgs, inputs, nixgl,lib, ... }:
 let
   keyFile = "/var/lib/sops-age/keys.txt";
 in
 {
+  programs.firejail =
+    {
+      enable = true;
+      wrappedBinaries = {
+        surf = {
+          executable = "${lib.getBin pkgs.surf}/bin/surf";
+          profile = "${pkgs.firejail}/etc/firejail/surf.profile";
+        };
+      };
+
+    };
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -30,7 +41,7 @@ in
   age.generateKey = true;
 
   # 2. Global file defaults
-  defaultSopsFile = ./conf/secrets.yaml;
+  defaultSopsFile = ../conf/secrets.yaml;
   defaultSopsFormat = "yaml";
   
   # /run/secrets/gemini_api_key
