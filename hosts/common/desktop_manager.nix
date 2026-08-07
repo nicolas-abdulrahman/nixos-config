@@ -1,9 +1,8 @@
 { config, pkgs, inputs, ... }:
 
 {
+  services.xserver.enable = config.xserver;
   services.xserver = {
-    enable = true;
-    autorun = true;
     xkb.layout = "us";
     videoDrivers = [ "amdgpu" ];
     desktopManager.xfce.enable = true;
