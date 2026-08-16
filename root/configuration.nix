@@ -25,6 +25,15 @@
   };
 
   config = {
+    hardware.steam-hardware.enable = true;
+    services.udev.extraRules = ''
+      # Match ANY Sony HID device (Vendor ID 054c)
+      SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", MODE="0666", TAG+="uaccess"
+      
+      # Optional fallback matching input subsystem
+      KERNEL=="hidraw*", ATTRS{idVendor}=="054c", MODE="0666", TAG+="uaccess"
+    '';
+    # Fix WebHID permissions for DualShock / DualSense controllers
     full = isFull;
     hypr = useHypr;
     services.envfs.enable = true;
