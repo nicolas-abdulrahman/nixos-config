@@ -24,9 +24,12 @@
     url = "github:continuedev/continue";
     flake = false;
     };
+
+	nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, ... }:
+  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, nixos-wsl, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -99,37 +102,36 @@
       };
 
 
-      nixosConfigurations =
-        let
-          system = "x86_64-linux"; # Adjust if your systems differ
 
-          # Define a helper function to build systems without repeating boilerplate
-          mkSystem = { hardwareFile, isFull, useHypr }: nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = {
-              inherit inputs isFull useHypr hardwareFile;
-              hyprland = inputs.hyprland;
-            };
-            modules = [ ./root/configuration.nix 
-
-            ];
-          };
-        in
-        {
-          desktop= mkSystem {
-            hardwareFile = ./root/hardware-configuration.nix;
-            isFull = true;
-            useHypr = true;
-          };
-
-          laptop = mkSystem {
-            hardwareFile = ./root/laptop-hardware-configuration.nix;
-            isFull = false;
-            useHypr = false;
-
-          };
+    nixosConfigurations = {
+	      wsl = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            nixos-wsl.nixosModules.default 
+            ./hosts/common/configuration.nix
+            ./hosts/wsl/configuration.nix         
+          ];
+	      };
+        desktop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/common/configuration.nix
+            ./hosts/desktop/configuration.nix
+            ./hosts/common/desktop_manager.nix
+        ];
         };
-
+        laptop= nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./hosts/common/configuration.nix
+            ./hosts/laptop/configuration.nix
+            ./hosts/common/desktop_manager.nix
+        ];
+        };
+      };
 
       packages.${system} = {
         nvim = nvfPkg;

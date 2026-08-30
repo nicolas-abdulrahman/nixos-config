@@ -1,14 +1,11 @@
-{ config, pkgs, inputs, nixgl, lib,isFull, useHypr, hardwareFile, ... }:
+{ config, pkgs, inputs, nixgl, lib, useHypr, hardwareFile, ... }:
 
 {
   imports = [
-    hardwareFile
     inputs.sops-nix.nixosModules.sops # <-- This makes the 'sops' option exist!
-    ./boot.nix
-    ./desktop_manager.nix
-    ./pkgs.nix
-    ./security.nix
+    ./cli.nix
     ./users.nix
+    
   ];
 
   options = {
@@ -22,54 +19,32 @@
       default = false;
       description = "Enable Hyprland ecosystem settings configuration flag.";
     };
-  };
-
-  config = {
-    hardware.steam-hardware.enable = true;
-    services.udev.extraRules = ''
-      # Match ANY Sony HID device (Vendor ID 054c)
-      SUBSYSTEM=="hidraw", ATTRS{idVendor}=="054c", MODE="0666", TAG+="uaccess"
-      
-      # Optional fallback matching input subsystem
-      KERNEL=="hidraw*", ATTRS{idVendor}=="054c", MODE="0666", TAG+="uaccess"
-    '';
-    # Fix WebHID permissions for DualShock / DualSense controllers
-    full = isFull;
-    hypr = useHypr;
-    services.envfs.enable = true;
-    services.httpd = lib.mkIf (config.full) {
-      enablePHP = true;
-      enable = true;
-      extraConfig = ''
-        Alias /hello "/programs/codes/php/hello"
-        Alias /rua_solidaria "/programs/codes/node/Prototipo-rua-solidaria"
-
-        <Directory "/programs/codes/php/hello">
-          Options Indexes FollowSymLinks
-          AllowOverride All
-          Require all granted
-        </Directory>
-
-        <Directory "/programs/codes/node/Prototipo-rua-solidaria">
-          Options Indexes FollowSymLinks
-          AllowOverride All
-          Require all granted
-        </Directory>
-      '';
+    xserver= lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable X.";
     };
+    docker= lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable docker";
+    };
+    remap= lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable remap";
+    };
+  };
+  config = {
     virtualisation.docker = {
-      enable = true;
+      enable = config.docker;
       rootless = {
         enable = true;
         setSocketVariable = true;
       };
     };
 
-    programs.steam = lib.mkIf (config.full) {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-    };
+    
 
     programs.nix-ld.enable = true;
     programs.dconf.enable = true;
@@ -130,18 +105,15 @@
       uinput.enable = true;
       opengl.enable = true;
     };
-
-    system.stateVersion = "26.05";
-
      services.kanata = {
-      enable = true;
+      enable = false;
 
       keyboards.default = {
         devices = [
       "/dev/input/by-path/pci-0000:00:1a.0-usb-0:1.3:1.1-event-kbd"
       "/dev/input/by-path/pci-0000:00:1a.0-usb-0:1.4:1.0-event-kbd"
     ];
-        configFile=  ./conf/keys.kbd;
+        configFile=  ../conf/keys.kbd;
       };
     }; 
     systemd.services."kanata-default".wantedBy = [ "multi-user.target" ];
