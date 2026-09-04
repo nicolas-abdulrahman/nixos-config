@@ -1,3 +1,0 @@
-[submodule "pkgs/nvf"]
-	path = nix_packages/nvf
-	url = https://github.com/NotAShelf/nvf

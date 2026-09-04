@@ -56,7 +56,7 @@
       nvfPkg = (nvf.lib.neovimConfiguration {
         pkgs = customPkgs;
         modules = [
-          ./modules/nvim/nvf.nix ];
+          ./home/modules/nvim/nvf.nix ];
       }).neovim;
 
       myNvim = pkgs.symlinkJoin {
@@ -73,8 +73,8 @@
       };
 
 
-      godotModule = import ./shells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
-      godotModule2 = import ./shells/godot { pkgs = pkgs-unstable; };
+      godotModule = import ./devShells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
+      godotModule2 = import ./devShells/godot { pkgs = pkgs-unstable; };
         modules = [
           ./home/home.nix
           ./modules/openhands
@@ -115,10 +115,15 @@
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.extraSpecialArgs = { inherit inputs; };
-        # Magically map the list of users to their home.nix files
+
+        home-manager.sharedModules = [
+          
+          ./home/common/pkgs.nix
+          ./home/common/home.nix
+        ];
         home-manager.users = builtins.listToAttrs (map (user: {
           name = user;
-          value = import ./users/${user}/home.nix;
+          value = import ./home/users/${user}/home.nix;
         }) users);
       }
     ];
@@ -164,15 +169,15 @@ in{
       };
 
       devShells.${system} = {
-        c = import ./shells/c.nix { inherit pkgs; };
-        java = import ./shells/java.nix { inherit pkgs; };
-        node = import ./shells/node.nix { inherit pkgs; };
-        python = import ./shells/python.nix { inherit pkgs; };
-        rust = import ./shells/rust.nix { inherit pkgs; };
-        wine = import ./shells/wine.nix { inherit pkgs; };
-        zig = import ./shells/zig.nix { inherit pkgs; };
+        c = import ./devShells/c.nix { inherit pkgs; };
+        java = import ./devShells/java.nix { inherit pkgs; };
+        node = import ./devShells/node.nix { inherit pkgs; };
+        python = import ./devShells/python.nix { inherit pkgs; };
+        rust = import ./devShells/rust.nix { inherit pkgs; };
+        wine = import ./devShells/wine.nix { inherit pkgs; };
+        zig = import ./devShells/zig.nix { inherit pkgs; };
         zed = import ./modules/zed { inherit pkgs; };
-        vscode = import ./shells/vscode { inherit pkgs; };
+        vscode = import ./devShells/vscode { inherit pkgs; };
         godot4 = godotModule.shell;
         godot = godotModule2.shell;
       };

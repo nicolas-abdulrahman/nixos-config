@@ -1,21 +1,20 @@
 
-{ config, pkgs, inputs, lib, username, nvim, ... }:
+{ config, pkgs, inputs, lib,   osConfig, ... }:
 {
 home.packages = with pkgs; 
   # Essentials: Daily utilities, CLI tools, and networking
   [
-     
-      nvim
+      neovim
     lazygit zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
   ] ++ 
-  # Hyprland: Window manager specific tools
-  (lib.optionals config.hypr [
+  # Hyprland: Wi,ndow manager specific toolsnvim
+  (lib.optionals osConfig.hypr [
     grimblast mako waybar eww hyprpaper hyprlock hypridle 
     wf-recorder hyprsunset swayimg xwayland 
   ]) ++ 
   # Full: Heavy GUI apps, media, and office software
-  (lib.optionals config.full [
+  (lib.optionals osConfig.full [
     # Browsers & Media
       gemini-cli aider-chat
     google-chrome brave thunderbird spotify qbittorrent
@@ -27,7 +26,7 @@ home.packages = with pkgs;
     gamescope weston blockbench equicord steam
   ]);
 
-    programs.vscode = lib.mkIf (config.full) {
+    programs.vscode = lib.mkIf osConfig.full {
       enable = true;
       extensions = with pkgs.vscode-extensions; [
         dracula-theme.theme-dracula
@@ -43,12 +42,4 @@ home.packages = with pkgs;
         zainchen.json
       ];
     };
-  programs.nixcord = lib.mkIf (config.full) {
-    enable = true;
-
-    # Choose your client (enable only one of these two)
-     discord.vencord.enable = true; # Standard Vencord
-   # discord.equicord.enable = true; # Equicord (has more plugins)
-    vesktop.enable = true;
-  };
 }

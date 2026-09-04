@@ -1,17 +1,15 @@
-{pkgs,username, system, ...}:
+{pkgs, config, osConfig,...}:
 let
   nixos_path = "/etc/nixos";
   browser = "firefox";
   fileExplorer = "pcmanfm";
   terminal = "st";
 
+  system= osConfig.networking.hostName;
   shellAliases = {
     b = "nix build /etc/nixos#nvim";
     n = "/etc/nixos/result/bin/nvim";
     ".." = "cd ..";
-    h = ''
-      home-manager switch --flake ${nixos_path}#${username}_${system}
-    '';
     s = ''
         sudo nixos-rebuild switch --flake "${nixos_path}#${system}";
     '';
@@ -101,7 +99,4 @@ fi
       profileExtra = '''';
 
     };
-
-
-  nix.package = pkgs.nix;
 }

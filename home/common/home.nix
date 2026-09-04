@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, hypr, full,username, ... }:
+{ config, ... }:
 let
 
   nixos_path = "/etc/nixos";
@@ -6,14 +6,13 @@ let
   fileExplorer = "pcmanfm";
   terminal = "st";
 
-  username = "nick";
   shellAliases = {
     b = "nix build /etc/nixos#nvim";
     n = "/etc/nixos/result/bin/nvim";
     ".." = "cd ..";
     h = ''
       home-manager switch --flake ${nixos_path}
-      # nix build ${nixos_path}/#homeConfigurations."${username}".activationPackage -o ${nixos_path}/result
+      # nix build ${nixos_path}/#homeConfigurations."${config.home.username}".activationPackage -o ${nixos_path}/result
       # ${nixos_path}/result/activate
     '';
   };
@@ -51,44 +50,10 @@ let
   sessionVariables = {
         EDITOR = "nvim";
         VISUAL = "nvim";
-        FILE_MANAGER = "pcmanfm";
-        DEFAULT_FILE_MANAGER = "pcmanfm";
       };
 in
 {
-
-
-  options = {
-    full = lib.mkOption
-      {
-        type = lib.types.bool;
-        default = false;
-        description = "full home";
-      };
-
-    hypr = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "is using hyprland?";
-
-    };
-    
-  };
-  imports = [
-    ./user/nasr
-    ./config
-    ./pkgs.nix
-    inputs.nixcord.homeModules.nixcord
-  ];
-
-  config = {
-    hypr  = hypr;
-    full = full;
-    home.username = username;
-    home.homeDirectory = /home/${username};
     home.stateVersion = "26.05";
-
-
 
 xdg.configFile."mimeapps.list".text = ''
     [Default Applications]
@@ -101,41 +66,7 @@ xdg.configFile."mimeapps.list".text = ''
     inode/directory=${fileExplorer}.desktop
   '';
 
-  # Portal configuration (for file chooser dialogs)
-  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-    [preferred]
-    default=gtk
-    # If you want the file chooser to use pcmanfm-qt, you'd need the portal backend,
-    # but gtk is fine for a lightweight setup.
-  '';
     home.sessionVariables = sessionVariables;
-    home.file = {
-      ".aider.conf.yml".text = ''
-    # Recommended settings for a coding agent
-
-    auto-commits: true
-    edit-format: diff
-  '';
-        ".config/nvf/avanterules/default.avanterules".text = "dont wast tokens";
-      ".config/nvim/avanterules/default.avanterules".text = "dont waste tokens";
-    # Option 1: For older versions using settings.json
-    ".gemini/settings.json".text = ''
-      {
-        "excludeTools": [
-          "google_web_search"
-        ]
-      }
-    '';
-
-    # Option 2: For newer versions using the TOML policy engine
-    ".gemini/policies/disable-search.toml".text = ''
-      [[rule]]
-      toolName = "google_web_search"
-      decision = "deny"
-      priority = 100
-    '';
-  };
-
    
     programs.bash = {
       enable = true;
@@ -143,5 +74,4 @@ xdg.configFile."mimeapps.list".text = ''
       inherit shellAliases;
       bashrcExtra = envExtra;
     };
-  };
 }
