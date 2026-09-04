@@ -103,7 +103,32 @@
 
 
 
-    nixosConfigurations = {
+  nixosConfigurations =  let
+  mkHost = { hostname, users ? [] }: nixpkgs.lib.nixosSystem {
+    inherit system;
+    specialArgs = { inherit inputs; };
+    modules = [
+      ./hosts/common/configuration.nix
+      ./hosts/${hostname}/configuration.nix
+      inputs.home-manager.nixosModules.home-manager
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.extraSpecialArgs = { inherit inputs; };
+        # Magically map the list of users to their home.nix files
+        home-manager.users = builtins.listToAttrs (map (user: {
+          name = user;
+          value = import ./users/${user}/home.nix;
+        }) users);
+      }
+    ];
+  };
+in{
+    desktop = mkHost { hostname = "desktop"; users = [ "nick" "nasr" "lfs" ]; };
+    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ]; };
+    wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
+  };
+    nixosConfigurationss = {
 	      wsl = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit inputs; };

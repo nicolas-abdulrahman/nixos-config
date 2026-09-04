@@ -34,6 +34,11 @@
       default = true;
       description = "Enable remap";
     };
+    kanata= lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable services";
+    };
   };
   config = {
     virtualisation.docker = {
@@ -106,7 +111,7 @@
       opengl.enable = true;
     };
      services.kanata = {
-      enable = false;
+      enable = config.kanata;
 
       keyboards.default = {
         devices = [
