@@ -1,6 +1,6 @@
-mainMod = "SUPER"
-main_monitor      = "HDMI-A-1" -- <-- Change this to the main monitor name from hyprctl
-secondary_monitor = "DP-1"
+local mainMod = "SUPER"
+local main_monitor      = "HDMI-A-1" -- <-- Change this to the main monitor name from hyprctl
+local secondary_monitor = "DP-1"
 
 -- MONITORS
 -- Since Hyprland 0.55, monitors are configured with individual hl.monitor() calls,
@@ -81,6 +81,8 @@ hl.window_rule({
     maximize = true
 })
 
+
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("wayscriber --daemon-toggle"))
 hl.bind(mainMod .. " + A", hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("xdg-open ~"))

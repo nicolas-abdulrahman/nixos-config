@@ -1,4 +1,8 @@
-{ config, ... }:
+
+
+
+
+{ config,inputs, pkgs,... }:
 let
 
   nixos_path = "/etc/nixos";
@@ -52,8 +56,17 @@ let
         VISUAL = "nvim";
       };
 in
+
 {
-    home.stateVersion = "26.05";
+  imports = [
+    inputs.nvf.homeManagerModules.default
+    ../modules
+  ];
+  programs.nvf = {
+  enable  = true;
+  settings = import ../modules/nvim/nvf.nix { inherit pkgs; };
+  };
+  home.stateVersion = "26.05";
 
 xdg.configFile."mimeapps.list".text = ''
     [Default Applications]
@@ -74,4 +87,12 @@ xdg.configFile."mimeapps.list".text = ''
       inherit shellAliases;
       bashrcExtra = envExtra;
     };
+  programs.starship.enable = true; # A very cool, fast, customizable shell prompt
+  programs.fzf = {
+  enable = true;
+  enableFishIntegration = true; # Enabled automatically when keybindings = true
+};
+
+
+
 }

@@ -1,15 +1,24 @@
-{ pkgs, lib, config, ... }:
+{ ... }:
 {
   imports = [
-    ./openhands
-    ./alacritty.nix
-    ./tmux
-    ./wezterm
-    ./hyprland
-    ./eww
-     ./godot
-    ./firefox
     ./ai
-    #./xremap.nix
+    ./alacritty
+    ./eww
+    ./firefox
+    ./fish
+    ./hyprland
+    ./kanata
+    ./tmux
+    ./wayscriber
+    ./wezterm
+    ./xdg
+    ./zsh
+    # ./godot << concept
+    # ./xremap << should delete bruh
+    # ./openhands << concept
+    #./zed  << concept
   ];
 }
+
+
+

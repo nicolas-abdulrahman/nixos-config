@@ -114,12 +114,13 @@
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
+        home-manager.backupFileExtension= "bak";
         home-manager.extraSpecialArgs = { inherit inputs; };
 
         home-manager.sharedModules = [
           
-          ./home/common/pkgs.nix
           ./home/common/home.nix
+          ./home/common/pkgs.nix
         ];
         home-manager.users = builtins.listToAttrs (map (user: {
           name = user;

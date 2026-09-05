@@ -14,6 +14,12 @@ in
       };
 
     };
+  security.sudo = {
+      enable = true;
+      extraConfig = ''
+        Defaults timestamp_timeout=60
+      '';
+    };
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -41,7 +47,7 @@ in
   age.generateKey = true;
 
   # 2. Global file defaults
-  defaultSopsFile = ../conf/secrets.yaml;
+  defaultSopsFile = ../modules/secrets.yaml;
   defaultSopsFormat = "yaml";
   
   # /run/secrets/gemini_api_key

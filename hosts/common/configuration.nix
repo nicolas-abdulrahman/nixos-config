@@ -6,6 +6,9 @@
     ./cli.nix
     ./users.nix
     ../modules/kanata
+    ./desktop_manager.nix
+    ./gui.nix
+    ./security.nix
     
   ];
 
@@ -49,6 +52,11 @@
         setSocketVariable = true;
       };
     };
+
+    environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
 
     
 

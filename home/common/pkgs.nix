@@ -4,7 +4,6 @@
 home.packages = with pkgs; 
   # Essentials: Daily utilities, CLI tools, and networking
   [
-      neovim
     lazygit zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
   ] ++ 
