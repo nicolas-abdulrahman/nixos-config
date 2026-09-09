@@ -71,35 +71,11 @@
             --set GEMINI_API_KEY "YOUR_ACTUAL_API_KEY"
         '';
       };
-
-
       godotModule = import ./devShells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
       godotModule2 = import ./devShells/godot { pkgs = pkgs-unstable; };
-        modules = [
-          ./home/home.nix
-          ./modules/openhands
-        ];
     in
     {
     
-      homeConfigurations."nick_desktop" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs modules;
-        extraSpecialArgs = { inherit inputs godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
-          username = "nick";
-          full = true;
-          hypr = true;
-          system = "desktop";
-        };
-      };
-      homeConfigurations."nick_laptop" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs modules;
-        extraSpecialArgs = { inherit inputs username godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
-          user = "nick";
-          full = false;
-          hypr = false;
-          system= "laptop";
-        };
-      };
 
 
 
@@ -110,6 +86,14 @@
     modules = [
       ./hosts/common/configuration.nix
       ./hosts/${hostname}/configuration.nix
+
+            {
+        # Set the actual physical OS hostname to "nixos"
+        networking.hostName = "nixos";
+        
+        # Inject the logical name into your custom option
+        hostname = hostname;
+      }
       inputs.home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
@@ -134,35 +118,6 @@ in{
     laptop  = mkHost { hostname = "laptop";  users = [ "nick" ]; };
     wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
   };
-    nixosConfigurationss = {
-	      wsl = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            nixos-wsl.nixosModules.default 
-            ./hosts/common/configuration.nix
-            ./hosts/wsl/configuration.nix         
-          ];
-	      };
-        desktop = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./hosts/common/configuration.nix
-            ./hosts/desktop/configuration.nix
-            ./hosts/common/desktop_manager.nix
-        ];
-        };
-        laptop= nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./hosts/common/configuration.nix
-            ./hosts/laptop/configuration.nix
-            ./hosts/common/desktop_manager.nix
-        ];
-        };
-      };
 
       packages.${system} = {
         nvim = nvfPkg;

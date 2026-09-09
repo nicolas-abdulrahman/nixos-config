@@ -122,6 +122,23 @@ in
         setup = ''
           local tab_pin = require("tab-pin")
           tab_pin.setup({})
+
+          local map = vim.keymap.set
+          local opts = { silent = true }
+
+          -- Tab Navigation & Lifecycle (Default Vim commands)
+          map("n", "<M-h>", "<cmd>tabprevious<CR>", vim.tbl_extend("force", opts, { desc = "Previous tab" }))
+          map("n", "<M-l>", "<cmd>tabnext<CR>",     vim.tbl_extend("force", opts, { desc = "Next tab" }))
+          map("n", "<M-q>", "<cmd>tabclose<CR>",    vim.tbl_extend("force", opts, { desc = "Close tab" }))
+          map("n", "<M-n>", "<cmd>tabnew<CR>",      { silent = true, desc = "New tab" })
+
+          -- TabPin Operations
+          map("n", "<M-p>", "<cmd>TabPinToggle<CR>", vim.tbl_extend("force", opts, { desc = "TabPin: Toggle pin" }))
+          map("n", "<M-s>", "<cmd>TabPinSave<CR>",   vim.tbl_extend("force", opts, { desc = "TabPin: Save pins" }))
+
+          -- Collision note: Changed Alt+l (Load) to Alt+o to keep Alt+l for Next Tab
+          map("n", "<M-o>", "<cmd>TabPinLoad<CR>",   vim.tbl_extend("force", opts, { desc = "TabPin: Load pins" }))
+          map("n", "<M-n>", "<cmd>tabnew<CR>",      { silent = true, desc = "New tab" })
         '';
       };
 

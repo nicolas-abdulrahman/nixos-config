@@ -38,7 +38,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", M("Move selected lines up"))
 vim.keymap.set("n", "J", "mzJ`z", M("Join line keeping cursor position"))
 vim.keymap.set("n", "<C-d>", "<C-d>zz", M("Scroll down and center cursor"))
 vim.keymap.set("n", "<C-u>", "<C-u>zz", M("Scroll up and center cursor"))
-vim.keymap.set("x", "<leader>dd", [["_dP]], M("Paste over selection without losing register"))
+
 
 -- INTEGRATED SEARCH JUMPS (Centering + hlslens refresh)
 
@@ -83,3 +83,27 @@ vim.keymap.set("n", "<leader><C-d>", "<cmd>lcd %:h<CR>", M("Change local window 
 -- WINDOW DIMENSIONS
 vim.keymap.set("n", "<A-a>", "<C-S-w>|", M("Maximize current split width"))
 vim.keymap.set("n", "<A-s>", "<C-S-w>=", M("Equalize all split dimensions"))
+
+
+
+-- DELETE stuff
+
+vim.keymap.set({ "n", "v" }, "d", '"_d', { desc = "Delete to black hole" })
+vim.keymap.set({ "n", "v" }, "D", '"_D', { desc = "Delete to end of line to black hole" })
+vim.keymap.set({ "n", "v" }, "x", '"_x', { desc = "Delete char to black hole" })
+
+local function cut_to_clipboard()
+    local mode = vim.fn.mode()
+    if mode:match("[vV\22]") then
+        -- Visual mode: yank selection to "+, then delete selection
+        return '"+d'
+    else
+        -- Normal mode: operator-pending cut
+        -- Using "+d will populate both the "+ register and the unnamed register
+        return '"+d'
+    end
+end
+
+vim.keymap.set({ "n", "v" }, "<leader>d", cut_to_clipboard, { expr = true, desc = "Cut to clipboard & unnamed register" })
+vim.keymap.set("n", "<leader>dd", '"+dd', { desc = "Cut entire line to clipboard" })
+vim.keymap.set("n", "<leader>D", '"+D',   { desc = "Cut to end of line to clipboard" })

@@ -1,10 +1,71 @@
 
 { config, pkgs, inputs, lib,   osConfig, ... }:
+let lazy  =  (pkgs.lazygit.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        cat > pkg/gui/information_panel.go << 'GOEOF'
+        package gui
+
+        import (
+        	"os/exec"
+        	"strings"
+
+        	"github.com/jesseduffield/lazygit/pkg/gui/style"
+        	"github.com/jesseduffield/lazygit/pkg/utils"
+        )
+
+        func (gui *Gui) informationStr() string {
+        	if activeMode, ok := gui.helpers.Mode.GetActiveMode(); ok {
+        		return activeMode.InfoLabel()
+        	}
+
+        	if name, ok := gitUserName(); ok {
+        		return style.FgCyan.Sprint(name)
+        	}
+
+        	return gui.Config.GetVersion()
+        }
+
+        func gitUserName() (string, bool) {
+        	out, err := exec.Command("git", "config", "user.name").Output()
+        	if err != nil {
+        		return "", false
+        	}
+        	name := strings.TrimSpace(string(out))
+        	if name == "" {
+        		return "", false
+        	}
+        	return name, true
+        }
+
+        func (gui *Gui) handleInfoClick() error {
+        	if !gui.g.Mouse {
+        		return nil
+        	}
+
+        	view := gui.Views.Information
+
+        	cx, _ := view.Cursor()
+        	width := view.Width()
+
+        	if activeMode, ok := gui.helpers.Mode.GetActiveMode(); ok {
+        		if width-cx > utils.StringWidth(gui.c.Tr.ResetInParentheses) {
+        			return nil
+        		}
+        		return activeMode.Reset()
+        	}
+
+        	return nil
+        }
+        GOEOF
+      '';
+    }));
+in
 {
 home.packages = with pkgs; 
   # Essentials: Daily utilities, CLI tools, and networking
   [
-    lazygit zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
+      lazy
+    zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
   ] ++ 
   # Hyprland: Wi,ndow manager specific toolsnvim
@@ -41,4 +102,6 @@ home.packages = with pkgs;
         zainchen.json
       ];
     };
+
+
 }

@@ -10,47 +10,6 @@ let
   fileExplorer = "pcmanfm";
   terminal = "st";
 
-  shellAliases = {
-    b = "nix build /etc/nixos#nvim";
-    n = "/etc/nixos/result/bin/nvim";
-    ".." = "cd ..";
-    h = ''
-      home-manager switch --flake ${nixos_path}
-      # nix build ${nixos_path}/#homeConfigurations."${config.home.username}".activationPackage -o ${nixos_path}/result
-      # ${nixos_path}/result/activate
-    '';
-  };
-  envExtra =
-    ''
-          s(){
-            sudo nixos-rebuild switch --flake "/etc/nixos#$1";
-          } # <-- Fixed "$1}" to "$1" and added a semicolon
-            dev(){
-                 nix develop ${nixos_path}/#$1
-               }
-         #example nix run godot4 -- godot-arg=true
-         run() {
-          # 1. Grab the first argument as the target app/shell name
-          local target="$1"
-    
-          # 2. Shift the arguments list left, dropping the first argument ($1)
-          shift
-
-          # 3. Check if there are any remaining arguments left to pass
-          if [ $# -eq 0 ]; then
-              # No arguments passed at all (e.g., 'run godot4')
-              nix run "${nixos_path}/#$target"
-          elif [[ "$1" == "--" ]]; then
-              # You already typed the '--' manually (e.g., 'run godot4 -- godot-arg=true') nix run "/etc/nixos/sheels/#$target" "$@"
-              nix run "/etc/nixos/shells/#$target" "$@"
-          else
-              # Arguments exist but you omitted the '--' (e.g., 'run godot4 godot-arg=true')
-              # The function cleanly injects '--' for you!
-              nix run "/etc/nixos/shells/#$target" -- "$@"
-          fi
-      }
-
-    '';
   sessionVariables = {
         EDITOR = "nvim";
         VISUAL = "nvim";
@@ -62,7 +21,13 @@ in
     inputs.nvf.homeManagerModules.default
     ../modules
   ];
+
+
+  manual.manpages.enable = false;
+manual.html.enable = false;
+manual.json.enable = false;
   programs.nvf = {
+
   enable  = true;
   settings = import ../modules/nvim/nvf.nix { inherit pkgs; };
   };
@@ -80,17 +45,43 @@ xdg.configFile."mimeapps.list".text = ''
   '';
 
     home.sessionVariables = sessionVariables;
-   
     programs.bash = {
       enable = true;
       enableCompletion = true;
-      inherit shellAliases;
-      bashrcExtra = envExtra;
     };
-  programs.starship.enable = true; # A very cool, fast, customizable shell prompt
+
+  programs.starship = {
+    enable = true;           # keep this — still gives you starship in zsh
+    enableFishIntegration = false;   # stops starship from touching fish at all
+  };
   programs.fzf = {
   enable = true;
   enableFishIntegration = true; # Enabled automatically when keybindings = true
+};
+
+
+  programs.git = {
+  enable = true;
+  
+  extraConfig = {
+    credential = {
+      helper = [
+        "cache --timeout=3600"
+        "${pkgs.git-credential-oauth}/bin/git-credential-oauth"
+      ];
+    };
+  };
+    includes = [
+    {
+      condition = "gitdir:/programs/codes/facul/";
+      contents = {
+        user = {
+          name = "nicolas";
+          email = "1352622646@ulife.com.br";
+        };
+      };
+    }
+  ];
 };
 
 

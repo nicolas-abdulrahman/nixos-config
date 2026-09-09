@@ -53,12 +53,8 @@ in
 {
 
     programs.git = {
-      extraConfig.credential.helper = "manager";
-      extraConfig.credential."https://github.com".username = "nicolas-abdulrahman";
-      extraConfig.credential.credentialStore = "cache";
       userName = "nicolas-abdulrahman";
       userEmail = "nicolas.abdul.rahman@gmail.com";
-      enable = true;
     };
 
     programs.zsh = {

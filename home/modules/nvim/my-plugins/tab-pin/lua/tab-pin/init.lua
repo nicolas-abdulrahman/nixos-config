@@ -1,25 +1,22 @@
 local M = {}
 
 
--- Configure cool, high-quality symbols for your gutter diagnostics
-vim.diagnostic.config({
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = " ", -- Heavy solid alert cross
-            [vim.diagnostic.severity.WARN]  = "•", -- Clear warning triangle
-            [vim.diagnostic.severity.HINT]  = "󰌵 ", -- Sleek glowing lightbulb
-            [vim.diagnostic.severity.INFO]  = " ", -- Clean info circle
-        },
-    },
-})
 -- State: Maps tabpage IDs to the specific Buffer IDs they are locked to
 local pinned_tabs = {}
 local allowing_new_tab = false
 local is_processing = false
 local last_active_tab = nil
 local last_active_was_pinned = false
-
+local config = {
+    debug = false,
+}
 local data_path = vim.fn.stdpath("data") .. "/tabpins_history.json"
+local function notify(msg, level)
+    if config.debug then
+        vim.notify(msg, level or vim.log.levels.INFO, { title = "TabPins" })
+    end
+end
+
 -- Internal helper to get the clean filename of a buffer
 local function get_buffer_name(bufnr)
 	local path = vim.api.nvim_buf_get_name(bufnr)
@@ -40,120 +37,139 @@ end
 
 -- Persistence Engine: Save active pins grouped by CWD
 function M.save_pins()
-	local cwd = vim.fn.getcwd()
-	local data = {}
+    local cwd = vim.fn.getcwd()
+    local data = {}
 
-	-- Read existing file to preserve histories of your other projects
-	local r_file = io.open(data_path, "r")
-	if r_file then
-		local content = r_file:read("*a")
-		r_file:close()
-		pcall(function()
-			data = vim.json.decode(content) or {}
-		end)
-	end
+    -- Read existing file to preserve histories of your other projects
+    local r_file = io.open(data_path, "r")
+    if r_file then
+        local content = r_file:read("*a")
+        r_file:close()
+        pcall(function()
+            data = vim.json.decode(content) or {}
+        end)
+    end
 
-	-- Extract the file paths of all currently pinned buffers
-	local current_pinned_files = {}
-	local tabs = vim.api.nvim_list_tabpages()
-	for _, tab in ipairs(tabs) do
-		local bufnr = pinned_tabs[tab]
-		if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-			local path = vim.api.nvim_buf_get_name(bufnr)
-			if path ~= "" then
-				table.insert(current_pinned_files, path)
-			end
-		end
-	end
+    -- Extract the file paths of all currently pinned buffers
+    local current_pinned_files = {}
+    local tabs = vim.api.nvim_list_tabpages()
+    for _, tab in ipairs(tabs) do
+        local bufnr = pinned_tabs[tab]
+        if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+            local path = vim.api.nvim_buf_get_name(bufnr)
+            if path ~= "" then
+                table.insert(current_pinned_files, path)
+            end
+        end
+    end
 
-	-- Update history map
-	if #current_pinned_files > 0 then
-		data[cwd] = current_pinned_files
-	else
-		data[cwd] = nil -- Clear entry if no pins remain
-	end
+    -- Notify and clear entry if no pins exist
+    if #current_pinned_files == 0 then
+        if data[cwd] then
+            data[cwd] = nil
+            local w_file = io.open(data_path, "w")
+            if w_file then
+                w_file:write(vim.json.encode(data))
+                w_file:close()
+            end
+        end
+        notify("No pins to save!", vim.log.levels.WARN )
+        return
+    end
 
-	-- Write database back to disk cleanly
-	local w_file = io.open(data_path, "w")
-	if w_file then
-		w_file:write(vim.json.encode(data))
-		w_file:close()
-		vim.notify("Saved at:\n" .. data_path, vim.log.levels.INFO, { title = "TabPins" })
-	end
+    -- Update history map and write database back to disk cleanly
+    data[cwd] = current_pinned_files
+    local w_file = io.open(data_path, "w")
+    if w_file then
+        w_file:write(vim.json.encode(data))
+        w_file:close()
+        notify("Saved at:\n" .. data_path, vim.log.levels.INFO)
+    end
 end
 
+
+
 local function clear_tabs()
-    local initial_tab = vim.api.nvim_get_current_tabpage()
+    -- 1. Create a temporary scratch tab to act as an anchor
+    vim.cmd("tabnew")
+    local scratch_tab = vim.api.nvim_get_current_tabpage()
+
+    -- 2. Force close every tab except the temporary scratch tab
     local all_tabs = vim.api.nvim_list_tabpages()
     for _, tab in ipairs(all_tabs) do
-        if tab ~= initial_tab and vim.api.nvim_tabpage_is_valid(tab) then
-            -- Force close windows within the tab to prevent hang-ups
+        if tab ~= scratch_tab and vim.api.nvim_tabpage_is_valid(tab) then
             pcall(function()
                 vim.cmd(vim.api.nvim_tabpage_get_number(tab) .. "tabclose!")
             end)
         end
     end
-    -- Clear out any dead tab tracking history references 
+
+    -- Return the scratch tab handle so load_pins knows what to clean up later
+    return scratch_tab
 end
-
 -- Persistence Engine: Restore pins safely for the current CWD
+-- Function 1: Toggle the Pin status of the current tab
+--
+
 function M.load_pins()
-	local cwd = vim.fn.getcwd()
-	local r_file = io.open(data_path, "r")
-	if not r_file then
-		return
-	end
+    local cwd = vim.fn.getcwd()
+    local r_file = io.open(data_path, "r")
+    if not r_file then
+        notify("No saved pins found for this directory!", vim.log.levels.WARN)
+        return
+    end
 
-	local content = r_file:read("*a")
-	r_file:close()
+    local content = r_file:read("*a")
+    r_file:close()
 
-	local data = {}
-	local success = pcall(function()
-		data = vim.json.decode(content) or {}
-	end)
-	if not success or not data[cwd] then
-		return
-	end
+    local data = {}
+    local success = pcall(function()
+        data = vim.json.decode(content) or {}
+    end)
 
-	local files_to_load = data[cwd]
-	if #files_to_load == 0 then
-		return
-	end
+    if not success or not data[cwd] or #data[cwd] == 0 then
+        notify("No saved pins found for this directory!", vim.log.levels.WARN )
+        return
+    end
 
-	is_processing = true
-	allowing_new_tab = true
-    clear_tabs()
+    local files_to_load = data[cwd]
+
+    is_processing = true
+    allowing_new_tab = true
+
+    -- Wipe out all existing tabs and reset state
+    local scratch_tab = clear_tabs()
     pinned_tabs = {}
 
-	-- Analyze the starting tab to see if it's empty or holding a file passed via CLI
-	local first_tab = vim.api.nvim_get_current_tabpage()
-	local first_buf = vim.api.nvim_get_current_buf()
-	local first_is_empty = (vim.api.nvim_buf_get_name(first_buf) == "" and vim.bo[first_buf].buftype == "")
+    local opened_any = false
 
-	for i, file_path in ipairs(files_to_load) do
-		if vim.fn.filereadable(file_path) == 1 then
-			if i == 1 and first_is_empty then
-				-- Reuse the initial empty tab layout
-				vim.cmd("edit " .. vim.fn.fnameescape(file_path))
-				local buf = vim.api.nvim_get_current_buf()
-				pinned_tabs[first_tab] = buf
-				update_tab_title(first_tab, buf)
-			else
-				-- Open a brand new isolated tab slot
-				vim.cmd("tabedit " .. vim.fn.fnameescape(file_path))
-				local new_tab = vim.api.nvim_get_current_tabpage()
-				local buf = vim.api.nvim_get_current_buf()
-				pinned_tabs[new_tab] = buf
-				update_tab_title(new_tab, buf)
-			end
-		end
-	end
+    for _, file_path in ipairs(files_to_load) do
+        if vim.fn.filereadable(file_path) == 1 then
+            vim.cmd("tabedit " .. vim.fn.fnameescape(file_path))
+            local new_tab = vim.api.nvim_get_current_tabpage()
+            local buf = vim.api.nvim_get_current_buf()
 
-	allowing_new_tab = false
-	is_processing = false
-	vim.cmd("redrawtabline")
+            pinned_tabs[new_tab] = buf
+            update_tab_title(new_tab, buf)
+            opened_any = true
+        end
+    end
+
+    -- Clean up temporary anchor tab
+    if opened_any and vim.api.nvim_tabpage_is_valid(scratch_tab) then
+        pcall(function()
+            vim.cmd(vim.api.nvim_tabpage_get_number(scratch_tab) .. "tabclose!")
+        end)
+        vim.cmd("tabfirst")
+        notify("Loaded " .. #files_to_load .. " pinned tab(s)", vim.log.levels.INFO)
+    else
+        notify("Saved files could not be read or found on disk!", vim.log.levels.WARN )
+    end
+
+    allowing_new_tab = false
+    is_processing = false
+    vim.cmd("redrawtabline")
 end
--- Function 1: Toggle the Pin status of the current tab
 function M.toggle_pin()
 	local current_tab = vim.api.nvim_get_current_tabpage()
 	local current_buf = vim.api.nvim_get_current_buf()
@@ -163,12 +179,12 @@ function M.toggle_pin()
 		-- Unpin it completely
 		pinned_tabs[current_tab] = nil
 		update_tab_title(current_tab, current_buf)
-		vim.notify("Tab unpinned: " .. current_name, vim.log.levels.INFO)
+		notify("Tab unpinned: " .. current_name, vim.log.levels.INFO)
 	else
 		-- FIX: Pin it and lock it strictly to this specific buffer ID number
 		pinned_tabs[current_tab] = current_buf
 		vim.api.nvim_tabpage_set_var(current_tab, "tab_title", current_name)
-		vim.notify("Tab pinned: " .. current_name, vim.log.levels.INFO)
+		notify("Tab pinned: " .. current_name, vim.log.levels.INFO)
 	end
 	vim.cmd("redrawtabline")
     M.save_pins()
@@ -181,7 +197,7 @@ function M.rename_tab(opts)
 	local new_name = opts.args
 
 	if new_name == "" then
-		vim.notify("Custom name cannot be empty", vim.log.levels.ERROR)
+		notify("Custom name cannot be empty", vim.log.levels.ERROR)
 		return
 	end
 
@@ -190,7 +206,7 @@ function M.rename_tab(opts)
 	pinned_tabs[current_tab] = current_buf
 
 	vim.cmd("redrawtabline")
-	vim.notify("Tab renamed & pinned to: " .. new_name, vim.log.levels.INFO)
+	notify("Tab renamed & pinned to: " .. new_name, vim.log.levels.INFO)
 end
 
 -- Function 3: Core orchestrator called whenever a file buffer is loaded
@@ -348,6 +364,12 @@ function M.setup(opts)
 	-- Autocommand C: THE GUARDRAIL. Intercepts and blocks unauthorized manual tab expansion
 
 
+    vim.api.nvim_create_autocmd({ "VimLeavePre" }, {
+        group = group,
+        callback = function()
+            M.save_pins()
+        end,
+    })
     vim.api.nvim_create_autocmd({ "VimEnter" }, {
         group = group,
         callback = function()
@@ -371,20 +393,11 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("TabPinRename", M.rename_tab, { nargs = 1 })
 	vim.api.nvim_create_user_command("TabPinSave", M.save_pins, {})
 	vim.api.nvim_create_user_command("TabPinLoad", M.load_pins, {})
+    opts = opts or {}
+    config.debug = opts.debug or false
 
-	local prefix =  opts.prefix or "t"
 
-    local remap = opts.remap or true 
-	if remap then
-		vim.keymap.set("n", prefix .. "p", "<cmd>TabPinToggle<CR>", { desc = "TabPin: Toggle Pin" })
-		vim.keymap.set("n", prefix .. "l", "<cmd>TabPinNext<CR>", { desc = "TabPin: Next Tab" })
-		vim.keymap.set("n", prefix .. "h", "<cmd>TabPinPrev<CR>", { desc = "TabPin: Prev Tab" })
-		vim.keymap.set("n", prefix .. "r", "<cmd>TabPinRename ", { desc = "TabPin: Rename Tab" }) -- Left open for typing
-		vim.keymap.set("n", prefix .. "s", "<cmd>TabPinSave<CR>", { desc = "TabPin: Save Pins" })
-		vim.keymap.set("n", prefix .. "o", "<cmd>TabPinLoad<CR>", { desc = "TabPin: Load Pins" })
-	end
 end
-
 	-- Concatenating the prefix dynamically to your keys
 
 return M

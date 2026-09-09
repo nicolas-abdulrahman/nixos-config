@@ -13,6 +13,10 @@
   ];
 
   options = {
+    hostname = lib.mkOption {
+      type = lib.types.str;
+      description = "The logical profile name (desktop, laptop, wsl).";
+    };
     full = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -59,6 +63,8 @@
   ];
 
     
+
+    nix.package = pkgs.lix;
 
     programs.nix-ld.enable = true;
     programs.dconf.enable = true;

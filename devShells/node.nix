@@ -1,22 +1,28 @@
 { pkgs }:
 let
-  # This gives something like: { file = "/path/to/shell.nix"; line = 1; column = 1; }
   pos = builtins.unsafeGetAttrPos "pkgs" { inherit pkgs; };
-  filename = baseNameOf pos.file; # "shell.nix"
-  nameNoExt = builtins.substring 0 (builtins.stringLength filename - 4) filename; # "shell"
+  filename = baseNameOf pos.file;
+  nameNoExt = builtins.substring 0 (builtins.stringLength filename - 4) filename;
 in
 pkgs.mkShell {
   name = nameNoExt;
   packages = with pkgs; [
+    fish
+    bun
     nodejs_22
     typescript
     pnpm
-    #javascript-typescript-langserver
-    nodePackages_latest.typescript-language-server
-    # nodePackages.sass
+    typescript-language-server
+    python3
   ];
 
   shellHook = ''
     echo "Welcome to Shell ${nameNoExt} (from ${filename})"
+
+    # Prevent recursive subshell loops if fish is already active
+    if [ -z "$IN_FISH_SHELL" ]; then
+      export IN_FISH_SHELL=1
+      exec fish
+    fi
   '';
 }

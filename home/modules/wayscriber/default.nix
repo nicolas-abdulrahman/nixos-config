@@ -15,7 +15,7 @@
       After = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.wayscriber}/bin/wayscriber";
+      ExecStart = "${pkgs.wayscriber}/bin/wayscriber -d";
       Restart = "on-failure";
       RestartSec = "2";
     };

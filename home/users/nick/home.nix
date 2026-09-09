@@ -32,4 +32,8 @@
       }
     '';
   };
+    programs.git = {
+      userName = "Nick";
+      userEmail = "nicolashugo2001@gmail.com";
+    };
 }

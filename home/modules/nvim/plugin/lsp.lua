@@ -2,6 +2,16 @@
 local cmp = require("cmp")
 cmp.setup()
 
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = " ", -- Heavy solid alert cross
+            [vim.diagnostic.severity.WARN]  = "•", -- Clear warning triangle
+            [vim.diagnostic.severity.HINT]  = "󰌵 ", -- Sleek glowing lightbulb
+            [vim.diagnostic.severity.INFO]  = " ", -- Clean info circle
+        },
+    },
+})
 
 local function on_attach(client, bufnr)
     local opts = { buffer = bufnr, remap = false }

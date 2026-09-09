@@ -1,6 +1,6 @@
 local mainMod = "SUPER"
 local main_monitor      = "HDMI-A-1" -- <-- Change this to the main monitor name from hyprctl
-local secondary_monitor = "DP-1"
+local secondary_monitor = "DVI-D-1"
 
 -- MONITORS
 -- Since Hyprland 0.55, monitors are configured with individual hl.monitor() calls,
@@ -83,6 +83,7 @@ hl.window_rule({
 
 
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("wayscriber --daemon-toggle"))
+hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("eww open --toggle searchbar"))
 hl.bind(mainMod .. " + A", hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("xdg-open ~"))
@@ -98,7 +99,7 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("surf "))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("pkill waybar"))
 hl.bind(mainMod .. " + CTRL + C", hl.dsp.exec_cmd("waybar"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exit())
-hl.bind(mainMod .. " + mouse:274", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + CTRL + SHIFT + M", hl.dsp.exec_cmd("systemctl hibernate"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("grimblast copy area"))
 hl.bind(mainMod .. " + SHIFT + CTRL + S", hl.dsp.exec_cmd("grimblast save area"))
 
@@ -106,6 +107,10 @@ hl.bind(mainMod .. " + SHIFT + CTRL + S", hl.dsp.exec_cmd("grimblast save area")
 -- focus() accepts a monitor selector directly ("+1"/"-1"/name/direction/"current"),
 -- so this single dispatcher call replaces the old broken two-string hl.dispatch() calls.
 local hs = require("hyprsplit")
+-- middle click
+-- hl.bind(mainMod .. " + mouse:274", hl.dsp.focusmonitor("+1"))
+hl.bind(mainMod .. " + mouse:274", hl.dsp.focus({ monitor = "+1" }))
+
 hl.bind(mainMod .. " + Tab", hs.dsp.workspace.swap_monitors({ monitor1 = "current", monitor2 = "+1" }))
 
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })

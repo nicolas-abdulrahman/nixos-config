@@ -49,6 +49,9 @@
     # --- FUN / AESTHETICS ---
     fastfetch   # A faster, modern version of neofetch (system info)
 
+    # DEV
+    uv
+
     # Essentials
     home-manager pcmanfm  kanata
     cacert iproute2 inetutils nettools xremap tmux
@@ -61,7 +64,7 @@
 
   # Some tools work better when enabled as "programs" 
   # because NixOS handles the shell integration automatically.
-  programs.zoxide.enable = true;
+  programs.zoxide.enable = false;
   programs.fzf.keybindings = true;
   programs.starship.enable = true; # A very cool, fast, customizable shell prompt
 }
