@@ -64,6 +64,7 @@ in
 home.packages = with pkgs; 
   # Essentials: Daily utilities, CLI tools, and networking
   [
+      ddcutil
       lazy
     zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
@@ -71,7 +72,7 @@ home.packages = with pkgs;
   # Hyprland: Wi,ndow manager specific toolsnvim
   (lib.optionals osConfig.hypr [
     grimblast mako waybar eww hyprpaper hyprlock hypridle 
-    wf-recorder hyprsunset swayimg xwayland 
+    wf-recorder hyprsunset swayimg xwayland wl-clipboard cliphist
   ]) ++ 
   # Full: Heavy GUI apps, media, and office software
   (lib.optionals osConfig.full [

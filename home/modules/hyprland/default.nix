@@ -5,7 +5,6 @@
          ./awww.nix
     ./eww
         ./hypridle.nix
-        ./waybar.nix
         ./hyprsunset.nix
         #./xremap.nix
     ];

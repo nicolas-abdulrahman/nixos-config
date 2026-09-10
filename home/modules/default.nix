@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./i3
     ./ai
     ./alacritty
     ./eww

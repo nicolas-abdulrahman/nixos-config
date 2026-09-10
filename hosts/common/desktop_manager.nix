@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
 {
   services.xserver.enable = config.xserver;
@@ -7,9 +7,9 @@
     videoDrivers = [ "amdgpu" ];
     desktopManager.xfce.enable = true;
     desktopManager.lxqt.enable = true;
+
     windowManager.i3 = {
       enable = true;
-      extraPackages = with pkgs; [ dmenu i3status i3lock ];
     };
   };
 

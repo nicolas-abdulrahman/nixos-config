@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, nixgl, lib, useHypr, hardwareFile, ... }:
+{ config, pkgs, inputs, users,  lib,   ... }:
 
 {
   imports = [
@@ -13,6 +13,11 @@
   ];
 
   options = {
+    hostUsers = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "System users to create on this host.";
+    };
     hostname = lib.mkOption {
       type = lib.types.str;
       description = "The logical profile name (desktop, laptop, wsl).";

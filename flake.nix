@@ -80,20 +80,18 @@
 
 
   nixosConfigurations =  let
-  mkHost = { hostname, users ? [] }: nixpkgs.lib.nixosSystem {
+  mkHost = { hostname, users ? [], configuration ? {},  }: nixpkgs.lib.nixosSystem {
     inherit system;
     specialArgs = { inherit inputs; };
     modules = [
       ./hosts/common/configuration.nix
       ./hosts/${hostname}/configuration.nix
 
-            {
-        # Set the actual physical OS hostname to "nixos"
+                  ({
         networking.hostName = "nixos";
-        
-        # Inject the logical name into your custom option
+        hostUsers = users;
         hostname = hostname;
-      }
+      } // configuration)
       inputs.home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
@@ -114,8 +112,14 @@
     ];
   };
 in{
-    desktop = mkHost { hostname = "desktop"; users = [ "nick" "nasr" "lfs" ]; };
-    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ]; };
+    desktop = mkHost { hostname = "desktop"; 
+          users = [ "nick" "nasr" "lfs" ];
+          configuration = {
+            full = true;
+            hypr = true;
+          };
+        };
+    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ];};
     wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
   };
 

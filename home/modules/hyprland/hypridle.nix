@@ -8,17 +8,17 @@ let
     set -euo pipefail
     for ((i = ${toString dimSteps}; i >= 0; i--)); do
       pct=$(( i * 100 / ${toString dimSteps} ))
-      brightnessctl set "''${pct}%" -q || true
+       ddcutil setvcp 10 ''${pct} || true
       sleep 1
     done
-    hyprctl dispatch dpms off
+    hyprctl dispatch 'hl.dsp.dpms({ action = "disable" })'
   '';
 
   restore = pkgs.writeShellScriptBin "hypridle-restore" ''
     set -euo pipefail
     pkill -f hypridle-dim || true
-    hyprctl dispatch dpms on
-    brightnessctl set 100% -q || true
+    hyprctl dispatch 'hl.dsp.dpms({ action = "enable" })'
+    ddcutil setvcp 10 100
   '';
 in
 {
@@ -28,7 +28,9 @@ in
     enable = true;
     settings = {
       general = {
-        after_sleep_cmd = "hyprctl dispatch dpms on";
+        after_sleep_cmd =   ''
+        hyprctl dispatch 'hl.dsp.dpms({ action = "enable" })'
+          '';
         ignore_dbus_inhibit = false;
       };
       listener = [
@@ -40,7 +42,7 @@ in
         {
           timeout = idleBeforeSleep;
           on-timeout = "systemctl suspend";
-          on-resume = "hyprctl dispatch dpms on";
+          on-resume = "";
         }
       ];
     };
