@@ -109,23 +109,45 @@ in
     - You are explicitly allowed and encouraged to use `find` and `ripgrep` (`rg`) commands to discover files and search codebase contents.
     - **CRITICAL FILE READING RULE:** Do NOT read the full contents of any file (via file reading tools) UNLESS you have first verified through a `ripgrep` (`rg`) search that the file is directly relevant to the current task.
     - Always prefer `rg` for text searches over scanning individual files manually.
+
+    # Tool Usage Guidelines
+
+  - **GIT OPERATIONS:** You MUST use the dedicated Git MCP tools (e.g., `git_status`, `git_commit`, `git_diff`, `git_log`) for all repository tasks.
+  - Do NOT run `git` as a terminal bash command unless an MCP tool cannot perform the specific operation requested.
+  - You are allowed to use `find` and `ripgrep` (`rg`) for codebase exploration.
+  - Do NOT read full file contents unless `ripgrep` confirms the file is relevant.
   '';
 
   # 4. Auto-Approve Command Permissions (~/.gemini/config/settings.json)
-  home.file.".gemini/config/settings.json".text = builtins.toJSON {
+    home.file.".gemini/antigravity-cli/settings.json".text = builtins.toJSON {
     permissions = {
-      # Automatically run read-only / safe commands without user prompts
-      autoApproveCommands = [
-        "ls"
-        "ls *"
-        "find *"
-        "rg *"
-        "ripgrep *"
-        "git status"
-        "git diff"
-        "git log"
+      allow = [
+        "command(ls)"
+        "command(find)"
+        "command(rg)"
+        "mcp(git/git_status)"
+        "mcp(git/git_diff)"
+        "mcp(git/git_diff_staged)"
+        "mcp(git/git_diff_unstaged)"
+        "mcp(lsp/*)"
+        "mcp(lsp-typescript/*)"
+        "mcp(lsp-python/*)"
+        "mcp(lsp-go/*)"
+        "mcp(lsp-nix/*)"
+        "mcp(lsp-rust/*)"
+        "mcp(lsp-java/*)"
       ];
-      toolPermission = "proceed-in-sandbox";
+      deny = [
+        "command(rm -rf)"
+        "command(sudo)"
+        "command(git push)"
+        "command(git reset)"
+        "command(git clean)"
+        "command(git)"
+      ];
+      # git_commit / git_add / git_reset / plain "git" bash fallback
+      # deliberately left off both lists -> default to "Ask",
+      # so the agent still gets to use them, but you confirm first
     };
   };
 }
