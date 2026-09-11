@@ -9,7 +9,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     fish
     bun
-    nodejs_22
+    nodejs_26
     typescript
     pnpm
     typescript-language-server

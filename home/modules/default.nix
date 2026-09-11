@@ -2,7 +2,6 @@
 {
   imports = [
     ./i3
-    ./ai
     ./alacritty
     ./eww
     ./firefox
@@ -17,7 +16,8 @@
     # ./xremap << should delete bruh
     # ./openhands << concept
     #./zed  << concept
-  ]++ (if (osConfig.hypr or false) then [ ./hyprland ] else []);
+  ]++ (if (osConfig.hypr or false) then [ ./hyprland ] else [])
+    ++ (if (osConfig.ai or false) then [ ./ai] else []);
 
 }
 

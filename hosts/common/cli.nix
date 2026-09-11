@@ -53,6 +53,7 @@
     uv
 
     # Essentials
+    ripgrep
     home-manager pcmanfm  kanata
     cacert iproute2 inetutils nettools xremap tmux
     zsh git wget curl jq btop unzip file glib nix-index tree lsof st surf 

@@ -115,11 +115,16 @@ in{
     desktop = mkHost { hostname = "desktop"; 
           users = [ "nick" "nasr" "lfs" ];
           configuration = {
+            ai = true;
             full = true;
             hypr = true;
           };
         };
-    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ];};
+    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ];
+          configuration = {
+            ai = true;
+          };
+        };
     wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
   };
 

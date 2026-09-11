@@ -22,6 +22,12 @@
       type = lib.types.str;
       description = "The logical profile name (desktop, laptop, wsl).";
     };
+    ai = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable ai stuff.";
+    };
+
     full = lib.mkOption {
       type = lib.types.bool;
       default = false;

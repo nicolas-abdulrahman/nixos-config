@@ -1,6 +1,7 @@
 
 { config, pkgs, inputs, lib,   osConfig, ... }:
-let lazy  =  (pkgs.lazygit.overrideAttrs (old: {
+let lazy  =  if (osConfig.full or false) then
+  (pkgs.lazygit.overrideAttrs (old: {
       postPatch = (old.postPatch or "") + ''
         cat > pkg/gui/information_panel.go << 'GOEOF'
         package gui
@@ -58,7 +59,8 @@ let lazy  =  (pkgs.lazygit.overrideAttrs (old: {
         }
         GOEOF
       '';
-    }));
+    }))else
+    pkgs.lazygit;
 in
 {
 home.packages = with pkgs; 
