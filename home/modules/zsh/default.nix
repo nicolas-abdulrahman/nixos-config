@@ -26,6 +26,6 @@
     ];
 
     # Embed the p10k configuration directly at build time
-    initExtra = builtins.readFile ./p10k.zsh;
+    initContent = builtins.readFile ./p10k.zsh;
   };
 }

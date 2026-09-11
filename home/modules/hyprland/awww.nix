@@ -14,7 +14,7 @@ let
   # upstream to "An Answer to your Wayland Wallpaper Woes" in Oct 2025
   # and moved to Codeberg). The nixpkgs attribute is still called `swww`
   # for compat, but the binaries inside are `awww` / `awww-daemon`.
-  awww = pkgs.swww;
+  awww = pkgs.awww;
 
   # Picks a different image per monitor and advances on every run.
   # State (current index) persists in ~/.cache so rotation continues

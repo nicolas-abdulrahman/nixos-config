@@ -60,13 +60,4 @@
         };
       };
 
-
-      "nui.nvim" = {
-        package = pkgs.vimPlugins.nui-nvim;
-        lazy = true;
-      };
-
-
-
-
 }

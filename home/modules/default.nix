@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, osConfig,... }:
 {
   imports = [
     ./i3
@@ -7,7 +7,6 @@
     ./eww
     ./firefox
     ./fish
-    ./hyprland
     ./kanata
     ./tmux
     ./wayscriber
@@ -18,7 +17,8 @@
     # ./xremap << should delete bruh
     # ./openhands << concept
     #./zed  << concept
-  ];
+  ]++ (if (osConfig.hypr or false) then [ ./hyprland ] else []);
+
 }
 
 

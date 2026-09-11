@@ -2,7 +2,7 @@
 {...}:{
   programs.zsh = {
     enable = true;
-    initExtra = ''
+    initContent = ''
       h() {
         local user=$1
         # Automatically grab the current system hostname (desktop, laptop, wsl, etc.)

@@ -125,11 +125,13 @@
       emoji = [ "OpenMoji Color" ];
     };
 
+    services.pulseaudio.enable = false;
+
     hardware = {
-      pulseaudio.enable = false;
       uinput.enable = true;
-      opengl.enable = true;
+      graphics.enable = true;
     };
 
+    system.stateVersion = "26.11";
   };
 }

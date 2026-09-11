@@ -258,7 +258,7 @@ in
     extraPackages = with pkgs; [
       wl-clipboard  # Hyprland / Wayland clipboard tool
       xclip         # X11 / Xserver clipboard tool
-      gemini-cli llm-ls nodejs ripgrep fd aider-chat godot_4
+      antigravity-cli llm-ls nodejs ripgrep fd aider-chat godot_4
       lua-language-server
       gopls pyright clang-tools zls sqls typescript-language-server nixd
       stylua prettierd rust-analyzer

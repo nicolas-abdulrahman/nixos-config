@@ -59,7 +59,7 @@
 
     #cool to have
     ffmpeg imagemagick 
-    xorg.xorgserver xorg.xinit xorg.xrandr xorg.xsetroot xorg.xev
+    xorg-server xinit xrandr xsetroot xev
   ];
 
   # Some tools work better when enabled as "programs" 

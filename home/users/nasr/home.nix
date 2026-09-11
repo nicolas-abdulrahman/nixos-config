@@ -71,7 +71,7 @@ in
         enable = true;
       };
       inherit envExtra sessionVariables shellAliases;
-      initExtra = ''
+      initContent = ''
       if [ -f /run/secrets/gemini_api_key ]; then
     export GEMINI_API_KEY=$(cat /run/secrets/gemini_api_key)
     export GEMINI_API_KEY_NASR=$(cat /run/secrets/gemini_api_key_nasr)

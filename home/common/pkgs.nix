@@ -77,7 +77,6 @@ home.packages = with pkgs;
   # Full: Heavy GUI apps, media, and office software
   (lib.optionals osConfig.full [
     # Browsers & Media
-      gemini-cli aider-chat
     google-chrome brave thunderbird spotify qbittorrent
     obs-studio audacity blender krita gimp
     
