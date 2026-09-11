@@ -45,17 +45,20 @@ in
   # 2. MCP Server Configuration (~/.gemini/config/mcp_config.json)
   home.file.".gemini/config/mcp_config.json".text = builtins.toJSON {
     mcpServers = {
-      git = {
-        command = "${pkgs.nodejs_26}/bin/npx";
-        args = [ "-y" "@modelcontextprotocol/server-git" ];
-      };
       lsp = {
         command = "${pkgs.nodejs_26}/bin/npx";
         args = [ "-y" "@franmt-s/ts-lsp-mcp" ]; # General TypeScript/Language Server MCP
       };
+      git = {
+        command = "${pkgs.uv}/bin/uvx";
+        args = [ "mcp-server-git" ];
+      };
+
+      # 2. FIXED LSPs: Added `--workspace "."` argument
       lsp-typescript = {
         command = "${mcp-language-server}/bin/mcp-language-server";
         args = [ 
+          "--workspace" "." 
           "--lsp" "${pkgs.typescript-language-server}/bin/typescript-language-server" 
           "--" "--stdio" 
         ];
@@ -63,25 +66,36 @@ in
       lsp-python = {
         command = "${mcp-language-server}/bin/mcp-language-server";
         args = [ 
+          "--workspace" "." 
           "--lsp" "${pkgs.pyright}/bin/pyright-langserver" 
           "--" "--stdio" 
         ];
       };
       lsp-go = {
         command = "${mcp-language-server}/bin/mcp-language-server";
-        args = [ "--lsp" "${pkgs.gopls}/bin/gopls" ];
+        args = [ 
+          "--workspace" "." 
+          "--lsp" "${pkgs.gopls}/bin/gopls" 
+        ];
       };
       lsp-nix = {
         command = "${mcp-language-server}/bin/mcp-language-server";
-        args = [ "--lsp" "${pkgs.nil}/bin/nil" ];
+        args = [ 
+          "--workspace" "." 
+          "--lsp" "${pkgs.nil}/bin/nil" 
+        ];
       };
       lsp-rust = {
         command = "${mcp-language-server}/bin/mcp-language-server";
-        args = [ "--lsp" "${pkgs.rust-analyzer}/bin/rust-analyzer" ];
+        args = [ 
+          "--workspace" "." 
+          "--lsp" "${pkgs.rust-analyzer}/bin/rust-analyzer" 
+        ];
       };
       lsp-java = {
         command = "${mcp-language-server}/bin/mcp-language-server";
         args = [ 
+          "--workspace" "." 
           "--lsp" "${pkgs.jdt-language-server}/bin/jdtls" 
         ];
       };
