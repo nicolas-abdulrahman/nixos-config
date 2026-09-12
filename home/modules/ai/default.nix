@@ -107,7 +107,7 @@ in
     # Workspace & Tool Usage Rules
 
     - You are explicitly allowed and encouraged to use `find` and `ripgrep` (`rg`) commands to discover files and search codebase contents.
-    - **CRITICAL FILE READING RULE:** Do NOT read the full contents of any file (via file reading tools) UNLESS you have first verified through a `ripgrep` (`rg`) search that the file is directly relevant to the current task.
+    - **CRITICAL FILE READING RULE:** Do NOT read the full contents of any file (via file reading tools) UNLESS you have first verified through a `ripgrep` (`rg`) search that the file is directly relevant to the current task. Or through a lsp symbol.
     - Always prefer `rg` for text searches over scanning individual files manually.
 
     # Tool Usage Guidelines
@@ -123,6 +123,7 @@ in
     text = builtins.toJSON {
       permissions = {
         allow = [
+          "command(nix)"
           "command(ls)"
           "command(find)"
           "command(rg)"
