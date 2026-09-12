@@ -119,35 +119,31 @@ in
   '';
 
   # 4. Auto-Approve Command Permissions (~/.gemini/config/settings.json)
-    home.file.".gemini/antigravity-cli/settings.json".text = builtins.toJSON {
-    permissions = {
-      allow = [
-        "command(ls)"
-        "command(find)"
-        "command(rg)"
-        "mcp(git/git_status)"
-        "mcp(git/git_diff)"
-        "mcp(git/git_diff_staged)"
-        "mcp(git/git_diff_unstaged)"
-        "mcp(lsp/*)"
-        "mcp(lsp-typescript/*)"
-        "mcp(lsp-python/*)"
-        "mcp(lsp-go/*)"
-        "mcp(lsp-nix/*)"
-        "mcp(lsp-rust/*)"
-        "mcp(lsp-java/*)"
-      ];
-      deny = [
-        "command(rm -rf)"
-        "command(sudo)"
-        "command(git push)"
-        "command(git reset)"
-        "command(git clean)"
-        "command(git)"
-      ];
-      # git_commit / git_add / git_reset / plain "git" bash fallback
-      # deliberately left off both lists -> default to "Ask",
-      # so the agent still gets to use them, but you confirm first
+   home.file.".gemini/antigravity-cli/settings.json" = {
+    text = builtins.toJSON {
+      permissions = {
+        allow = [
+          "command(ls)"
+          "command(find)"
+          "command(rg)"
+          "mcp(git/*)"
+          "mcp(lsp-typescript/*)"
+          "mcp(lsp-python/*)"
+          "mcp(lsp-go/*)"
+          "mcp(lsp-nix/*)"
+          "mcp(lsp-rust/*)"
+          "mcp(lsp-java/*)"
+        ];
+        deny = [
+          "command(rm)"
+          "command(sudo)"
+          "command(git push)"
+          "command(git reset)"
+          "command(git clean)"
+        ];
+      };
     };
+    force = true;
   };
 }
+
