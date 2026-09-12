@@ -61,14 +61,10 @@ vim.keymap.set("n", "<leader>/", ":vsplit<CR>", M("Create vertical split"))
 
 -- PLUGIN MANAGEMENT
 vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", M("Toggle file tree sidebar"))
-vim.keymap.set("n", "<S-h>", "<cmd>CommentToggle<CR>", M("Toggle line comment"))
-vim.keymap.set("v", "<S-h>", ":'<,'>CommentToggle<CR>", M("Toggle visual selection comment"))
+vim.keymap.set("n", "<S-h>", "gcc", { remap = true, desc = "Toggle line comment" })
+vim.keymap.set("v", "<S-h>", "gc", { remap = true, desc = "Toggle visual selection comment" })
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], M("Terminal mode escape to normal"))
 
--- QUICKFIX ACTIONS
-vim.keymap.set("n", "qj", "<cmd>cnext<CR>", M("Quickfix next shortcut"))
-vim.keymap.set("n", "qk", "<cmd>cprev<CR>", M("Quickfix previous shortcut"))
-vim.keymap.set("n", "qq", "<cmd>ccl<CR>", M("Close quickfix window"))
 
 -- BUFFERS & TERMINALS
 vim.keymap.set("n", "ter", "<cmd>:term<CR>", M("Open terminal buffer"))
@@ -81,8 +77,8 @@ vim.keymap.set("n", "<leader>cD", "<cmd>tcd %:h<CR>", M("Change tab directory to
 vim.keymap.set("n", "<leader><C-d>", "<cmd>lcd %:h<CR>", M("Change local window directory to current file"))
 
 -- WINDOW DIMENSIONS
-vim.keymap.set("n", "<A-a>", "<C-S-w>|", M("Maximize current split width"))
-vim.keymap.set("n", "<A-s>", "<C-S-w>=", M("Equalize all split dimensions"))
+vim.keymap.set("n", "<A-S-a>", "<C-S-w>|", M("Maximize current split width"))
+vim.keymap.set("n", "<A-S-s>", "<C-S-w>=", M("Equalize all split dimensions"))
 
 
 
@@ -107,3 +103,46 @@ end
 vim.keymap.set({ "n", "v" }, "<leader>d", cut_to_clipboard, { expr = true, desc = "Cut to clipboard & unnamed register" })
 vim.keymap.set("n", "<leader>dd", '"+dd', { desc = "Cut entire line to clipboard" })
 vim.keymap.set("n", "<leader>D", '"+D',   { desc = "Cut to end of line to clipboard" })
+
+
+
+-- QUICKFIX
+
+-- -- Alt+A: Toggle Quickfix window open/close
+vim.keymap.set("n", "<M-z>", function()
+  local qf_exists = false
+  for _, win in ipairs(vim.fn.getwininfo()) do
+    if win.quickfix == 1 then
+      qf_exists = true
+      break
+    end
+  end
+  if qf_exists then
+    vim.cmd("cclose")
+  else
+    vim.cmd("copen")
+  end
+end, { desc = "Toggle quickfix window" })
+
+
+vim.keymap.set("n", "<M-a>", "<cmd>colder<CR>", { desc = "Older quickfix list" })
+vim.keymap.set("n", "<M-d>", "<cmd>cnewer<CR>", { desc = "Newer quickfix list" })
+-- Alt+S: Jump to NEXT quickfix item (wraps to start at the end)
+vim.keymap.set("n", "<M-s>", function()
+  local ok = pcall(vim.cmd, "cnext")
+  if not ok then
+    pcall(vim.cmd, "cfirst")
+  end
+end, { desc = "Quickfix next item" })
+
+-- Alt+W: Jump to PREVIOUS quickfix item (wraps to end at the start)
+vim.keymap.set("n", "<M-w>", function()
+  local ok = pcall(vim.cmd, "cprev")
+  if not ok then
+    pcall(vim.cmd, "clast")
+  end
+end, { desc = "Quickfix previous item" })
+
+
+
+

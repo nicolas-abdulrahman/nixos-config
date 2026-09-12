@@ -5,25 +5,17 @@ require("telescope").load_extension("fzf")
 
 require("telescope").setup({
   defaults = {
-    prompt_prefix = "Allahu akbar! ",
-    mappings = {
+    prompt_prefix = " =>",
+        mappings = {
       i = {
-        ["<M-n>"] = function(prompt_bufnr)
-          actions.send_to_qflist(prompt_bufnr)
-          actions.open_qflist()
-        end,
-        ["<C-n>"] = function(prompt_bufnr)
-          actions.send_to_qflist(prompt_bufnr)
-        end,
+        -- Alt+D: Send current/selected item to quickfix and open it
+        ["<M-Right>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        -- Alt+X: Send ALL items in search results to quickfix and open it
+        ["<M-Down>"] = actions.send_to_qflist + actions.open_qflist,
       },
       n = {
-        ["<M-n>"] = function(prompt_bufnr)
-          actions.send_to_qflist(prompt_bufnr)
-          actions.open_qflist()
-        end,
-        ["<C-n>"] = function(prompt_bufnr)
-          actions.send_to_qflist(prompt_bufnr)
-        end,
+        ["<M-Right>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ["<M-Down>"] = actions.send_to_qflist + actions.open_qflist,
       },
     },
   },

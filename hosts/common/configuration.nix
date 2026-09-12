@@ -75,6 +75,7 @@
 
     
 
+    
     nix.package = pkgs.lix;
 
     programs.nix-ld.enable = true;
@@ -139,5 +140,6 @@
     };
 
     system.stateVersion = "26.11";
+    xdg.portal.enable = true;
   };
 }

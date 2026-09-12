@@ -43,7 +43,6 @@
       pkgs-unstable = import nixpkgs-unstable{
         inherit system;
       };
-      username = "nick";
 
       customPkgs = pkgs.extend (final: prev: {
         continue-nvim = prev.vimUtils.buildVimPlugin {
@@ -88,7 +87,7 @@
       ./hosts/${hostname}/configuration.nix
 
                   ({
-        networking.hostName = "nixos";
+        networking.hostName = hostname;
         hostUsers = users;
         hostname = hostname;
       } // configuration)

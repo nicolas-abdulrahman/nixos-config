@@ -1,5 +1,6 @@
 { pkgs, ... }:
 let
+  flakePath= "/etc/nixos";
   tab-pin = pkgs.vimUtils.buildVimPlugin {
     name = "tab-pin";
     src = ./my-plugins/tab-pin;
@@ -91,20 +92,6 @@ in
           })
         '';
       };
-      aider-nvim = {
-        package = aider-nvim;
-        setup = ''
-          require("aider").setup({
-            backend = "gemini",
-            model = "gemini-3.1-flash-lite",
-            auto_manage = false,
-          })
-
-          vim.keymap.set("n", "<leader>aa", ":AiderToggle<CR>", { desc = "Toggle Aider" })
-          vim.keymap.set("n", "<leader>af", ":AiderAddFile<CR>", { desc = "Aider: Add file" })
-          vim.keymap.set("v", "<leader>as", ":AiderSend<CR>", { desc = "Aider: Send selection" })
-        '';
-      };
 
       codecompanion = {
         package = pkgs.vimPlugins.codecompanion-nvim;
@@ -147,7 +134,35 @@ in
       lspconfig = {
         package = nvim-lspconfig;
         after = [ "cmp" "cmp-nvim-lsp" ];
-        setup = builtins.readFile ./plugin/lsp.lua;
+        setup = builtins.readFile ./plugin/lsp.lua + ''
+          local hostname = vim.uv.os_gethostname()
+          local flake_path = "${flakePath}"
+
+          vim.lsp.config("nixd", {
+            cmd = { "nixd" },
+            filetypes = { "nix" },
+            root_markers = { "flake.nix", ".git" },
+            settings = {
+              nixd = {
+                nixpkgs = {
+                  expr = "import <nixpkgs> { }",
+                },
+                options = {
+                  nixos = {
+                    expr = string.format('(builtins.getFlake "%s").nixosConfigurations.%s.options', flake_path, hostname),
+                  },
+                  home_manager = {
+                    expr = string.format(
+                      '(builtins.getFlake "%s").nixosConfigurations.%s.options.home-manager.users.type.getSubOptions []',
+                      flake_path,
+                      hostname
+                    ),
+                  },
+                },
+              },
+            },
+          })
+          '';
       };
 
       indent-blankline = {
@@ -238,7 +253,6 @@ in
     luaConfigRC = {
       remap = builtins.readFile ./lua/remap.lua;
       set = builtins.readFile ./lua/set.lua;
-      lsp = builtins.readFile ./lua/lsp.lua;
       autocmds = builtins.readFile ./lua/autocmds.lua;
       lsp2 = ''
         vim.keymap.set('n', '<leader>ll', function()
@@ -258,7 +272,7 @@ in
     extraPackages = with pkgs; [
       wl-clipboard  # Hyprland / Wayland clipboard tool
       xclip         # X11 / Xserver clipboard tool
-      antigravity-cli llm-ls nodejs ripgrep fd aider-chat godot_4
+      antigravity-cli llm-ls nodejs ripgrep fd godot_4
       lua-language-server
       gopls pyright clang-tools zls sqls typescript-language-server nixd
       stylua prettierd rust-analyzer

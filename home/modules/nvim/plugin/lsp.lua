@@ -1,6 +1,4 @@
 
-local cmp = require("cmp")
-cmp.setup()
 
 vim.diagnostic.config({
     signs = {
@@ -18,103 +16,102 @@ local function on_attach(client, bufnr)
     vim.api.nvim_set_keymap("n", "<leader>cjr", "JavaRunnerRunMain", { noremap = true })
     vim.api.nvim_set_keymap("n", "<leader>cjb", "JavaBuildBuildWorkspace", { noremap = true })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "<leader>ls", vim.lsp.buf.workspace_symbol, opts)
+    vim.keymap.set("n", "<leader>cs", vim.lsp.buf.workspace_symbol, opts)
     vim.keymap.set("n", "<C-d>", vim.diagnostic.open_float, opts)
     vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-    vim.keymap.set("n", "<leader>lsa", vim.lsp.buf.code_action, opts)
-    vim.keymap.set("n", "<leader>lsr", vim.lsp.buf.references, opts)
-    vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<leader>lt", vim.lsp.buf.type_definition, opts)
-    vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "]<Right>", function()
+      vim.diagnostic.jump({ count = 1 })
+    end, opts)
+
+    -- Previous diagnostic: [ + Right Arrow (or [<Left>)
+    vim.keymap.set("n", "[<Right>", function()
+      vim.diagnostic.jump({ count = -1 })
+    end, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader><leader>r", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "<leader><leader>i", vim.lsp.buf.implementation, opts)
+    vim.keymap.set("n", "<leader><leader>t", vim.lsp.buf.type_definition, opts)
+    vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
     vim.keymap.set("n", "<C-Space>", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "<S-Space>", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "<leader>gt", vim.lsp.buf.type_definition, opts)
-    vim.keymap.set("n", "<leader>td", "<cmd>Telescope diagnostics<CR>", opts)
-    vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, opts)
-    vim.keymap.set("n", "<S-h>", "<cmd>CommentToggle<CR>", opts)
+    vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+    vim.keymap.set("n", "<leader><leader>d", "<cmd>Telescope diagnostics<CR>", opts)
 end
+
+
+
 
 vim.lsp.config("clangd", {
     cmd = { "/run/current-system/sw/bin/clangd", "-I/usr/include/qt", "-I/usr/include/qt/QtCore", "-I/usr/include/qt/QtWidgets" },
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("pyright", {
     cmd = { "pyright-langserver", "--stdio" },
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("ts_ls", {
     cmd = { "typescript-language-server", "--stdio" },
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("lua_ls", {
-    on_attach = on_attach,
-    capabilities = capabilities,
-})
-
-vim.lsp.config("nixd", {
-    on_attach = on_attach,
-    capabilities = capabilities,
+    on_attach= on_attach,
+      cmd = { "lua-language-server" },
+  filetypes = { "lua" },
+  settings = {
+    Lua = {
+      diagnostics = {
+        -- Tell the language server that 'vim' is a valid global
+        globals = { "vim" },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files for auto-completion
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
 })
 
 vim.lsp.config("zls", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("gopls", {
     cmd = { os.getenv("GOPLS_PATH") },
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("cssls", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("html", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("css", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("cmake", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("jdtls", {
     cmd = { "jdtls" },
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 vim.lsp.config("nil_ls", {
     on_attach = on_attach,
-    capabilities = capabilities,
 })
 
 
 vim.lsp.config("sqls", {
-    on_attach = function(client, bufnr)
-        client.server_capabilities.documentFormattingProvider = false
-        client.server_capabilities.documentRangeFormattingProvider = false
-        on_attach(client, bufnr)
-    end,
-    capabilities = capabilities,
     settings = {
         sqls = {
             connections = {
@@ -147,11 +144,6 @@ vim.lsp.enable({
 
 vim.lsp.config("gdscript", {
   root_markers = { "project.godot", ".git" },
-  capabilities = require('blink.cmp').get_lsp_capabilities(),
-    on_attach = function(client, bufnr)
-        print("i attached")
-        on_attach(client, bufnr)
-    end,
 }) 
 
 -- 2. Create an autocommand to enable it ONLY when a GDScript file is opened

@@ -6,7 +6,7 @@ local function escape_pattern(text)
 end
 
 -- Prompted string replacement inside visual selections
-vim.keymap.set("v", "<leader>rr", function()
+vim.keymap.set("v", "rr", function()
     local from = vim.fn.input("Replace what: ")
     if from == "" then return end
     local to = vim.fn.input("Replace with: ")
@@ -16,7 +16,7 @@ vim.keymap.set("v", "<leader>rr", function()
 end, { silent = true, desc = "Prompted regex replace in selection" })
 
 -- Swaps surrounding bracket formats on selected rows
-vim.keymap.set("v", "<leader>rb", function()
+vim.keymap.set("v", "rw", function()
     local from = vim.fn.input("Replace wrapper {}, [], (): ")
     if from == "" or #from < 2 then return end
     local to = vim.fn.input("Replace with {}, [], (): ")
@@ -37,23 +37,7 @@ vim.keymap.set("v", "<leader>rb", function()
 end, { silent = true, desc = "Replace targeted surrounding brackets" })
 
 -- Interactively replaces visual text selection global file-wide
-vim.keymap.set("v", "<leader>rp", function()
-    vim.cmd('normal! "vy')
-    local selected_text = vim.fn.getreg("v")
-    if string.find(selected_text, "\n") or selected_text == "" then return end
 
-    vim.ui.input({ prompt = "Replace selection file-wide with: ", default = selected_text }, function(input)
-        if not input or input == "" or input == selected_text then return end
-        local bufnr = vim.api.nvim_get_current_buf()
-        local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-        local pattern = escape_pattern(selected_text)
-        for i, line in ipairs(lines) do lines[i] = string.gsub(line, pattern, input) end
-        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-    end)
-end, { desc = "File-wide replacement of selection match" })
-
--- Quick LSP rename call
-vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { desc = "LSP Rename symbol project-wide" })
 
 -- Wraps visual boundaries inside an input pair character matrix
 vim.keymap.set("v", "<leader>w", function()
@@ -109,6 +93,6 @@ local function prev_buffer()
     vim.cmd('buffer ' .. bufs[prev_idx].bufnr)
 end
 vim.keymap.set('n', '<Tab>', ':b#<CR>', { desc = 'Toggle alternate buffer' })
-vim.keymap.set('n', '<S-Tab>', prev_buffer, { desc = 'Previous buffer' })
+vim.keymap.set('n', '<S-Tab', prev_buffer, { desc = 'Previous buffer' })
 vim.keymap.set('n', '<M-Tab>', next_buffer, { desc = 'Next buffer' })
 

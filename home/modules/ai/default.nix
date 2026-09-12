@@ -112,7 +112,7 @@ in
 - Do not re-derive context you already have. If item 3 is in a file you already read for item 1, don't re-search or re-read it.
 - Only widen scope beyond the specific location given (or found via the first targeted search) if the fix is provably impossible without more context — and say explicitly why before doing so.
 - If an item in the list is ambiguous or you can't find it with one or two targeted searches, stop and ask rather than falling back to a full-repo scan.
-- If you are given a instruction that has no list of multiple distinct items to fix. Then generate a to-do list with a list of multiple distinct items to fix and go through them with the steps above.
+- If you are given a instruction that has no list of multiple distinct items to fix. Then generate a to-do list with a list of multiple distinct items that is relevant to the instruction. and go through them with the steps above.
 
     # Workspace & Tool Usage Rules
 
@@ -131,6 +131,8 @@ in
   # 4. Auto-Approve Command Permissions (~/.gemini/config/settings.json)
    home.file.".gemini/antigravity-cli/settings.json" = {
     text = builtins.toJSON {
+      artifactReviewPolicy = "agent-decides";
+      toolPermission = "proceed-in-sandbox";
       permissions = {
         allow = [
           "command(nix)"

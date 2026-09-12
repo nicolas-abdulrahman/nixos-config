@@ -6,9 +6,9 @@
         cmd = [ "AerialOpen" ];
         event = [ "BufEnter" ];
         keys = [
-          { mode = "n"; key = "<leader>x"; action = ":AerialToggle<CR>"; }
-          { mode = "n"; key = "<C-A-j>"; action = ":AerialNext<CR>"; }
-          { mode = "n"; key = "<C-A-k>"; action = ":AerialPrev<CR>"; }
+          { mode = "n"; key = "<A-x>"; action = ":AerialToggle<CR>"; }
+          { mode = "n"; key = "<A-j>"; action = ":AerialNext<CR>"; }
+          { mode = "n"; key = "<A-k>"; action = ":AerialPrev<CR>"; }
         ];
       };
       "neo-tree.nvim" = {
