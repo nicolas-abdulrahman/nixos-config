@@ -16,12 +16,6 @@
     libxkbcommon
     openssl
     vulkan-loader
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXext
-    xorg.libXi
-    xorg.libXinerama
-    xorg.libXrandr
     zlib
   ]);
   environment.systemPackages = with pkgs; [

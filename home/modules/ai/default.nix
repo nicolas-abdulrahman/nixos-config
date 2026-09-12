@@ -104,6 +104,16 @@ in
 
   # 3. Agent Rules & System Prompt (~/.gemini/GEMINI.md)
   home.file.".gemini/GEMINI.md".text = ''
+    # Batch Fix / Multi-Item Task Rules
+
+- When given a list of multiple distinct items to fix, treat it as a strict todo list, not an invitation to explore the whole repository first.
+- Before touching any code, restate the list as an explicit ordered checklist. Do not do a broad exploratory pass across the repo before starting item 1.
+- Process ONE item at a time: locate it with a single targeted `rg` search (or LSP symbol lookup), make the edit, mark that item done, then move to the next. Do not batch-search for all items up front unless they are trivially related (e.g. the exact same string across many files).
+- Do not re-derive context you already have. If item 3 is in a file you already read for item 1, don't re-search or re-read it.
+- Only widen scope beyond the specific location given (or found via the first targeted search) if the fix is provably impossible without more context — and say explicitly why before doing so.
+- If an item in the list is ambiguous or you can't find it with one or two targeted searches, stop and ask rather than falling back to a full-repo scan.
+- If you are given a instruction that has no list of multiple distinct items to fix. Then generate a to-do list with a list of multiple distinct items to fix and go through them with the steps above.
+
     # Workspace & Tool Usage Rules
 
     - You are explicitly allowed and encouraged to use `find` and `ripgrep` (`rg`) commands to discover files and search codebase contents.

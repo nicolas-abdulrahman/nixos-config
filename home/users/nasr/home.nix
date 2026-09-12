@@ -53,13 +53,13 @@ in
 {
 
     programs.git = {
-      userName = "nicolas-abdulrahman";
-      userEmail = "nicolas.abdul.rahman@gmail.com";
+      settings.user.name = "nicolas-abdulrahman";
+      settings.user.email = "nicolas.abdul.rahman@gmail.com";
     };
 
     programs.zsh = {
       enable = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       # defaultKeymap = "vicmd";
       dirHashes = {
         docs = "$HOME/Documents";

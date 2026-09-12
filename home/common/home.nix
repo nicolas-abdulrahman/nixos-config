@@ -63,7 +63,7 @@ xdg.configFile."mimeapps.list".text = ''
   programs.git = {
   enable = true;
   
-  extraConfig = {
+  settings = {
     credential = {
       helper = [
         "cache --timeout=3600"

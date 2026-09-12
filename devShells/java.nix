@@ -11,7 +11,7 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     maven
     jdk21
-    xorg.libX11
+    libx11
     openjdk21
     # customise the jdk which gradle uses by default
     (callPackage gradle-packages.gradle_8 {

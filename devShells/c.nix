@@ -26,10 +26,10 @@ pkgs.mkShell {
     # WINIT_UNIX_BACKEND=wayland
     wayland
     # WINIT_UNIX_BACKEND=x11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
-    xorg.libX11
+    libxcursor
+    libxrandr
+    libxi
+    libx11
   ];
 
   CLANGD_PATH = pkgs.llvmPackages_16.clang-unwrapped;
