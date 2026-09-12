@@ -1,4 +1,11 @@
 result/
+result
+result-*
+
+# QEMU virtual disk images & local state
+*.qcow2
+*.qcow
+*.img
 my-stuff/
 root/shells/rust/trot/
 
