@@ -24,9 +24,12 @@
     url = "github:continuedev/continue";
     flake = false;
     };
+
+	nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, ... }:
+  outputs = inputs @ { self, nixpkgs, nvf, home-manager, nur, nixpkgs-unstable, nixgl, nixos-wsl, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -40,7 +43,6 @@
       pkgs-unstable = import nixpkgs-unstable{
         inherit system;
       };
-      username = "nick";
 
       customPkgs = pkgs.extend (final: prev: {
         continue-nvim = prev.vimUtils.buildVimPlugin {
@@ -53,7 +55,7 @@
       nvfPkg = (nvf.lib.neovimConfiguration {
         pkgs = customPkgs;
         modules = [
-          ./modules/nvim/nvf.nix ];
+          ./home/modules/nvim/nvf.nix ];
       }).neovim;
 
       myNvim = pkgs.symlinkJoin {
@@ -68,68 +70,62 @@
             --set GEMINI_API_KEY "YOUR_ACTUAL_API_KEY"
         '';
       };
-
-
-      godotModule = import ./shells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
-      godotModule2 = import ./shells/godot { pkgs = pkgs-unstable; };
-        modules = [
-          ./home/home.nix
-          ./modules/openhands
-        ];
+      godotModule = import ./devShells/godot4 { inherit pkgs pkgs-unstable; nixgl = nixgl.packages.${system}.nixGLIntel; nvim= myNvim; };
+      godotModule2 = import ./devShells/godot { pkgs = pkgs-unstable; };
     in
     {
     
-      homeConfigurations."nick_desktop" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs modules;
-        extraSpecialArgs = { inherit inputs godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
-          username = "nick";
-          full = true;
-          hypr = true;
-          system = "desktop";
-        };
-      };
-      homeConfigurations."nick_laptop" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs modules;
-        extraSpecialArgs = { inherit inputs username godotModule; nvim=nvfPkg; hyprland = inputs.hyprland;
-          user = "nick";
-          full = false;
-          hypr = false;
-          system= "laptop";
-        };
-      };
 
 
-      nixosConfigurations =
-        let
-          system = "x86_64-linux"; # Adjust if your systems differ
 
-          # Define a helper function to build systems without repeating boilerplate
-          mkSystem = { hardwareFile, isFull, useHypr }: nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = {
-              inherit inputs isFull useHypr hardwareFile;
-              hyprland = inputs.hyprland;
-            };
-            modules = [ ./root/configuration.nix 
+  nixosConfigurations =  let
+  mkHost = { hostname, users ? [], configuration ? {},  }: nixpkgs.lib.nixosSystem {
+    inherit system;
+    specialArgs = { inherit inputs; };
+    modules = [
+      ./hosts/common/configuration.nix
+      ./hosts/${hostname}/configuration.nix
 
-            ];
-          };
-        in
-        {
-          desktop= mkSystem {
-            hardwareFile = ./root/hardware-configuration.nix;
-            isFull = true;
-            useHypr = true;
-          };
+                  ({
+        networking.hostName = hostname;
+        hostUsers = users;
+        hostname = hostname;
+      } // configuration)
+      inputs.home-manager.nixosModules.home-manager
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.backupFileExtension= "bak";
+        home-manager.extraSpecialArgs = { inherit inputs; };
 
-          laptop = mkSystem {
-            hardwareFile = ./root/laptop-hardware-configuration.nix;
-            isFull = false;
-            useHypr = false;
-
+        home-manager.sharedModules = [
+          
+          ./home/common/home.nix
+          ./home/common/pkgs.nix
+        ];
+        home-manager.users = builtins.listToAttrs (map (user: {
+          name = user;
+          value = import ./home/users/${user}/home.nix;
+        }) users);
+      }
+    ];
+  };
+in{
+    desktop = mkHost { hostname = "desktop"; 
+          users = [ "nick" "nasr" "lfs" ];
+          configuration = {
+            ai = true;
+            full = true;
+            hypr = true;
           };
         };
-
+    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ];
+          configuration = {
+            ai = true;
+          };
+        };
+    wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
+  };
 
       packages.${system} = {
         nvim = nvfPkg;
@@ -137,15 +133,15 @@
       };
 
       devShells.${system} = {
-        c = import ./shells/c.nix { inherit pkgs; };
-        java = import ./shells/java.nix { inherit pkgs; };
-        node = import ./shells/node.nix { inherit pkgs; };
-        python = import ./shells/python.nix { inherit pkgs; };
-        rust = import ./shells/rust.nix { inherit pkgs; };
-        wine = import ./shells/wine.nix { inherit pkgs; };
-        zig = import ./shells/zig.nix { inherit pkgs; };
+        c = import ./devShells/c.nix { inherit pkgs; };
+        java = import ./devShells/java.nix { inherit pkgs; };
+        node = import ./devShells/node.nix { inherit pkgs; };
+        python = import ./devShells/python.nix { inherit pkgs; };
+        rust = import ./devShells/rust.nix { inherit pkgs; };
+        wine = import ./devShells/wine.nix { inherit pkgs; };
+        zig = import ./devShells/zig.nix { inherit pkgs; };
         zed = import ./modules/zed { inherit pkgs; };
-        vscode = import ./shells/vscode { inherit pkgs; };
+        vscode = import ./devShells/vscode { inherit pkgs; };
         godot4 = godotModule.shell;
         godot = godotModule2.shell;
       };
