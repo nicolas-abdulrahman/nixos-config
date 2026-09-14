@@ -3,6 +3,7 @@
 {
   imports = [
     inputs.sops-nix.nixosModules.sops # <-- This makes the 'sops' option exist!
+    ./boot.nix
     ./cli.nix
     ./users.nix
     ../modules/kanata
