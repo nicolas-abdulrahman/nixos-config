@@ -119,7 +119,12 @@
     nixpkgs.config.allowUnfree = true;
 
     fonts.packages = with pkgs; [
+       noto-fonts 
+
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
       nerd-fonts._0xproto
+
       nerd-fonts.droid-sans-mono
       nerd-fonts.hack
       openmoji-color

@@ -1,7 +1,4 @@
 { config, lib, pkgs, osConfig, ... }:
-
-let
-in
 {
   programs.fish = {
     generateCompletions = false;

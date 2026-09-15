@@ -1,0 +1,75 @@
+# ~/.config/starship.toml
+
+# Defines the two-line layout with a top-line frame and dotted connector
+format = """
+[╭─](dimmed white)\
+$shell\
+$username\
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$cmd_duration\
+$time\
+[─╮](dimmed white)
+[╰─](dimmed white)$character"""
+
+add_newline = false
+
+[shell]
+disabled = false
+show_always = true
+fish_indicator = "󰈺"
+bash_indicator = ""
+zsh_indicator = "󰞷"
+powershell_indicator = "󰨊"
+cmd_indicator = ""
+nu_indicator = "󰄛"
+elvish_indicator = "󰞷"
+tcsh_indicator = ""
+xonsh_indicator = "󰌠"
+ion_indicator = "⚛"
+unknown_indicator = ""
+style = "bg:#3b4252 fg:#81a1c1 bold"
+format = "[ $indicator ]($style)[](fg:#3b4252 bg:#2e3440)"
+
+[username]
+show_always = true
+style_user = "bg:#2e3440 fg:#88c0d0 bold"
+style_root = "bg:#bf616a fg:#eceff4 bold"
+format = "[  $user ]($style)[](fg:#2e3440 bg:#3b4252)"
+# 12-Hour Time Module
+[time]
+disabled = false
+time_format = "%I:%M %p"
+style = "bg:#3b4252 fg:#e5e9f0"
+format = "[ $time ]($style)[](fg:#3b4252 bg:#434c5e)"
+
+# Directory Module
+[directory]
+style = "bg:#434c5e fg:#eceff4"
+format = "[ $path ]($style)[](fg:#434c5e bg:#4c566a)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+# Git Branch Module
+[git_branch]
+style = "bg:#4c566a fg:#a3be8c"
+symbol = " "
+format = "[ $symbol$branch ]($style)[](fg:#4c566a)"
+
+# Dotted Line Connector
+[fill]
+symbol = "·"
+style = "dimmed white"
+
+# Execution Time (Right Frame)
+[cmd_duration]
+min_time = 2_000
+style = "bg:#434c5e fg:#ebcb8b"
+format = "[](fg:#434c5e)[  $duration ]($style)"
+
+# Character / Prompt Symbol
+[character]
+success_symbol = "[❯](bold green) "
+error_symbol = "[❯](bold red) "

@@ -5,12 +5,6 @@ let
   idleBeforeSleep = 7200; # 2 h: suspend
 
   dim = pkgs.writeShellScriptBin "hypridle-dim" ''
-    set -euo pipefail
-    for ((i = ${toString dimSteps}; i >= 0; i--)); do
-      pct=$(( i * 100 / ${toString dimSteps} ))
-       ddcutil setvcp 10 ''${pct} || true
-      sleep 1
-    done
     hyprctl dispatch 'hl.dsp.dpms({ action = "disable" })'
   '';
 
