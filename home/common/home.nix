@@ -19,6 +19,7 @@ in
 {
   imports = [
     inputs.nvf.homeManagerModules.default
+    ./shell.nix
     ../modules
   ];
 
@@ -50,10 +51,6 @@ xdg.configFile."mimeapps.list".text = ''
       enableCompletion = true;
     };
 
-  programs.starship = {
-    enable = true;           # keep this — still gives you starship in zsh
-    enableFishIntegration = false;   # stops starship from touching fish at all
-  };
   programs.fzf = {
   enable = true;
   enableFishIntegration = true; # Enabled automatically when keybindings = true
@@ -68,6 +65,12 @@ xdg.configFile."mimeapps.list".text = ''
       helper = [
         "cache --timeout=3600"
         "${pkgs.git-credential-oauth}/bin/git-credential-oauth"
+      ];
+    };
+    safe = {
+      directory = [
+        "/etc/nixos"
+        "/programs/codes"
       ];
     };
   };

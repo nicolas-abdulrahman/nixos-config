@@ -25,6 +25,8 @@ config.font = wezterm.font_with_fallback({
 	"Noto Color Emoji",
 })
 
+ config.bidi_enabled = true
+config.bidi_direction = "LeftToRight"
 config.font_size = 12.0
 config.keys = {
 	{ key = "V", mods = "CTRL", action = act.PasteFrom("Clipboard") },
@@ -65,19 +67,20 @@ config.window_padding = {
 config.hide_tab_bar_if_only_one_tab = true
 
 config.default_prog = { 
-  'zsh', 
+  'fish', 
   '-c', 
   [[
-    if [ -z "$1" ]; then
+    if not set -q argv[1]
       tmux new-session -A -s 0 -n 0
     else
-      tmux new-session "$@"
-    fi
+      tmux new-session $argv
+    end
     
     # After tmux closes, launch a fresh interactive shell so the window stays open
-    zsh -i
+    fish -i
   ]], 
   '--' 
 }
+
 
 return config
