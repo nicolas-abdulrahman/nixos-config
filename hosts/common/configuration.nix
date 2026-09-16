@@ -120,6 +120,7 @@
 
     fonts.packages = with pkgs; [
        noto-fonts 
+      ibm-plex
 
       noto-fonts-cjk-sans
       noto-fonts-color-emoji

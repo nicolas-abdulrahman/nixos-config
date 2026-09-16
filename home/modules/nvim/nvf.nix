@@ -275,7 +275,7 @@ in
       antigravity-cli llm-ls nodejs ripgrep fd godot_4
       lua-language-server
       gopls pyright clang-tools zls sqls typescript-language-server nixd
-      stylua prettierd rust-analyzer
+      stylua prettierd rust-analyzer taplo
     ];
 
     visuals.indent-blankline = {
