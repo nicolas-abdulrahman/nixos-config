@@ -131,9 +131,12 @@ in
 
       cmp = { package = nvim-cmp; };
       cmp-nvim-lsp = { package = cmp-nvim-lsp; };
+      crates = {
+        package = crates-nvim;
+      };
       lspconfig = {
         package = nvim-lspconfig;
-        after = [ "cmp" "cmp-nvim-lsp" ];
+        after = [ "crates" ];
         setup = builtins.readFile ./plugin/lsp.lua + ''
           local hostname = vim.uv.os_gethostname()
           local flake_path = "${flakePath}"
