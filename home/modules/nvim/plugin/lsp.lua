@@ -1,4 +1,11 @@
+ local crates = require("crates")
 
+crates.setup({
+    -- Automatically reload information from crates.io when entering or editing a Cargo.toml buffer
+    autoload = true,
+    autoupdate = true,
+    loading_indicator = true,
+ })
 
 vim.diagnostic.config({
     signs = {
@@ -36,6 +43,22 @@ local function on_attach(client, bufnr)
     vim.keymap.set("n", "<S-Space>", vim.lsp.buf.hover, opts)
     vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
     vim.keymap.set("n", "<leader><leader>d", "<cmd>Telescope diagnostics<CR>", opts)
+
+     vim.keymap.set("n", "<C-h>", "gcc", { remap = true, desc = "Toggle comment line" })
+    vim.keymap.set("v", "<C-h>", "gc",  { remap = true, desc = "Toggle comment selection" })
+
+    --------------------------------------------------------------------------------
+    -- 2. Toggle Inlay Hints with <Space>h (Normal mode)
+    --------------------------------------------------------------------------------
+    vim.keymap.set("n", "<leader>h", function()
+        if vim.lsp.inlay_hint then
+            local current_buf = 0 -- 0 refers to the current active buffer
+            local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = current_buf })
+            vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = current_buf })
+        end
+    end, { desc = "Toggle LSP Inlay Hints" })
+
+
 end
 
 
@@ -140,11 +163,13 @@ vim.lsp.enable({
     "nil_ls",
     "sqls",
     "gdscript",
+    "rust_analyzer",
+    "taplo",
 })
 
 vim.lsp.config("gdscript", {
   root_markers = { "project.godot", ".git" },
-}) 
+})
 
 -- 2. Create an autocommand to enable it ONLY when a GDScript file is opened
 vim.api.nvim_create_autocmd("FileType", {
@@ -204,3 +229,48 @@ dap.configurations.rust = {
     },
 }
 
+
+
+     -- Modern Rust LSP (rust-analyzer) with comprehensive type/inlay hints & clippy
+    vim.lsp.config("rust_analyzer", {
+        cmd = { "rust-analyzer" },
+        on_attach = on_attach,
+        settings = {
+            ["rust-analyzer"] = {
+                check = {
+                    command = "clippy",
+                },
+                cargo = {
+                    allFeatures = true,
+                    loadOutDirsFromCheck = true,
+                    buildScripts = {
+                        enable = true,
+                    },
+                },
+                procMacro = {
+                    enable = true,
+                },
+                inlayHints = {
+                    bindingModeHints = { enable = false },
+                    chainingHints = { enable = true },
+                    closingBraceHints = { enable = true, minLines = 25 },
+                    closureReturnTypeHints = { enable = "never" },
+                    lifetimeElisionHints = { enable = "never", useParameterNames = false },
+                    matchesStorageClassHints = { enable = true },
+                    parameterHints = { enable = true },
+                    reborrowHints = { enable = "never" },
+                    typeHints = {
+                        enable = true,
+                        hideClosureInitialization = false,
+                        hideNamedConstructor = false,
+                    },
+                },
+            },
+        },
+    })
+
+    -- Cargo.toml / TOML LSP (taplo)
+    vim.lsp.config("taplo", {
+        cmd = { "taplo", "lsp", "stdio" },
+        on_attach = on_attach,
+    })

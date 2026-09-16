@@ -19,15 +19,19 @@ config.color_scheme = "Dracula"
 --}
 
 local wezterm_mod = "CTRL|SHIFT"
-config.font = wezterm.font_with_fallback({
-	"JetBrains Mono", -- your main font
-	"Noto Sans Arabic", -- Arabic shaping
-	"Noto Color Emoji",
-})
 
- config.bidi_enabled = true
+
+-- Font rules with explicit Arabic font rendering
+config.font = wezterm.font_with_fallback({
+  { family = "JetBrains Mono", weight = "Regular" },
+  { family = "IBM Plex Sans Arabic", weight = "Medium" }, -- Bolder weight makes strokes clearer
+  "Noto Color Emoji",
+})
+config.bidi_enabled = true
 config.bidi_direction = "LeftToRight"
-config.font_size = 12.0
+config.line_height = 1.25
+config.font_size = 13.0
+config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 config.keys = {
 	{ key = "V", mods = "CTRL", action = act.PasteFrom("Clipboard") },
 	{ key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },
