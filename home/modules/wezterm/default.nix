@@ -1,10 +1,5 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 {
-  programs.wezterm = {
-    enable = true;
-    extraConfig = lib.readFile ./config.lua;
-    package = pkgs.wezterm;
-  };
-
-
+  xdg.configFile."wezterm/wezterm.lua".source =
+        config.lib.file.mkOutOfStoreSymlink "/etc/nixos/home/modules/wezterm/config.lua";
 }

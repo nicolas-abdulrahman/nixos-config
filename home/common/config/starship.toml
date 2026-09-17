@@ -17,7 +17,6 @@ $time\
 
 [shell]
 disabled = false
-show_always = true
 fish_indicator = "󰈺"
 bash_indicator = ""
 zsh_indicator = "󰞷"
@@ -33,7 +32,6 @@ style = "bg:#3b4252 fg:#81a1c1 bold"
 format = "[ $indicator ]($style)[](fg:#3b4252 bg:#2e3440)"
 
 [username]
-show_always = true
 style_user = "bg:#2e3440 fg:#88c0d0 bold"
 style_root = "bg:#bf616a fg:#eceff4 bold"
 format = "[  $user ]($style)[](fg:#2e3440 bg:#3b4252)"

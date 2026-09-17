@@ -3,23 +3,7 @@ local act = wezterm.action
 local config = {}
 
 config.color_scheme = "Dracula"
--- config.colors.background= 'none'
--- config.disable_default_key_bindings = true
---config.window_background_image = '/etc/nixos/vicksy.jpg'
---config.window_background_image_hsb = {
--- Darken the background image by reducing it to 1/3rd
---  brightness = 0.1,
-
--- You can adjust the hue by scaling its value.
--- a multiplier of 1.0 leaves the value unchanged.
---  hue = 1.0,
-
--- You can adjust the saturation also.
--- saturation = 0.9,
---}
-
 local wezterm_mod = "CTRL|SHIFT"
-
 
 -- Font rules with explicit Arabic font rendering
 config.font = wezterm.font_with_fallback({
@@ -70,21 +54,26 @@ config.window_padding = {
 
 config.hide_tab_bar_if_only_one_tab = true
 
-config.default_prog = { 
-  'fish', 
-  '-c', 
-  [[
-    if not set -q argv[1]
-      tmux new-session -A -s 0 -n 0
-    else
-      tmux new-session $argv
-    end
-    
-    # After tmux closes, launch a fresh interactive shell so the window stays open
-    fish -i
-  ]], 
-  '--' 
-}
+config.default_prog = {
+      'fish',
+      '-c',
+      [[
+        set -l session "0"
+        if set -q WORKSPACE
+          set session $WORKSPACE
+        else if set -q argv[1]
+          set session $argv[1]
+        end
+      hyprctl notify 1 5000 0 $WORKSPACE
 
+        if tmux has-session -t $session 2>/dev/null
+          tmux new-session -t $session
+        else
+          tmux new-session -s $session -n $session
+        end
 
+        fish -i
+      ]],
+      '--'
+    }
 return config

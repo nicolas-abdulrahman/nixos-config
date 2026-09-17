@@ -44,8 +44,6 @@ local function on_attach(client, bufnr)
     vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
     vim.keymap.set("n", "<leader><leader>d", "<cmd>Telescope diagnostics<CR>", opts)
 
-     vim.keymap.set("n", "<C-h>", "gcc", { remap = true, desc = "Toggle comment line" })
-    vim.keymap.set("v", "<C-h>", "gc",  { remap = true, desc = "Toggle comment selection" })
 
     --------------------------------------------------------------------------------
     -- 2. Toggle Inlay Hints with <Space>h (Normal mode)
