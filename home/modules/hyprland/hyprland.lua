@@ -86,7 +86,14 @@
         monitor = secondary_monitor,
         maximize = true
     })
+local function exec_wez(name, workspace)
+  local text = workspace and string.format("[workspace %s silent] ", workspace) or ""
 
+  hl.exec_cmd(string.format(
+    [[%swezterm start -- fish -c 'set -l session $argv[1]; hyprctl notify 1 5000 0 "Session: $session" 2>/dev/null; if tmux has-session -t "$session" 2>/dev/null; tmux new-session -t "$session"; else; tmux new-session -s "$session" -n "$session"; end; exec fish -i' %s]],
+    text, name
+  ))
+end
     -- ============================================================================
     -- APP & UTILITY BINDINGS
     -- ============================================================================
@@ -109,7 +116,7 @@
             icon = 1,		  -- Info icon
             color = "rgb(89b4fa)",    -- Optional color
         })
-        hl.exec_cmd(string.format("env WORKSPACE=%s wezterm", name))
+        exec_wez(name )
     end)
         --
     
@@ -240,7 +247,7 @@
 
 
 
-       hl.exec_cmd("[workspace 1 silent] env WORKSPACE=1 wezterm")
+       hl.exec_cmd("[workspace 1 silent] wezterm")
         hl.exec_cmd("[workspace 11 silent] env WORKSPACE=1 wezterm")
 
         hl.exec_cmd("[workspace special:browser silent] firefox")

@@ -54,26 +54,4 @@ config.window_padding = {
 
 config.hide_tab_bar_if_only_one_tab = true
 
-config.default_prog = {
-      'fish',
-      '-c',
-      [[
-        set -l session "0"
-        if set -q WORKSPACE
-          set session $WORKSPACE
-        else if set -q argv[1]
-          set session $argv[1]
-        end
-      hyprctl notify 1 5000 0 $WORKSPACE
-
-        if tmux has-session -t $session 2>/dev/null
-          tmux new-session -t $session
-        else
-          tmux new-session -s $session -n $session
-        end
-
-        fish -i
-      ]],
-      '--'
-    }
 return config
