@@ -35,7 +35,7 @@ in
         }
         {
           timeout = idleBeforeSleep;
-          on-timeout = "systemctl suspend";
+          on-timeout = "poweroff";
           on-resume = "";
         }
       ];

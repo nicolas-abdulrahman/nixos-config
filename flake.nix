@@ -119,7 +119,7 @@ in{
             hypr = true;
           };
         };
-    laptop  = mkHost { hostname = "laptop";  users = [ "nick" ];
+    laptop  = mkHost { hostname = "laptop";  users = [ "nick" "stanley" ];
           configuration = {
             ai = true;
           };

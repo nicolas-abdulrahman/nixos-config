@@ -66,6 +66,28 @@ in
     # Plugin Management
     lazy.plugins = import ./lazy.nix { inherit pkgs; };
     extraPlugins = with pkgs.vimPlugins; {
+        focus = {
+            package = focus-nvim;
+            setup = ''
+              require("focus").setup({
+                autoresize = {
+    		  enable = true,
+    		  width = 0,  -- 0 activates golden ratio (~65-70% width for the active buffer)
+    		  height = 0, -- golden ratio for vertical splits (or set equalise = true)
+    		  minwidth = 25,
+                },
+                ui = {
+    		  signcolumn = false, -- keeps your existing statuscol/signs intact
+                },
+              })
+
+               vim.keymap.set("n", "<leader>.", "<cmd>FocusSplitNicely<CR>", { desc = "Focus Split Nicely" })
+               vim.keymap.set("n", "<leader>,", "<cmd>FocusToggle<CR>",      { desc = "Toggle Focus Auto-resize" })
+
+            '';
+
+          };
+
       promise-async = {
         package = promise-async;
       };

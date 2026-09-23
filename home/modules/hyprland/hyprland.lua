@@ -86,13 +86,30 @@
         monitor = secondary_monitor,
         maximize = true
     })
-local function exec_wez(name, workspace)
-  local text = workspace and string.format("[workspace %s silent] ", workspace) or ""
+local function exec_wez(session, workspace)
+  local workspace_prefix= workspace and string.format("[workspace %s silent] ", workspace) or ""
+         local fish_script = [[
+        set -l session $argv[1]
+        hyprctl notify 1 5000 0 "Session: $session" 2>/dev/null
 
-  hl.exec_cmd(string.format(
-    [[%swezterm start -- fish -c 'set -l session $argv[1]; hyprctl notify 1 5000 0 "Session: $session" 2>/dev/null; if tmux has-session -t "$session" 2>/dev/null; tmux new-session -t "$session"; else; tmux new-session -s "$session" -n "$session"; end; exec fish -i' %s]],
-    text, name
-  ))
+        if tmux has-session -t "$session" 2>/dev/null
+          tmux new-session -t "$session"
+        else
+          tmux new-session -s "$session" -n "$session"
+        end
+
+        exec fish -i
+      ]]
+
+      -- 3. Assemble and execute the final command
+      local cmd = string.format(
+        "%swezterm start -- fish -c '%s' '%s'",
+        workspace_prefix,
+        fish_script,
+        session
+      )
+      hl.exec_cmd(cmd)
+
 end
     -- ============================================================================
     -- APP & UTILITY BINDINGS
@@ -248,9 +265,12 @@ end
 
 
        hl.exec_cmd("[workspace 1 silent] wezterm")
+        exec_wez(1, 1)
+        exec_wez(11, 11)
         hl.exec_cmd("[workspace 11 silent] env WORKSPACE=1 wezterm")
 
         hl.exec_cmd("[workspace special:browser silent] firefox")
+        exec_wez(0, "special:browser")
     end)
 
     -- ============================================================================
