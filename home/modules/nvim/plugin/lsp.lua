@@ -102,7 +102,6 @@ vim.lsp.config("zls", {
 })
 
 vim.lsp.config("gopls", {
-    cmd = { os.getenv("GOPLS_PATH") },
     on_attach = on_attach,
 })
 

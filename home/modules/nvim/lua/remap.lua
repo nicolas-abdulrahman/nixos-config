@@ -109,7 +109,7 @@ vim.keymap.set("n", "<leader>D", '"+D',   { desc = "Cut to end of line to clipbo
 -- QUICKFIX
 
 -- -- Alt+A: Toggle Quickfix window open/close
-vim.keymap.set("n", "<M-z>", function()
+vim.keymap.set("n", "<M-q>", function()
   local qf_exists = false
   for _, win in ipairs(vim.fn.getwininfo()) do
     if win.quickfix == 1 then

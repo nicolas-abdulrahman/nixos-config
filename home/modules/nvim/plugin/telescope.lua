@@ -14,7 +14,7 @@ require("telescope").setup({
         ["<M-Down>"] = actions.send_to_qflist + actions.open_qflist,
       },
       n = {
-        ["<M-Right>"] = actions.send_selected_to_qflist + actions.open_qflist,
+       ["<M-Right>"] = actions.send_selected_to_qflist + actions.open_qflist,
         ["<M-Down>"] = actions.send_to_qflist + actions.open_qflist,
       },
     },
@@ -78,3 +78,33 @@ end, { desc = "LSP symbols (current dir)" })
 vim.keymap.set("n", prefix .. "M", function()
   builtin.lsp_document_symbols({ symbols = { "Function", "Method" } })
 end, { desc = "LSP symbols (all)" })
+
+
+
+
+  local function safe_git_bcommits()
+      local file = vim.fn.expand("%:p")
+      if file == "" then
+        builtin.git_commits()
+        return
+      end
+
+      -- Resolves symlinks and sets cwd to the file's folder so git doesn't get lost
+      local real_file = vim.fn.resolve(file)
+      local real_dir = vim.fn.fnamemodify(real_file, ":h")
+
+      -- 1. Try git_bcommits targeting the file's actual directory
+      local ok = pcall(builtin.git_bcommits, {
+        cwd = real_dir,
+        current_file = real_file,
+        prompt_title = "File History: " .. vim.fn.fnamemodify(file, ":t"),
+      })
+
+      -- 2. Fallback to full repo commits if bcommits fails or file is untracked
+      if not ok then
+        vim.notify("No file history found, showing repo commits", vim.log.levels.INFO)
+        builtin.git_commits({ cwd = real_dir })
+      end
+    end
+
+vim.keymap.set("n", prefix .. "h", safe_git_bcommits, { desc = "Git buffer history" })
