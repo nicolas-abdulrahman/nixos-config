@@ -131,6 +131,7 @@ in
   # 4. Auto-Approve Command Permissions (~/.gemini/config/settings.json)
    home.file.".gemini/antigravity-cli/settings.json" = {
     text = builtins.toJSON {
+      effort = "medium";
       artifactReviewPolicy = "agent-decides";
       toolPermission = "proceed-in-sandbox";
       permissions = {

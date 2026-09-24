@@ -152,7 +152,6 @@ vim.lsp.enable({
     "nixd",
     "zls",
     "gopls",
-    "cssls",
     "html",
     "css",
     "cmake",
@@ -162,6 +161,8 @@ vim.lsp.enable({
     "gdscript",
     "rust_analyzer",
     "taplo",
+     "svelte",
+    "tailwindcss",
 })
 
 vim.lsp.config("gdscript", {
@@ -270,4 +271,15 @@ dap.configurations.rust = {
     vim.lsp.config("taplo", {
         cmd = { "taplo", "lsp", "stdio" },
         on_attach = on_attach,
+    })
+
+  vim.lsp.config("svelte", {
+        on_attach = on_attach,
+    })
+
+
+   vim.lsp.config("tailwindcss", {
+        on_attach = on_attach,
+        filetypes = { "html", "css", "scss", "javascript", "typescript", "svelte", "vue" },
+        root_markers = { "tailwind.config.js", "tailwind.config.ts", "postcss.config.js", "package.json", ".git" },
     })

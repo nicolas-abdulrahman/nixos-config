@@ -246,32 +246,45 @@ in
 
       blink-cmp = {
         package = pkgs.vimPlugins.blink-cmp;
-        setup = ''
-          require("blink.cmp").setup({
-            sources = {
-              default = { "lsp", "path", "buffer", "snippets" },
-            },
-            completion = {
-              ghost_text = {
-                enabled = false,
-              },
-              documentation = {
-                auto_show = true,
-                auto_show_delay_ms = 200,
-              },
-            },
-            keymap = {
-              preset = 'none',
-              ["<S-Up>"] = { 'scroll_documentation_up', 'fallback' },
-              ["<S-Down>"] = { 'scroll_documentation_down', 'fallback' },
-              ["<S-Space>"] = { 'show', 'show_documentation', 'hide_documentation' },
-              ["<Left>"] = { 'cancel' },
-              ["<Tab>"] = { 'select_and_accept', 'fallback' },
-              ["<Up>"] = { 'select_prev', 'fallback' },
-              ["<Down>"] = { 'select_next', 'fallback' },
-            },
-          })
-        '';
+         setup = ''
+              require("blink.cmp").setup({
+                sources = {
+                  default = { "lsp", "path" },
+                },
+                completion = {
+                  ghost_text = {
+                    enabled = false,
+                  },
+                  menu = {
+                    draw = {
+                      -- Shows: [Icon] [Name + LSP detail/signature] [Kind]
+                      columns = {
+                        { "kind_icon" },
+                        { "label", "label_description", gap = 1 },
+                        { "kind" },
+                      },
+                    },
+                  },
+                  documentation = {
+                    auto_show = true,
+                    auto_show_delay_ms = 100,
+                    window = {
+                      border = "rounded",
+                    },
+                  },
+                }, -- <-- This was missing
+                keymap = {
+                  preset = 'none',
+                  ["<S-Up>"] = { 'scroll_documentation_up', 'fallback' },
+                  ["<S-Down>"] = { 'scroll_documentation_down', 'fallback' },
+                  ["<S-Space>"] = { 'show', 'show_documentation', 'hide_documentation' },
+                  ["<Left>"] = { 'cancel' },
+                  ["<Tab>"] = { 'select_and_accept', 'fallback' },
+                  ["<Up>"] = { 'select_prev', 'fallback' },
+                  ["<Down>"] = { 'select_next', 'fallback' },
+                },
+              })
+            '';
       };
     };
 
@@ -301,6 +314,9 @@ in
       lua-language-server
       gopls pyright clang-tools zls sqls typescript-language-server nixd
       stylua prettierd rust-analyzer taplo
+       vscode-langservers-extracted  # <-- VS Code CSS (and HTML/JSON/ESLint) LSP
+          svelte-language-server
+        tailwindcss-language-server
     ];
 
     visuals.indent-blankline = {
@@ -320,14 +336,19 @@ in
       enable = true;
       highlight.enable = true;
       indent.enable = true;
-      grammars = with pkgs.vimPlugins.nvim-treesitter-parsers; [
-        lua
-        nix
-        python
-        gdscript
-        rust
-        godot_resource
-      ];
+        grammars = with pkgs.vimPlugins.nvim-treesitter-parsers; [
+            lua
+            nix
+            python
+            gdscript
+            rust
+            godot_resource
+            svelte
+            html
+            css
+            javascript
+            typescript
+          ];
     };
   };
 }

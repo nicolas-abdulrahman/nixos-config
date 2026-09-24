@@ -92,7 +92,9 @@ local function prev_buffer()
     end
     vim.cmd('buffer ' .. bufs[prev_idx].bufnr)
 end
-vim.keymap.set('n', '<Tab>', ':b#<CR>', { desc = 'Toggle alternate buffer' })
-vim.keymap.set('n', '<S-Tab', prev_buffer, { desc = 'Previous buffer' })
-vim.keymap.set('n', '<M-Tab>', next_buffer, { desc = 'Next buffer' })
+
+
+vim.keymap.set('n', '<M-Tab>', '<cmd>bnext<CR>', { desc = 'Next buffer', silent = true })
+vim.keymap.set('n', '<S-Tab>', '<cmd>bprevious<CR>', { desc = 'Previous buffer', silent = true })
+vim.keymap.set('n', '<Tab>', '<cmd>b#<CR>', { desc = 'Toggle alternate buffer', silent = true })
 
