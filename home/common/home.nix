@@ -29,7 +29,7 @@ manual.html.enable = false;
 manual.json.enable = false;
   programs.nvf = {
 
-  enable  = true;
+  enable  = false;
   settings = import ../modules/nvim/nvf.nix { inherit pkgs; };
   };
   home.stateVersion = "26.05";
