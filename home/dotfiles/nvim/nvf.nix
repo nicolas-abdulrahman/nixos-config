@@ -217,27 +217,6 @@ in
         package = plenary-nvim;
       };
 
-      copilot-lua = {
-        package = copilot-lua;
-        setup = ''
-          require("copilot").setup({
-            panel = {
-              enabled = false,
-            },
-            suggestion = {
-              enabled = true,
-              auto_trigger = true,
-              debounce = 500,
-              keymap = {
-                accept = "<right>",
-                next = "<M-Tab>",
-                prev = "<M-down>",  
-                dismiss = "<left>",
-              },
-            },
-          })
-        '';
-      };
 
       blink-cmp = {
         package = pkgs.vimPlugins.blink-cmp;

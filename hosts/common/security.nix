@@ -31,6 +31,15 @@ in
   networking.firewall.allowedUDPPorts = [ 80 3000 3001 3308 3307 3306 ];
   networking.firewall.enable = true;
 
+  # Remote shell access (SSH)
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = true;
+      PermitRootLogin = "yes";
+    };
+  };
+
   security.pki.certificateFiles = [ 
     "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" 
   ];
