@@ -3,7 +3,6 @@
 {
   imports = [
     inputs.sops-nix.nixosModules.sops # <-- This makes the 'sops' option exist!
-    ./boot.nix
     ./users.nix
     ../modules/kanata
     ./desktop_manager.nix
@@ -27,6 +26,11 @@
       type = lib.types.bool;
       default = false;
       description = "Enable virtualization (docker).";
+    };
+    desktop = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable desktop-specific hardware and drivers (AMDGPU, desktop peripherals).";
     };
   };
   config = {

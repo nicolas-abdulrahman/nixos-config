@@ -4,7 +4,7 @@
   services.xserver = {
     enable = true;
     xkb.layout = "us";
-    videoDrivers = [ "amdgpu" ];
+    videoDrivers = if config.desktop then [ "amdgpu" ] else [ "modesetting" ];
     desktopManager.xfce.enable = true;
     #   desktopManager.lxqt.enable = true;
 

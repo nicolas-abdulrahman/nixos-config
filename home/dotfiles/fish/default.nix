@@ -37,7 +37,7 @@
         end
 
         echo "🚀 Switching Home Manager..."
-        home-manager switch --flake "$flakepath#nick"
+        home-manager switch --flake "$flakepath#$USER"
       '';
     };
 

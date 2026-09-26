@@ -27,7 +27,7 @@ in
     hardware.i2c.enable = true;
     environment.systemPackages = [ pkgs.ddcutil ];
 
-    nix.settings.trusted-users = [ "root" "nick" "nasr" ];
+    nix.settings.trusted-users = [ "root" "nick" "nasr" "stanley" ];
 
     # Ensure shells are built system-wide
     programs.zsh.enable = true;
@@ -67,7 +67,7 @@ in
           isNormalUser = true;
           description = "Stanleynnnnn";
           extraGroups = [ "i2c" "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
-          shell = pkgs.fish;
+          shell = pkgs.bash;
           hashedPassword = "$6$t.2FnA1r9GLxmhKI$EVHw5xf3LNADuEP1yRog8kNRQzEGUtSyLtwF2aM6JsKDZPMfdg8lbA43Qhbvoj9Bl4iqA0yrOeCzo/vtd7Ggl1";
         };
       };

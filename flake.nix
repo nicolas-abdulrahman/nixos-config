@@ -124,15 +124,15 @@ in{
             ./home/home.nix
           ];
         };
-        stanley= home-manager.lib.homeManagerConfiguration {
+        stanley = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = {
             inherit inputs;
-            username = "nick";
-            hypr = true;
+            username = "stanley";
+            hypr = false;
             full = true;
             git = {
-              name = "nicolas";
+              name = "stanley";
               email = "nicolas.abdul.rahman@gmail.com";
             };
           };
