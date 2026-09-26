@@ -30,10 +30,8 @@
       user.name = git.name;
       user.email = git.email;
       credential = {
-        helper = [
-          "cache --timeout=3600"
-          "${pkgs.git-credential-oauth}/bin/git-credential-oauth"
-        ];
+        helper = "${pkgs.git-credential-manager}/bin/git-credential-manager";
+        credentialStore = "secretservice";
       };
       safe = {
         directory = [

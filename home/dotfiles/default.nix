@@ -1,6 +1,7 @@
 { pkgs, hypr ? false, ... }:
 {
   imports = [
+    ./ai
     ./nvim
     ./tmux
     ./wezterm
