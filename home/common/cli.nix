@@ -13,7 +13,6 @@
 
     # --- TERMINAL UI (TUI) APPS ---
     yazi        # Blazing fast terminal file manager (written in Rust)
-    lazygit     # The best TUI for git (makes staging/committing visual)
     btop        # A beautiful system monitor (replaces htop/top)
     nvtopPackages.amd # GPU status monitor (works with WSL/Nvidia)
 
@@ -30,13 +29,13 @@
     uv
 
     # Essentials
-    home-manager pcmanfm kanata
+    pcmanfm 
     cacert iproute2 inetutils nettools xremap tmux
     zsh wget curl jq file glib nix-index tree lsof st surf 
 
     # cool to have
     ffmpeg imagemagick 
-    xorg-server xinit xrandr xsetroot xev
+    xinit xrandr xsetroot xev
   ];
 
   programs.starship.enable = true;
