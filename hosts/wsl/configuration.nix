@@ -1,7 +1,6 @@
 { config, pkgs,lib, ... }:
 
 {
-  remap = true;
   wsl.enable = true;
   wsl.defaultUser = "nixos";
 

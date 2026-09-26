@@ -1,24 +1,7 @@
-{ pkgs,config, ... }:
+{ pkgs, ... }:
 
 {
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs;[]++  (lib.optionals (config.full) [
-    alsa-lib
-    glib
-    libGL
-    libX11
-    libXcursor
-    libXext
-    libXinerama
-    libXrandr
-    libXrender
-    libxi
-    libxkbcommon
-    openssl
-    vulkan-loader
-    zlib
-  ]);
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     # --- MODERN REPLACEMENTS ---
     eza         # A modern replacement for 'ls' (colors, icons, tree view)
     bat         # A 'cat' clone with syntax highlighting and git integration
@@ -47,19 +30,14 @@
     uv
 
     # Essentials
-    ripgrep
-    home-manager pcmanfm  kanata
+    home-manager pcmanfm kanata
     cacert iproute2 inetutils nettools xremap tmux
-    zsh git wget curl jq btop unzip file glib nix-index tree lsof st surf 
+    zsh wget curl jq file glib nix-index tree lsof st surf 
 
-    #cool to have
+    # cool to have
     ffmpeg imagemagick 
     xorg-server xinit xrandr xsetroot xev
   ];
 
-  # Some tools work better when enabled as "programs" 
-  # because NixOS handles the shell integration automatically.
-  programs.zoxide.enable = false;
-  programs.fzf.keybindings = true;
-  programs.starship.enable = true; # A very cool, fast, customizable shell prompt
+  programs.starship.enable = true;
 }

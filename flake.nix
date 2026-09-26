@@ -55,7 +55,7 @@
       nvfPkg = (nvf.lib.neovimConfiguration {
         pkgs = customPkgs;
         modules = [
-          ./home/modules/nvim/nvf.nix ];
+          ./home/dotfiles/nvim/nvf.nix ];
       }).neovim;
 
       myNvim = pkgs.symlinkJoin {
@@ -89,43 +89,58 @@
                   ({
         networking.hostName = hostname;
         hostUsers = users;
-        hostname = hostname;
       } // configuration)
-      inputs.home-manager.nixosModules.home-manager
-      {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.backupFileExtension= "bak";
-        home-manager.extraSpecialArgs = { inherit inputs; };
-
-        home-manager.sharedModules = [
-          
-          ./home/common/home.nix
-          ./home/common/pkgs.nix
-        ];
-        home-manager.users = builtins.listToAttrs (map (user: {
-          name = user;
-          value = import ./home/users/${user}/home.nix;
-        }) users);
-      }
     ];
   };
 in{
-    desktop = mkHost { hostname = "desktop"; 
-          users = [ "nick" "nasr" "lfs" ];
-          configuration = {
-            ai = true;
-            full = true;
-            hypr = true;
-          };
-        };
-    laptop  = mkHost { hostname = "laptop";  users = [ "nick" "stanley" ];
-          configuration = {
-            ai = true;
-          };
-        };
-    wsl     = mkHost { hostname = "wsl";     users = [ "nick" "nasr" ]; };
+    desktop = mkHost {
+      hostname = "desktop";
+      users = [ "nick" "nasr" "lfs" ];
+    };
+    laptop = mkHost {
+      hostname = "laptop";
+      users = [  "stanley"];
+    };
+    wsl = mkHost {
+      hostname = "wsl";
+      users = [ "nasr" ];
+    };
   };
+
+      homeConfigurations = {
+        nick = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = {
+            inherit inputs;
+            username = "nick";
+            hypr = true;
+            full = true;
+            git = {
+              name = "nicolas";
+              email = "nicolas.abdul.rahman@gmail.com";
+            };
+          };
+          modules = [
+            ./home/home.nix
+          ];
+        };
+        stanley= home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = {
+            inherit inputs;
+            username = "nick";
+            hypr = true;
+            full = true;
+            git = {
+              name = "nicolas";
+              email = "nicolas.abdul.rahman@gmail.com";
+            };
+          };
+          modules = [
+            ./home/home.nix
+          ];
+        };
+      };
 
       packages.${system} = {
         nvim = nvfPkg;

@@ -1,8 +1,8 @@
 { config, pkgs, inputs, lib, ... }:
 
 {
-  services.xserver.enable = config.xserver;
   services.xserver = {
+    enable = true;
     xkb.layout = "us";
     videoDrivers = [ "amdgpu" ];
     desktopManager.xfce.enable = true;
@@ -15,12 +15,10 @@
 
   console.keyMap = "us";
 
-  programs.hyprland = if config.hypr then {
+  programs.hyprland = {
     enable = true;
     xwayland.enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-  } else {
-    enable = false;
   };
 
   services.displayManager = {

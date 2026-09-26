@@ -1,6 +1,7 @@
 
-{ config, pkgs, inputs, lib,   osConfig, ... }:
-let lazy  =  if (osConfig.full or false) then
+{ config, pkgs, inputs, lib, hypr ? false, full ? false, ... }:
+let
+  lazy = if full then
   (pkgs.lazygit.overrideAttrs (old: {
       postPatch = (old.postPatch or "") + ''
         cat > pkg/gui/information_panel.go << 'GOEOF'
@@ -71,13 +72,13 @@ home.packages = with pkgs;
     zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
   ] ++ 
-  # Hyprland: Wi,ndow manager specific toolsnvim
-  (lib.optionals osConfig.hypr [
+  # Hyprland: Window manager specific tools
+  (lib.optionals hypr [
     grimblast mako waybar eww hyprpaper hyprlock hypridle 
     wf-recorder hyprsunset swayimg xwayland wl-clipboard cliphist
   ]) ++ 
   # Full: Heavy GUI apps, media, and office software
-  (lib.optionals osConfig.full [
+  (lib.optionals full [
     # Browsers & Media
     google-chrome brave thunderbird spotify qbittorrent
     obs-studio audacity blender krita gimp
@@ -88,7 +89,7 @@ home.packages = with pkgs;
     gamescope weston blockbench equicord steam
   ]);
 
-    programs.vscode = lib.mkIf osConfig.full {
+    programs.vscode = lib.mkIf full {
       enable = true;
       profiles.default.extensions = with pkgs.vscode-extensions; [
         dracula-theme.theme-dracula

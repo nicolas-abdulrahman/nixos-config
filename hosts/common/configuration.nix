@@ -4,7 +4,6 @@
   imports = [
     inputs.sops-nix.nixosModules.sops # <-- This makes the 'sops' option exist!
     ./boot.nix
-    ./cli.nix
     ./users.nix
     ../modules/kanata
     ./desktop_manager.nix
@@ -19,45 +18,10 @@
       default = [ ];
       description = "System users to create on this host.";
     };
-    hostname = lib.mkOption {
-      type = lib.types.str;
-      description = "The logical profile name (desktop, laptop, wsl).";
-    };
-    ai = lib.mkOption {
+    docker = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable ai stuff.";
-    };
-
-    full = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable full comprehensive suite configuration flag.";
-    };
-    hypr = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable Hyprland ecosystem settings configuration flag.";
-    };
-    xserver= lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable X.";
-    };
-    docker= lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable docker";
-    };
-    remap= lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable remap";
-    };
-    kanata= lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable services";
+      description = "Enable virtualization (docker).";
     };
   };
   config = {
@@ -80,6 +44,22 @@
     nix.package = pkgs.lix;
 
     programs.nix-ld.enable = true;
+    programs.nix-ld.libraries = with pkgs; [
+      alsa-lib
+      glib
+      libGL
+      libX11
+      libXcursor
+      libXext
+      libXinerama
+      libXrandr
+      libXrender
+      libxi
+      libxkbcommon
+      openssl
+      vulkan-loader
+      zlib
+    ];
     programs.dconf.enable = true;
     programs.zsh.enable = true;
 

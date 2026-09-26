@@ -1,6 +1,6 @@
 { pkgs, lib,config, ... }:
 let
-  path = "/etc/nixos/home/modules/hyprland/hyprland.lua";
+  livePath = "/etc/nixos/home/dotfiles/hyprland/hyprland.lua";
   hyprsplitLua = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/shezdy/hyprsplit/6b00b677d8905fb38779c91e12d6294e0e586a44/init.lua";
     # First build: leave this as lib.fakeHash and run `home-manager switch`.
@@ -12,6 +12,8 @@ in
 {
   wayland.windowManager.hyprland.enable = true;
   xdg.configFile."hypr/hyprland.lua".source =
-    config.lib.file.mkOutOfStoreSymlink path;
+    if builtins.pathExists livePath
+    then config.lib.file.mkOutOfStoreSymlink livePath
+    else ./hyprland.lua;
   xdg.configFile."hypr/hyprsplit/init.lua".source = hyprsplitLua;
 }

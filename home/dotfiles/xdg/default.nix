@@ -1,9 +1,8 @@
-{ pkgs,osConfig, config, ... }:
+{ pkgs, config, ... }:
 
 let
   username = config.home.username;
-  # Reads "wezterm" for nick, "alacritty" for nasr, or falls back to "wezterm"
-  term = osConfig.userProfiles.${username}.terminal or "wezterm";
+  term = if username == "nasr" then "alacritty" else "wezterm";
   # Wrapper script to spawn Wezterm + Yazi for file picker dialogs
   yaziPicker = pkgs.writeShellScript "yazi-picker" ''
     out="$1"

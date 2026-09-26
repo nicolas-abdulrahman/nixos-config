@@ -1,4 +1,4 @@
-{osConfig,  ...}:
+{ ... }:
 let
   nixos_path = "/etc/nixos";
   initContent = ''
@@ -11,7 +11,7 @@ let
     export AIDER_MODEL="gemini/gemma-4-31b-it"
     fi
     '';
-  system= osConfig.networking.hostName;
+  system = "desktop";
   shellAliases = {
     b = "nix build /etc/nixos#nvim";
     n = "/etc/nixos/result/bin/nvim";

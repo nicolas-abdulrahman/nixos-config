@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig, ... }:
+{ config, lib, pkgs, ... }:
 {
   programs.fish = {
     generateCompletions = false;
@@ -31,24 +31,13 @@
     rm -f -- "$tmp"
   '';
       h = ''
-        set -l user ${config.home.username}
-        set -l host  ${osConfig.hostname}
-        set -l flakepath "/etc/nixos" # Strongly recommend an absolute path here!
-
-
-        echo "🚀 Building Home Manager for '$user' on '$host'... (totally not ai :D)"
-
-        # Build without the symlink, and capture the output path
-        set -l build_path (nix build "$flakepath#nixosConfigurations.$host.config.home-manager.users.$user.home.activationPackage" --no-link --print-out-paths)
-
-        # Check if the build_path was successfully generated
-        if test $status -eq 0
-            echo "✨ Activating..."
-            $build_path/activate
-        else
-            echo "❌ Build failed."
-            return 1
+        set -l flakepath "/etc/nixos"
+        if not test -d "$flakepath"
+            set flakepath "$HOME/dotfiles"
         end
+
+        echo "🚀 Switching Home Manager..."
+        home-manager switch --flake "$flakepath#nick"
       '';
     };
 

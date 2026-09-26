@@ -1,7 +1,7 @@
 {config,...}:
 {
      services.kanata = {
-      enable = config.kanata;
+      enable = true;
 
       keyboards.default = {
         devices = [

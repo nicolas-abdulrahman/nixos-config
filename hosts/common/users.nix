@@ -23,11 +23,6 @@ in
 
   config = {
     # Set the per-user preferences here
-    userProfiles = {
-      nick = { shell = "zsh"; terminal = "wezterm"; };
-      nasr = { shell = "fish"; terminal = "wezterm"; };
-      stanley= { shell = "fish"; terminal = "st"; };
-    };
 
     hardware.i2c.enable = true;
     environment.systemPackages = [ pkgs.ddcutil ];
@@ -57,7 +52,7 @@ in
           isNormalUser = true;
           description = "Nicolas";
           extraGroups = [ "i2c" "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
-          shell = pkgs.${config.userProfiles.nick.shell or "zsh"};
+          shell = pkgs.zsh;
           hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
         };
 
@@ -65,17 +60,18 @@ in
           isNormalUser = true;
           description = "Nasrl Hakim Abdul Rahman";
           extraGroups = [ "i2c" "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
-          shell = pkgs.${config.userProfiles.nasr.shell or "fish"};
+          shell = pkgs.fish;
           hashedPassword = "$6$1yVWgjhyIazvTqfo$IXmOS/7WNFmZawjFHKxkMRJV7ghHCfJ6iCrZPSp/DT5arY/K53llQwwh8VVrzQC0Kc0esQ86.bNFm/z/UHqst.";
         };
         stanley= lib.mkIf (builtins.elem "stanley" config.hostUsers) {
           isNormalUser = true;
           description = "Stanleynnnnn";
           extraGroups = [ "i2c" "wireshark" "networkmanager" "wheel" "uinput" "input" "sysadmins" "docker" ];
-          shell = pkgs.${config.userProfiles.stanley.shell or "fish"};
+          shell = pkgs.fish;
           hashedPassword = "$6$t.2FnA1r9GLxmhKI$EVHw5xf3LNADuEP1yRog8kNRQzEGUtSyLtwF2aM6JsKDZPMfdg8lbA43Qhbvoj9Bl4iqA0yrOeCzo/vtd7Ggl1";
         };
       };
     };
   };
 }
+
