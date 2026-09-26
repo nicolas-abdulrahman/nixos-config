@@ -69,7 +69,7 @@ home.packages = with pkgs;
   [
       ddcutil
       lazy
-    zoxide broot nnn kitty st brightnessctl pavucontrol aseprite
+    zoxide broot nnn kitty st xclip brightnessctl pavucontrol aseprite
     warp-terminal git-credential-manager android-tools arp-scan nmap
   ] ++ 
   # Hyprland: Window manager specific tools
