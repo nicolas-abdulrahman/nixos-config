@@ -130,7 +130,7 @@ in{
             inherit inputs;
             username = "stanley";
             hypr = false;
-            full = true;
+            full = false;
             git = {
               name = "stanley";
               email = "nicolas.abdul.rahman@gmail.com";

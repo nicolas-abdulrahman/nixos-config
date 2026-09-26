@@ -50,21 +50,22 @@
           keybindings = lib.mkOptionDefault {
             # --- App Launchers ---
             "${mod}+t" = "exec ${pkgs.st}/bin/st";
+            "${mod}+y" = "exec ${pkgs.wezterm}/bin/wezterm";
             "${mod}+f" = "exec ${pkgs.firefox}/bin/firefox";
-            "${mod}+d" = "exec ${pkgs.rofi}/bin/rofi -show drun"; # Fast App Launcher
+            "${mod}+space" = "exec ${pkgs.rofi}/bin/rofi -show drun"; # Fast App Launcher
 
             # --- Window Actions ---
             "${mod}+q" = "kill";                           # Close window directly
-            "${mod}+Shift+space" = "floating toggle";      # Toggle floating window
-            "${mod}+space" = "focus mode_toggle";          # Toggle focus between tiling/floating
-            "${mod}+m" = "fullscreen toggle";              # Fullscreen toggle
+            "${mod}+Shift+o" = "floating toggle";      # Toggle floating window
+            "${mod}+o" = "focus mode_toggle";          # Toggle focus between tiling/floating
+            "${mod}+a" = "fullscreen toggle";              # Fullscreen toggle
 
             # --- Layouts & Splits ---
-            "${mod}+b" = "split h";                        # Horizontal split
-            "${mod}+v" = "split v";                        # Vertical split
-            "${mod}+s" = "layout stacking";                # Stacking layout
-            "${mod}+w" = "layout tabbed";                  # Tabbed layout
-            "${mod}+e" = "layout toggle split";            # Toggle split layout
+            "${mod}+minus" = "split h";                        # Horizontal split
+            "${mod}+slash" = "split v";                        # Vertical split
+            "${mod}+apostrophe" = "layout stacking";                # Stacking layout
+            "${mod}+semicolon" = "layout tabbed";                  # Tabbed layout
+            "${mod}+period" = "layout toggle split";            # Toggle split layout
 
             # --- Vim Navigation (Focus) ---
             "${mod}+h" = "focus left";
@@ -100,7 +101,7 @@
             "${mod}+Shift+9" = "move container to workspace number 9";
 
             # --- Resize Mode & System Controls ---
-            "${mod}+r" = "mode resize";                    # Enter resize mode
+            "${mod}+button3" = "mode resize";                    # Enter resize mode
             "${mod}+Shift+c" = "reload";                   # Reload i3 config without restart
             "${mod}+Shift+r" = "restart";                  # In-place restart i3 (0.1s!)
             "${mod}+Shift+e" = "exec i3-nagbar -t warning -m 'Exit i3?' -b 'Yes' 'i3-msg exit'";
