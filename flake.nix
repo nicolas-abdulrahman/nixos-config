@@ -133,7 +133,7 @@ in{
             full = false;
             git = {
               name = "stanley";
-              email = "nicolas.abdul.rahman@gmail.com";
+              email = "Stanleynz@gmail.com";
             };
           };
           modules = [
