@@ -6,7 +6,7 @@
     xkb.layout = "us";
     videoDrivers = [ "amdgpu" ];
     desktopManager.xfce.enable = true;
-    desktopManager.lxqt.enable = true;
+    #   desktopManager.lxqt.enable = true;
 
     windowManager.i3 = {
       enable = true;
@@ -16,7 +16,7 @@
   console.keyMap = "us";
 
   programs.hyprland = {
-    enable = true;
+    enable = config.hypr;
     xwayland.enable = true;
     package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };

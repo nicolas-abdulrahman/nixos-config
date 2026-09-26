@@ -115,11 +115,6 @@ in
         '';
       };
 
-      codecompanion = {
-        package = pkgs.vimPlugins.codecompanion-nvim;
-        after = [ "plenary" ];
-        setup = builtins.readFile ./plugin/codecompanion.lua;
-      };
 
       fzf = { package = telescope-fzf-native-nvim; };
       telescope = { package = telescope-nvim; after = [ "fzf" ]; setup = builtins.readFile ./plugin/telescope.lua; };

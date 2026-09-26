@@ -13,6 +13,11 @@
   ];
 
   options = {
+    hypr = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable Hyprland.";
+    };
     hostUsers = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
