@@ -40,6 +40,17 @@ in
     };
   };
 
+  # mDNS resolution (.local domain)
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+    publish = {
+      enable = true;
+      addresses = true;
+    };
+  };
+
   security.pki.certificateFiles = [ 
     "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" 
   ];
